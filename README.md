@@ -1,4 +1,4 @@
-# CS157C-team7
+# Concert Mate
 
 ## How to Run
 1. `npm install`
