@@ -2,4 +2,4 @@
 
 ## How to Run
 1. `npm install`
-2. `npm run-script server start`
+2. `npm run-script serverstart`
