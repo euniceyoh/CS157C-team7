@@ -1,8 +1,7 @@
 'use strict';
 
 class Artist {
-    constructor(id, name){
-        this.id = id;
+    constructor( name){
         this.name = name;
     }
 }
