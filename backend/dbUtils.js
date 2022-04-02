@@ -1,7 +1,8 @@
 'use strict';
 const neo4j = require("neo4j-driver");
-const driver = neo4j.driver("neo4j+s://463ded1b.databases.neo4j.io:7687",neo4j.auth.basic("can", "(ABCxyz98)"));
 
+// create env file for this 
+const driver = neo4j.driver("neo4j+s://463ded1b.databases.neo4j.io:7687",neo4j.auth.basic("neo4j", "RBmgtH_rMJ2DZ0JqttmSmighTacdiEmIVPzK0n1QPz8"));
 
 exports.getSession = (context) =>{
     if(!context.neo4jSession){
@@ -9,3 +10,5 @@ exports.getSession = (context) =>{
     }
     return context.neo4jSession;
 }
+
+// do we need to close session....???? :SDJFLKjsdljkfa
