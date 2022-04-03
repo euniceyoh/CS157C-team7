@@ -1,9 +1,8 @@
 'use strict';
 
 class Concert{
-    constructor(concert_date, name){
-        //this.id = id;
-        this.concert_date = concert_date;
+    constructor(datetime, name){
+        this.datetime = datetime; 
         this.name = name;
     }
 }
