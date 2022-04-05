@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="/stylesheets/style.css" rel="stylesheet" type="text/css" />
+        <title>Sign Up Page</title>
+    </head>
+    <body>
+        <h1>Sign Up</h1>
+        <h3>Enter the requested information below for your user profile to be created.</h3>
+        <br>
+        <form id="signup-form" action="/signup" method="post" enctype="text/html">
+            <!-- Used first name instead of username as users' usernames since
+                 in schema we assumed each user's name, first name, is unique
+            -->
+            <label for="firstName">First Name</label>
+            <br>
+            <input type="text" id="firstName" placeholder="first name">
+            <br>
+            <!-- Since it's not added in the schema for each person 
+            <label for="password">Password</label><br>
+            <input type="password" id="password" placeholder="password">  
+            -->
+            <br>
+            <label for="musicPreferences">Music Prefrences</label>
+            <br>
+            <input type="text" id="musicPrefrence" placeholder="music preferences">
+            <br>
+            <br>
+            <label for="favoriteArtists">Favorite Artists</label>
+            <br>
+            <input type="text" id="favoriteArtists" placeholder="favorite artists">
+            <br>
+            <br>
+            <label for="pastConcerts">Past Concerts Attended</label>
+            <br>
+            <input type="text" id="pastConcerts" placeholder="concerts attended">
+            <br>
+            <br>
+            <label for="futureConcerts">Fututre Concerts Planning on Attending</label>
+            <br>
+            <input type="text" id="futureConcerts" placeholder="future concerts">
+            <!-- <button type="LOG IN">LOG IN</button> -->
+            <br>
+            <br>
+            <input type="submit" value="submit">
+            <br>
+            <%- include('partials/nav.ejs') %>  
+        </form>
+    </body>
+</html>

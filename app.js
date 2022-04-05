@@ -1,46 +1,69 @@
-var createError = require('http-errors');
 var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-
-// import modules from routes directory 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-const { OGM } = require('@neo4j/graphql-ogm');
-
 var app = express();
+var bodyParser = require('body-parser');
+const { use } = require('express/lib/application');
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
 
-// add middleware libraries into request handling chain
-app.use(logger('dev'));
-app.use(express.json());
+/*
+ ulrEncodedParser middleware is used to invoke below function 
+ to parse posted data to POST functions
+ var urlEncodedParser = bodyParser.urlencoded({extended : false});
+ var jsonParser = bodyParser.json();
+ */
+
+//set view engine to be able to visit views 
+app.set('view engine', 'ejs');
+
+//middleware for styles to be loaded on pages when req made by views
+app.use('/stylesheets', express.static('stylesheets'));
+
+
+
+
+
+// middleware to parse application/x-www-form-urlencoded
+//app.use(bodyParser.urlencoded({ extended: false }));
+
+// middleware to parse application/json
+//app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+/*middleware to set req headers to text/html 
+app.use(function (req, res, next) {
+    req.headers['content-type'] = 'text/html';
+    next();
+  });*/
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+//GET "/" req, fires up home page
+app.get('/', function(req, res){
+    res.render('home');
+
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+//GET "/home" req, aslo fires up home page
+app.get('/home', function(req, res){
+    res.render('home');
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
 });
 
-module.exports = app; // object supplied to caller when this file is imported
+//GET "/signup" req, fires up sign up page
+app.get('/signup', function(req, res){
+    res.render('signup');
 
+});
 
+//POST information enetered on sign up form
+app.post('/signup', function(req, res){
+    //req.headers['content-type'] = 'x-www-form-urlencoded';
+    //req.headers['content-type'] = 'text/html';
+    console.log(req.headers);
+    console.log(req.body);
+    
+    //res.render('signup-success', req.body);
+
+});
+
+//server to run on port 3000
+app.listen(3000, function(){
+    console.log('server listening on port 3000');
+});
