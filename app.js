@@ -51,10 +51,8 @@ app.get('/signup', function(req, res){
 
 //POST information enetered on sign up form
 app.post('/signup', function(req, res){
-    console.log(req.headers);
     console.log(req.body);
-    
-    //res.render('signup-success', req.body);
+    res.render('signup_success', {accountData: req.body});
 
 });
 
