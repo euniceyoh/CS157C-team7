@@ -17,22 +17,19 @@ app.set('view engine', 'ejs');
 //middleware for styles to be loaded on pages when req made by views
 app.use('/stylesheets', express.static('stylesheets'));
 
-
-
-
-
-// middleware to parse application/x-www-form-urlencoded
-//app.use(bodyParser.urlencoded({ extended: false }));
-
 // middleware to parse application/json
 //app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+
+// middleware to parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }));
+
 
 /*middleware to set req headers to text/html 
 app.use(function (req, res, next) {
     req.headers['content-type'] = 'text/html';
     next();
   });*/
+
 
 //GET "/" req, fires up home page
 app.get('/', function(req, res){
@@ -54,8 +51,6 @@ app.get('/signup', function(req, res){
 
 //POST information enetered on sign up form
 app.post('/signup', function(req, res){
-    //req.headers['content-type'] = 'x-www-form-urlencoded';
-    //req.headers['content-type'] = 'text/html';
     console.log(req.headers);
     console.log(req.body);
     
