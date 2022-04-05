@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      padding: 50px;
+      font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    }
+
+    a {
+      color: #00B7FF;
+    }
+
+    .user-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: .25rem;
+      margin-top: 1rem;
+    }
+
+    .card {
+      border: 3px solid black;
+      background-color: white;
+      padding: 1rem;
+    }
+
+    .card>.header {
+      margin-bottom: .25rem;
+    }
+
+    .card>.body {
+      font-size: .8rem;
+      color: #777;
+    }
+  </style>
+  <title>Concert Filter</title>
+</head>
+
+<body>
+  <h1>Search For Concert</h1>
+
+  <form method="GET" id="form">
+    <label for="name">Name Of Concert</label>
+    <input type="text" name="name" id="concert-name" required />
+
+    <label for="artistName">Name Of Artist</label>
+    <input type="text" name="artistName" id="artist-name" />
+
+    <label for="city-name">Name Of City</label>
+    <input type="text" name="cityName" id="city-name" />
+    <button type="submit" id="search-btn">Search</button>
+  </form>
+
+  <div class="user-cards" data-user-cards-container>
+    <template data-user-template>
+      <div class="card">
+        <div class="header" data-header></div>
+        <div class="body" data-body></div>
+      </div>
+    </template>
+  </div>
+
+
+  <script>
+
+    const userCardTemplate = document.querySelector("[data-user-template]")
+    const userCardContainer = document.querySelector("[data-user-cards-container]")
+    const button = document.querySelector("#search-btn");
+
+    button.addEventListener("click", (e) => {
+      userCardContainer.textContent = '';
+      e.preventDefault();
+      getConcert("api/v1/concert/");
+    })
+
+    async function getConcert(url) {
+      const concertName = document.querySelector("#concert-name").value;
+      const artistName = document.querySelector("#artist-name").value;
+      const cityName = document.querySelector("#city-name").value;
+      let url_ = url + `?name=${concertName}`
+      if (artistName !== "" && artistName !== null) {
+        url_ += `&artistName=${artistName}`
+      }
+      if (cityName !== "" && cityName !== null) {
+        url_ += `&city=${cityName}`
+      }
+      console.log(url_)
+
+      fetch(url_)
+        .then(response => response.json())
+        .then(data => {
+          data.forEach(record => console.log(record["datetime"]['properties']['concert_date']))
+
+          users = data.map(user => {
+            const card = userCardTemplate.content.cloneNode(true).children[0]
+            const header = card.querySelector("[data-header]")
+            header.textContent = user["datetime"]['properties']['name']
+
+            userCardContainer.append(card)
+            return { name: user["datetime"]['properties']['name'], element: card }
+          })
+
+        })
+    }
+  </script>
+</body>
+
+</html>

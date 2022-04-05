@@ -19,6 +19,7 @@ app.get('/', function(req, res) {
     res.send("Hello World")
 })
 
-// app.get('/concert-search', function(req, res) {
-//     res.render("templates/filterConcert")
-// })
+// search for concert page
+app.get('/concert-search', function(req, res) {
+    res.render("templates/filterConcert")
+})

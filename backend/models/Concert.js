@@ -32,10 +32,7 @@ const filterConcert = (concert_category, session) => {
     // prefixBuilder will initialize variables that are used in the query
     // Below variables are optional and they will be empty if user didn't specify additional features
     let [ optionalCondition, prefixBuilder ] = queryConcertBuilder(concert_category);
-
-    if(optionalCondition.length !== 0){
-        optionalCondition = `AND ${optionalCondition}`;
-    }
+    console.log(concert_category)
 
     const query = `
     MATCH (concert : Concert) ${prefixBuilder}
@@ -57,23 +54,24 @@ const parseConcert = (result) =>{
 const queryConcertBuilder = (concert_category) =>{
     let optionalCondition = "";
     let prefixBuilder = "";
-
+    let optionalConditionList = [];
     for (let category in concert_category) {
-        if(optionalCondition.length != 0){
-            optionalCondition+=" AND ";
-        }
-        if(category === "name"){
+        if(category === "name" ){
             continue;
         }
-        if(category === "artistName"){
-            optionalCondition += `(concert)<-[:PERFORMS]-(artist {name: "${concert_category[category]}"})`;
+        if(category === "artistName" && concert_category[category] !== "" && concert_category[category] !== null){
+            console.log(concert_category[category])
+            optionalConditionList.push(`(concert)<-[:PERFORMS]-(artist {name: "${concert_category[category]}"})`);
             prefixBuilder += `,(artist : Artist)`;
         }
-        if(category === "city"){
-            optionalCondition += `(concert)-[:HAS_LOCATION]->(location {city:"${concert_category[category]}"})`;
+        if(category === "city" && concert_category[category] !== "" && concert_category[category] !== null){
+            optionalConditionList.push(`(concert)-[:HAS_LOCATION]->(location {city:"${concert_category[category]}"})`);
             prefixBuilder += `,(location : Location)`;
         }
     }
+
+    optionalConditionList.forEach(option => optionalCondition +=` AND ${option}`);
+
     return [optionalCondition, prefixBuilder];
 }
 
