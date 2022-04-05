@@ -7,13 +7,15 @@
     <body>
         <h1>Welcome to Concert Mate, <%= accountData.firstName %>!</h1><br>
         <h3>Your account has been created, with these spceifications below as you entered.</h3> <br>
+        <ul>
         <h4>First name: <%= accountData.firstName %></h4>
-        <h4>Age: <%= accountData.age %></h4>
+        <h4>Age: <%= accountData.age %> years old</h4>
         <h4>Gender: <%= accountData.gender %></h4>
         <h4>Music Prefrences: <%= accountData.musicPreferences %></h4>
         <h4>Favorite Artists:  <%= accountData.favoriteArtists %></h4>
         <h4>Past Concerts Attended:  <%= accountData.pastConcerts %></h4>
         <h4>Fututre Concerts Will Attend: <%= accountData.futureConcerts %></h4>
-        <%- include('partials/nav.ejs') %>  
+        </ul>
     </body>
+    <%- include('partials/nav.ejs') %>  
 </html>
