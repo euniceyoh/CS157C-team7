@@ -1,6 +1,7 @@
 // Concert End Point
 
-const Concert = require("./schema/Concert")
+const Concert = require("./schema/Concert");
+const Person = require("./schema/Person");
 
 function createConcert(concert, session) { 
 
@@ -61,11 +62,11 @@ const queryConcertBuilder = (concert_category) =>{
         }
         if(category === "artistName" && concert_category[category] !== "" && concert_category[category] !== null){
             console.log(concert_category[category])
-            optionalConditionList.push(`(concert)<-[:PERFORMS]-(artist {name: "${concert_category[category]}"})`);
+            optionalConditionList.push(`(concert)<-[:PERFORMS]-(artist {name: ${concert_category[category]}})`);
             prefixBuilder += `,(artist : Artist)`;
         }
         if(category === "city" && concert_category[category] !== "" && concert_category[category] !== null){
-            optionalConditionList.push(`(concert)-[:HAS_LOCATION]->(location {city:"${concert_category[category]}"})`);
+            optionalConditionList.push(`(concert)-[:HAS_LOCATION]->(location {city:${concert_category[category]}})`);
             prefixBuilder += `,(location : Location)`;
         }
     }
@@ -75,7 +76,31 @@ const queryConcertBuilder = (concert_category) =>{
     return [optionalCondition, prefixBuilder];
 }
 
+const filterAttendees  = (concert_category, session) => {
+
+    // prefixBuilder will initialize variables that are used in the query
+    // Below variables are optional and they will be empty if user didn't specify additional features
+    console.log(concert_category)
+
+    const query = `
+    MATCH (person : Person), (concert : Concert)
+    WHERE concert.name CONTAINS "${concert_category.name}" 
+    AND  ( (person)-[:HAS_ATTENDED]->( concert {name:${concert_category.name}})
+    OR     (person)-[:WILL_ATTEND]->( concert {name:${concert_category.name}}) )
+    RETURN person;
+    `;
+    console.log(query);
+
+    return session.readTransaction(
+        (tx) => tx.run(query)
+        ).then(parseAttendees);
+}
+
+const parseAttendees = (result) =>{
+    return result.records.map(r => new Person(r.get('person')));
+}
 module.exports = {
     "createConcert": createConcert ,
     "searchConcert": filterConcert,
+    "searchAttendees": filterAttendees,
 }
