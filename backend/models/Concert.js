@@ -29,7 +29,6 @@ function createConcert(concert, session) {
 }
 
 const filterConcert = (concert_category, session) => {
-
     // prefixBuilder will initialize variables that are used in the query
     // Below variables are optional and they will be empty if user didn't specify additional features
     let [ optionalCondition, prefixBuilder ] = queryConcertBuilder(concert_category);
@@ -85,8 +84,10 @@ const filterAttendees  = (concert_category, session) => {
     const query = `
     MATCH (person : Person), (concert : Concert)
     WHERE concert.name CONTAINS "${concert_category.name}" 
-    AND  ( (person)-[:HAS_ATTENDED]->( concert {name:${concert_category.name}})
-    OR     (person)-[:WILL_ATTEND]->( concert {name:${concert_category.name}}) )
+    AND ( 
+            (person)-[:HAS_ATTENDED]->(concert)
+        OR  (person)-[:WILL_ATTEND] ->(concert)
+        )
     RETURN person;
     `;
     console.log(query);

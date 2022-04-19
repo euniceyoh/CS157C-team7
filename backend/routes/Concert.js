@@ -46,7 +46,7 @@ router.post("/", function (req, res) {
 router.get("/", function (req, res) {
     // Returns an object where keys are parameters
     const concertParams = req.query;    
-
+    
     ConcertAPI.searchConcert(concertParams, dbUtils.getSession(req))
     .then(response=>{
         if(res.statusCode === 200){
