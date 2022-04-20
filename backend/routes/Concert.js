@@ -41,5 +41,43 @@ router.post("/", function (req, res) {
     })
 })
 
+
+// Filter Concert 
+router.get("/", function (req, res) {
+    // Returns an object where keys are parameters
+    const concertParams = req.query;    
+    
+    ConcertAPI.searchConcert(concertParams, dbUtils.getSession(req))
+    .then(response=>{
+        if(res.statusCode === 200){
+            res.send(JSON.stringify(response));
+        }else{
+            res.status(res.statusCode);
+            res.send(res.message);
+        }
+    })
+    .catch(err=>{
+        throw err;
+    });
+})
+
+// Filter Attendees to the concert
+router.get("/attendees", (req, res)=>{
+    const concertParams = req.query;
+
+    ConcertAPI.searchAttendees(concertParams, dbUtils.getSession(req))
+    .then(response=>{
+        if(res.statusCode === 200){
+            res.send(JSON.stringify(response));
+        }else{
+            res.status(res.statusCode);
+            res.send(res.message);
+        }
+    })
+    .catch(err=>{
+        throw err;
+    })
+})
+
 module.exports = router;
 

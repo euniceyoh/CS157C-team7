@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="static/css/filterConcertStyle.css">
+  <title>Concert Filter</title>
+</head>
+
+<body>
+  <h1>Search For Concert</h1>
+
+  <form method="GET" id="form">
+    <label for="name">Name Of Concert</label>
+    <input type="text" name="name" id="concert-name" required />
+
+    <label for="artistName">Name Of Artist</label>
+    <input type="text" name="artistName" id="artist-name" />
+
+    <label for="city-name">Name Of City</label>
+    <input type="text" name="cityName" id="city-name" />
+    <button type="submit" id="search-btn">Search</button>
+  </form>
+
+  <div class="user-cards" data-user-cards-container>
+    <template data-user-template>
+      <div class="card">
+        <div class="header" data-header></div>
+        <div class="body" data-body></div>
+      </div>
+    </template>
+  </div>
+
+
+  <script src="static/js/script.js"></script>
+</body>
+
+</html>
