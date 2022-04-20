@@ -2,7 +2,6 @@
 
 const Artist = require("./schema/Artist");
 
-
 const getAll = (session) => {
     return session.readTransaction (
         txc => txc.run(`MATCH (n:Artist) RETURN n LIMIT 25`)

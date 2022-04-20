@@ -6,7 +6,6 @@ const { response } = require("express");
 const router = express.Router();
 
 router.get("/", (req, res, next)=>{
-
     Artist.getAll(dbUtils.getSession(req))
     .then(response=>{
         if(res.statusCode === 200){
@@ -17,6 +16,5 @@ router.get("/", (req, res, next)=>{
     })
     .catch(next);
 })
-
 
 module.exports = router;
