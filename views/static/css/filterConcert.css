@@ -1,0 +1,83 @@
+.container {
+  padding: 1rem;
+  margin: 2rem auto;
+  width: 50rem;
+  max-width: 95%;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.controllers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.controller label{
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.controller input {
+  font: inherit;
+  padding: 0.6rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 14.5rem;
+  max-width: 100%;
+  align-items: center;
+}
+
+.action button{
+  font: inherit;
+  cursor: pointer;
+  text-align: center;
+  padding: 1rem 2rem;
+  border: 1px solid #40005d;
+  border-radius: 12px;
+  margin-right: 1rem;
+}
+
+.action button:hover{
+  background-color: #510674;
+  border-color: #510674;
+}
+
+.concerts template {
+  display: flex;
+  flex-direction: row;
+  justify-content:center;
+  align-items: center;
+  padding: 0.5rem;
+  margin: 1.2rem;
+
+}
+
+.concert:hover{
+  background: #777;
+}
+
+.concert {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  border: 1px solid #4b4b4b;
+  border-radius: 0.3em;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 0.5rem;
+  margin: 1rem;
+}
+
+.concert>.header {
+  color: #3a3a3a;
+  font-size: 1rem;
+  flex: 1;
+  margin: 1rem;
+  
+  color: #4b4b4b;
+}

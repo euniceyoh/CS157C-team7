@@ -6,34 +6,47 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="static/css/filterConcertStyle.css">
-  <title>Concert Filter</title>
+  <link rel="stylesheet" href="static/css/filterConcert.css">
+  <title>Search For Concert</title>
 </head>
 
 <body>
-  <h1>Search For Concert</h1>
+  <div class="container">
+    <h1>Search For Concert</h1>
+    <form method="GET" id="form">
+      <div class="controllers">
+        
+        <div class="controller">
+          <label for="name">Name Of Concert</label>
+          <input type="text" name="name" id="concert-name" required />
+        </div>
+        
+        <div class="controller">
+          <label for="artistName">Name Of Artist</label>
+          <input type="text" name="artistName" id="artist-name" />
+        </div>
 
-  <form method="GET" id="form">
-    <label for="name">Name Of Concert</label>
-    <input type="text" name="name" id="concert-name" required />
-
-    <label for="artistName">Name Of Artist</label>
-    <input type="text" name="artistName" id="artist-name" />
-
-    <label for="city-name">Name Of City</label>
-    <input type="text" name="cityName" id="city-name" />
-    <button type="submit" id="search-btn">Search</button>
-  </form>
-
-  <div class="user-cards" data-user-cards-container>
-    <template data-user-template>
-      <div class="card">
-        <div class="header" data-header></div>
-        <div class="body" data-body></div>
+        <div class="controller">
+          <label for="city-name">Name Of City</label>
+          <input type="text" name="cityName" id="city-name" />
+        </div>
       </div>
-    </template>
-  </div>
 
+      <div class="action">
+        <button type="submit" id="search-btn">Search</button>
+      </div>
+    </form>
+
+    <div class="concerts" data-user-cards-container>
+      <template data-user-template>
+        <div class="concert">
+          <div class="header" data-header></div>
+          <div class="body" data-body></div>
+        </div>
+      </template>
+    </div>
+
+  </div>
 
   <script src="static/js/script.js"></script>
 </body>
