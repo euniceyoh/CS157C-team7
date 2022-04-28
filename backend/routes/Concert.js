@@ -61,6 +61,23 @@ router.get("/", function (req, res) {
     });
 })
 
+router.get("/:name", function (req, res) { 
+    
+    ConcertAPI.searchConcert(req.params, dbUtils.getSession(req))
+    .then(response=>{
+        if(res.statusCode === 200){
+            res.send(JSON.stringify(response));
+        }else{
+            res.status(res.statusCode);
+            res.send(res.message);
+        }
+    })
+    .catch(err=>{
+        throw err;
+    });
+})
+
+
 // Filter Attendees to the concert
 router.get("/attendees", (req, res)=>{
     const concertParams = req.query;

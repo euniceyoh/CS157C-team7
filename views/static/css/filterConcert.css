@@ -11,8 +11,10 @@
   display: flex;
   flex-wrap: wrap;
   gap: 1.2rem;
+  margin: 0;
   margin-bottom: 1rem;
   text-align: center;
+
 }
 
 .controller label{
@@ -37,13 +39,15 @@
   text-align: center;
   padding: 1rem 2rem;
   border: 1px solid #40005d;
+  background-color: blue;
+  color: white;
   border-radius: 12px;
   margin-right: 1rem;
 }
 
 .action button:hover{
-  background-color: #510674;
-  border-color: #510674;
+  background-color: #7EC8E3;
+  border-color: #7EC8E3;
 }
 
 .concerts template {
@@ -52,32 +56,38 @@
   justify-content:center;
   align-items: center;
   padding: 0.5rem;
-  margin: 1.2rem;
 
 }
 
 .concert:hover{
-  background: #777;
+  background-color: #7EC8E3;
+  border-color: #7EC8E3;
+
 }
 
 .concert {
+  text-decoration: none;
+  cursor: pointer;
   display: flex;
   flex-direction: column;
-  width: 90%;
+  width: 93%;
   border: 1px solid #4b4b4b;
   border-radius: 0.3em;
   align-items: center;
   justify-content: center;
   flex: 1;
   padding: 0.5rem;
+  background-color: blue;
   margin: 1rem;
+  margin-right: 0;
 }
 
-.concert>.header {
-  color: #3a3a3a;
+.concert>.header  {
   font-size: 1rem;
   flex: 1;
   margin: 1rem;
-  
-  color: #4b4b4b;
+  color: white;
 }
+
+
+

@@ -35,3 +35,10 @@ app.get('/', function(req, res) {
 app.get('/concert-search', function(req, res) {
     res.render("templates/filterConcert")
 })
+
+
+app.get('/concert/:name', function(req, res) {
+    console.log(req.params);
+
+    res.render("templates/concert", {name:req.params['name']})
+})
