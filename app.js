@@ -12,7 +12,7 @@ const app = express();
 app.set('view engine', 'ejs');
 
 //middleware for styles to be loaded on pages when req made by views
-app.use(express.static(__dirname+'/views/'));
+app.use(express.static(__dirname+'/views'));
 
 
 // middleware to parse application/x-www-form-urlencoded
