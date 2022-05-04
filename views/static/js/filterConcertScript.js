@@ -1,10 +1,12 @@
 
+
     const userCardTemplate = document.querySelector("[data-user-template]")
     const userCardContainer = document.querySelector("[data-user-cards-container]")
     const button = document.querySelector("#search-btn");
+    const concertClicked = document.querySelector(".concert");
 
     button.addEventListener("click", (e) => {
-      userCardContainer.textContent = '';
+      // userCardContainer.textContent = '';
       e.preventDefault();
       getConcert("api/v1/concert/");
     })
@@ -14,6 +16,7 @@
       const artistName = document.querySelector("#artist-name").value;
       const cityName = document.querySelector("#city-name").value;
       let url_ = url + `?name=${concertName}`
+      
       if (artistName !== "" && artistName !== null) {
         url_ += `&artistName=${artistName}`
       }
@@ -31,10 +34,13 @@
             const card = userCardTemplate.content.cloneNode(true).children[0]
             const header = card.querySelector("[data-header]")
             header.textContent = user["datetime"]['properties']['name']
-
+            const concertFullName = header.textContent;
+            console.log(`concert&name=${concertFullName}`)
+            card.setAttribute("href",`concert/${concertFullName}`)
             userCardContainer.append(card)
             return { name: user["datetime"]['properties']['name'], element: card }
           })
 
         })
     }
+
