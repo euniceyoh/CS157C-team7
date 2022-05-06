@@ -1,8 +1,76 @@
-.container {
+body {
+  font-family: Futura;
+}
+
+h1, h2, h3, h4 {
+  font-weight: normal; 
+}
+
+.row {
+  display: flex; 
+  flex-wrap: wrap;
+}
+
+.concert_column {
+  flex: 30%;
+}
+
+.attendee_column {
+  flex: 70%;
+}
+
+form {
+  margin-bottom: 30px; 
+}
+
+.list_of_attendees {
+  display: flex; 
+  flex-wrap: wrap; 
+}
+
+  .card_container {
+    color: black;
+    border-style: solid;
+    border-radius: 25px;
+    height: 300px;
+    width: 200px;
+    text-align: center; /* this line just seems to work */
+    margin-right: 40px; 
+    margin-bottom: 40px; 
+  }
+
+  button {
+    background-color: white;
+    color: black;
+    border: 2px solid #555555;
+    border-radius: 12px; 
+  }
+
+  button:hover {
+    background-color: #555555;
+    color: white;
+  }
+
+  .concert_column img {
+    width: 350px;
+    height: 350px;
+    object-fit: cover; 
+  }
+
+  .card_container img { /* is this right*/
+    /* border-style: solid; */
+    border-radius: 10px 10px 0 0;
+    height: 150px;
+    width: 150px;
+  }
+
+  /* .concert_column {
     padding: 1rem;
     margin: 2rem auto;
     width: 50rem;
     max-width: 95%;
     border-radius: 12px;
     text-align: center;
-  }
+    /* color: blue; */
+  /* } */ 
+  

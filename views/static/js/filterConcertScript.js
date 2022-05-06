@@ -28,7 +28,17 @@
       fetch(url_)
         .then(response => response.json())
         .then(data => {
-          data.forEach(record => console.log(record["datetime"]['properties']['concert_date']))
+          data.forEach(record => {
+            console.log(record["datetime"]['properties']['concert_date'])
+
+            // "passing data to concert page"
+            console.log(JSON.stringify(record))
+            const recordName = record["datetime"]['properties']['name']
+            console.log(recordName)
+            const recordJson = JSON.stringify(record)
+            localStorage.setItem(recordName, recordJson) 
+          }
+        )
 
           users = data.map(user => {
             const card = userCardTemplate.content.cloneNode(true).children[0]
