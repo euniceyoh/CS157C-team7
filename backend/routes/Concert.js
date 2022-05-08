@@ -41,7 +41,6 @@ router.post("/", function (req, res) {
     })
 })
 
-
 // Filter Concert 
 router.get("/", function (req, res) {
     // Returns an object where keys are parameters
@@ -64,6 +63,7 @@ router.get("/", function (req, res) {
 // Filter Attendees to the concert
 router.get("/attendees", (req, res)=>{
     const concertParams = req.query;
+    console.log("/attendees: " + req.query)
 
     ConcertAPI.searchAttendees(concertParams, dbUtils.getSession(req))
     .then(response=>{
@@ -93,7 +93,6 @@ router.get("/:name", function (req, res) {
         throw err;
     });
 })
-
 
 module.exports = router;
 

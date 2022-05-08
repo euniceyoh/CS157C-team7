@@ -1,5 +1,6 @@
 body {
   font-family: Futura;
+  margin: 75px; 
 }
 
 h1, h2, h3, h4 {
@@ -35,6 +36,7 @@ form {
     height: 300px;
     width: 200px;
     text-align: center; /* this line just seems to work */
+    padding-top: 40px; 
     margin-right: 40px; 
     margin-bottom: 40px; 
   }
@@ -55,11 +57,12 @@ form {
     width: 350px;
     height: 350px;
     object-fit: cover; 
+    border-radius: 5%;
   }
 
   .card_container img { /* is this right*/
     /* border-style: solid; */
-    border-radius: 10px 10px 0 0;
+    border-radius: 50%;
     height: 150px;
     width: 150px;
   }

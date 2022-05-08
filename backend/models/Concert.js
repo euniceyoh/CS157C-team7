@@ -40,7 +40,7 @@ const filterConcert = (concert_category, session) => {
     ${optionalCondition}
     RETURN concert
     `;
-    console.log(query);
+    console.log("filter concert: " + query);
 
     return session.readTransaction(
         (tx) => tx.run(query)
@@ -61,7 +61,7 @@ const queryConcertBuilder = (concert_category) =>{
         }
         if(category === "artistName" && concert_category[category] !== "" && concert_category[category] !== null){
             console.log(concert_category[category])
-            optionalConditionList.push(`(concert)<-[:PERFORMS]-(artist {name: ${concert_category[category]}})`);
+            optionalConditionList.push(`(concert)<-[:PERFORMS]-(artist {name: "${concert_category[category]}"})`);
             prefixBuilder += `,(artist : Artist)`;
         }
         if(category === "city" && concert_category[category] !== "" && concert_category[category] !== null){
@@ -75,21 +75,42 @@ const queryConcertBuilder = (concert_category) =>{
     return [optionalCondition, prefixBuilder];
 }
 
-const filterAttendees  = (concert_category, session) => {
-
+const filterAttendees  = (filters, session) => {
     // prefixBuilder will initialize variables that are used in the query
     // Below variables are optional and they will be empty if user didn't specify additional features
-    console.log(concert_category)
+    console.log("filterAttendees" + JSON.stringify(filters))
+    let optionalCondition = ""
 
-    const query = `
+    console.log("filters: ")
+    for(let filter in filters) {
+        console.log(filter)
+        let date = filters["date"]
+        let gender = filters[filter]
+        
+        if(filter == "date" && date != "") {
+            console.log(date) 
+            // parse date '18to25' 
+            let range = date.split('to')
+            //console.log(range[0])
+            let start = 2022 - parseInt(range[1])
+            let end = 2022 - parseInt(range[0])
+            //console.log(start + " " + end)
+            optionalCondition += `AND ((person.Date >= ${start}) AND (person.Date <= ${end}))`
+        }
+        if(filter == "gender" && gender != "") {
+            optionalCondition += `\n AND ((person.gender = "${gender}"))`
+        }
+    }
+    
+    const query = 
+    `
     MATCH (person : Person), (concert : Concert)
-    WHERE concert.name CONTAINS "${concert_category.name}" 
-    AND ( 
-            (person)-[:HAS_ATTENDED]->(concert)
-        OR  (person)-[:WILL_ATTEND] ->(concert)
-        )
+    WHERE concert.name CONTAINS "${filters.name}" 
+    AND ((person)-[:HAS_ATTENDED]->(concert) OR (person)-[:WILL_ATTEND] ->(concert))
+    ${optionalCondition}
     RETURN person;
     `;
+
     console.log(query);
 
     return session.readTransaction(
@@ -100,6 +121,7 @@ const filterAttendees  = (concert_category, session) => {
 const parseAttendees = (result) =>{
     return result.records.map(r => new Person(r.get('person')));
 }
+
 module.exports = {
     "createConcert": createConcert ,
     "searchConcert": filterConcert,

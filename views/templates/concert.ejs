@@ -16,22 +16,34 @@
   </nav>
   <div class='row'>
     <div class="concert_column">
-      <!-- maybe add another div to wrap around concert into here-->
-      <h1><%= name %></h1>
-      <img src='https://www.rollingstone.com/wp-content/uploads/2022/01/the-weeknd-album-review.jpg?resize=1800,1200&w=1800' alt='profile'>
-      <h3>Location:</h3>
-      <p></p>
-      <h4>Time:</h4>
-      <p></p>
+      <div id='concertInfo'>
+        <h1><%= name %></h1>
+        <img alt='profile'>
+        <h3>Date:</h3>
+        <p></p>
+        <h3>Venue:</h3>
+        <p></p>
+      </div>
     </div>
 
     <div class='attendee_column'>
       <h1>Attendees</h1>
-      <form>
-        <label>Filter: </label> <!-- https://www.w3schools.com/tags/att_input_type.asp -->
-        <input type="text">
-      </form>
-        <!-- <button id="butt" onclick="randdom()" type="button">click</button> -->
+      <div>
+        <form> <!-- action set to current page -->
+          <label>Filter by gender</label>
+          <select id='gender'>
+            <option value=""></option>
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+          </select><br>
+          <label>Filter by age</label>
+          <select id='age'>
+            <option value=""></option>
+            <option value="18to25">18 to 25</option>
+          </select><br>
+          <input id='submit' type="submit" value="Apply filters">
+        </form>
+      </div>
         <div class='list_of_attendees'> 
           <!-- data included here -->
         </div>
@@ -41,10 +53,9 @@
           }
         </script>
     </div>
-  
     <template id='card'>
       <div class='card_container'>
-        <img src='https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg' alt='profile'>
+        <img alt='profile'>
         <h4></h4>
         <button onclick="viewDetails()"></button>
       </div>
@@ -53,46 +64,81 @@
 
   <script>
     let name = '<%-name%>'
-    console.log(name)
-    const concertData = localStorage.getItem(name)
-    localStorage.removeItem(name)
-    const concertParsed = JSON.parse(concertData)
-    console.log(concertParsed)
+    let date = ""
+    let gender = "" 
+
+    getConcert(); 
+    getAttendees(); 
+
+    function getConcert() {
+      // query concert data here here 
+      fetch(`http://localhost:3000/api/v1/concert/?name=${name}`)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+        let concertInfo = document.querySelector('#concertInfo')
+        let imgContent = concertInfo.querySelector("img")
+        let url = data[0]['datetime']['properties']['imgurl']
+        let venue = data[0]['datetime']['properties']['concert_date']['timeZoneId'] // update 
+        let date = "" // update 
+
+        console.log(url)
+        console.log(venue)
+
+        imgContent.setAttribute('src', url)
+        let otherContent = concertInfo.querySelectorAll("p")
+        otherContent[0].innerText = venue; 
+        otherContent[1].innerText = date; 
+      })
+    }
+
+    let submitButton = document.querySelector('#submit')
+    submitButton.addEventListener("click", (e) => { // does "click" have any other additional meaning?"
+      e.preventDefault()
+      getFormData()
+      getAttendees()
+    })
+    
+    function getFormData() {
+      console.log("submitted form")
+      gender = document.querySelector('#gender').value;
+      date = document.querySelector('#age').value;
+    }
+
+    function getAttendees() {
+      console.log("frontend: " + gender)
+      console.log("frontend: " + date)
+      fetch(`http://localhost:3000/api/v1/concert/attendees?name=${name}&date=${date}&gender=${gender}`)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+
+        let list = document.querySelector('.list_of_attendees')
+        list.innerHTML = ''
+        let card = document.querySelector('#card') // template 
+
+        data.forEach((person) => {
+          const child = card.content.cloneNode(true)
+          const text = child.querySelector("h4")
+          text.innerText = person.id.properties.name
+          const url = child.querySelector("img")
+          url.setAttribute('src', person.id.properties.imgurl)
+          const button = child.querySelector("button") 
+          button.innerText = "view details"
+          
+          list.appendChild(child)
+        })
+      })
+    }
 
     // update location and time using parsed data
-
     function viewDetails() {
       alert("did it work")
       //document.getElementById("butt").setAttribute("href", "https://www.google.com/")
       location.href=`http://localhost:3000/concert/${name}/attendee`
     }
-    
-    // for each person, render a card for them to show on current doc
-    fetch(`http://localhost:3000/api/v1/concert/attendees?name=${name}`)
-    .then(res => res.json())
-    .then(data => {
-      console.log(data)
-
-      let list = document.querySelector('.list_of_attendees')
-      let card = document.querySelector('#card') // template 
-
-      data.forEach((person) => {
-        const child = card.content.cloneNode(true)
-        const text = child.querySelector("h4")
-        text.innerText = person.id.properties.name
-        const button = child.querySelector("button") 
-        button.innerText = "view details"
-        
-        list.appendChild(child)
-      })
-    })
   
   </script>
 
-  <!-- <script src="/static/js/filterConcertScript.js"></script> -->
-  <!-- 
-    call query to get attendees, using concert name 
-    display each attendee in a template (how to use a template to render dynamically?)
-  -->
 </body>
 </html>
