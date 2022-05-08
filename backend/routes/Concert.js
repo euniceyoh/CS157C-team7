@@ -62,7 +62,7 @@ router.get("/", function (req, res) {
 })
 
 router.get("/:name", function (req, res) { 
-    
+    console.log(req.params)
     ConcertAPI.searchConcert(req.params, dbUtils.getSession(req))
     .then(response=>{
         if(res.statusCode === 200){
@@ -79,9 +79,9 @@ router.get("/:name", function (req, res) {
 
 
 // Filter Attendees to the concert
-router.get("/attendees", (req, res)=>{
-    const concertParams = req.query;
-
+router.get("/:name/attendees", (req, res)=>{
+    const concertParams = req.params;
+    console.log(concertParams)
     ConcertAPI.searchAttendees(concertParams, dbUtils.getSession(req))
     .then(response=>{
         if(res.statusCode === 200){

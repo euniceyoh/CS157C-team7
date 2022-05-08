@@ -18,7 +18,6 @@ app.use(express.static(__dirname+'/views'));
 // middleware to parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
 app.use("/api/v1/artist",artistRouter)
 app.use("/api/v1/concert", concertRouter)
 
