@@ -1,5 +1,6 @@
 // Concert End Point
 
+const { session } = require("neo4j-driver");
 const Concert = require("./schema/Concert");
 const Person = require("./schema/Person");
 
@@ -28,59 +29,77 @@ function createConcert(concert, session) {
     })
 }
 
-const filterConcert = (concert_category, session) => {
-    // prefixBuilder will initialize variables that are used in the query
-    // Below variables are optional and they will be empty if user didn't specify additional features
-    let [ optionalCondition, prefixBuilder ] = queryConcertBuilder(concert_category);
-    console.log(concert_category)
+// Concert lookup endpoint
+const searchConcertWithFilter = (concert_category, session) => {
+    const numberOfparametes = Object.keys(concert_category).length;
+    let query = "";
+    if(numberOfparametes === 1){
+        query = queryForUpcomingConcert(concert_category)
+    }else if(numberOfparametes === 2){
+        query = queryConcertWithFilterBuilder(concert_category);
+    }else{
+        query = queryConcertWithAllFilterBuilder(concert_category);
+    }
 
-    const query = `
-    MATCH (concert : Concert) ${prefixBuilder}
-    WHERE concert.name CONTAINS "${concert_category.name}" 
-    ${optionalCondition}
-    RETURN concert
-    `;
     console.log(query);
-
+    
     return session.readTransaction(
         (tx) => tx.run(query)
         ).then(parseConcert);
+}
+
+// Query base on the concert name only
+const queryForUpcomingConcert = (concert_category)=>{
+    const query = `
+        MATCH (concert : Concert)
+        WHERE concert.name CONTAINS "${concert_category.name}" AND concert.concert_date >= datetime() 
+        RETURN concert
+    `
+    return query;
+}
+
+// Query base on the concert name AND (artist or city)
+const queryConcertWithFilterBuilder = (concert_category) =>{
+    let optionalCondition = "";
+    let prefixBuilder = "";
+ 
+
+    if("artistName" in concert_category && concert_category["artistName"] !== "" && concert_category["artistName"] !== null){
+            optionalCondition +=`AND (concert)<-[:PERFORMS]-(artist {name: ${concert_category["artistName"]}})`;
+            prefixBuilder += `,(artist : Artist)`;
+        }
+        if("city" in concert_category && concert_category["city"] !== "" && concert_category["city"] !== null){
+            optionalCondition += `AND (concert)-[:HAS_LOCATION]->(location { city: ${concert_category["city"] } })`;
+            prefixBuilder += `,(location : Location)`;
+        }
+
+    const query = `
+    MATCH (concert : Concert) ${prefixBuilder}
+    WHERE concert.name CONTAINS "${concert_category.name}" AND concert.concert_date >= datetime() 
+    ${optionalCondition}
+    RETURN concert
+    `;
+    return query;
+}
+
+// Query base on concert name AND artist AND city
+const queryConcertWithAllFilterBuilder = (concert_category) =>{
+    const query = `
+    MATCH (concert : Concert), (artist : Artist), (location : Location)
+    WHERE concert.name CONTAINS "${concert_category.name}" AND concert.concert_date >= datetime() 
+    AND (concert)<-[:PERFORMS]-(artist {name: ${concert_category["artistName"]}})
+    AND (concert)-[:HAS_LOCATION]->(location { city: ${concert_category["city"] } })
+    RETURN concert
+    `;
+    return query;
 }
 
 const parseConcert = (result) =>{
     return result.records.map(r => new Concert(r.get('concert')));
 }
 
-const queryConcertBuilder = (concert_category) =>{
-    let optionalCondition = "";
-    let prefixBuilder = "";
-    let optionalConditionList = [];
-    for (let category in concert_category) {
-        if(category === "name" ){
-            continue;
-        }
-        if(category === "artistName" && concert_category[category] !== "" && concert_category[category] !== null){
-            console.log(concert_category[category])
-            optionalConditionList.push(`(concert)<-[:PERFORMS]-(artist {name: ${concert_category[category]}})`);
-            prefixBuilder += `,(artist : Artist)`;
-        }
-        if(category === "city" && concert_category[category] !== "" && concert_category[category] !== null){
-            optionalConditionList.push(`(concert)-[:HAS_LOCATION]->(location {city:${concert_category[category]}})`);
-            prefixBuilder += `,(location : Location)`;
-        }
-    }
-
-    optionalConditionList.forEach(option => optionalCondition +=` AND ${option}`);
-
-    return [optionalCondition, prefixBuilder];
-}
-
-const filterAttendees  = (concert_category, session) => {
-
-    // prefixBuilder will initialize variables that are used in the query
-    // Below variables are optional and they will be empty if user didn't specify additional features
-    console.log(concert_category)
-
+// All attendees of a concert Endpoint
+const searchAttendeesOfConcert  = (concert_category, session) => {
     const query = `
     MATCH (person : Person), (concert : Concert)
     WHERE concert.name CONTAINS "${concert_category.name}" 
@@ -100,8 +119,9 @@ const filterAttendees  = (concert_category, session) => {
 const parseAttendees = (result) =>{
     return result.records.map(r => new Person(r.get('person')));
 }
+
 module.exports = {
     "createConcert": createConcert ,
-    "searchConcert": filterConcert,
-    "searchAttendees": filterAttendees,
+    "searchConcertWithFilter": searchConcertWithFilter,
+    "searchAttendees": searchAttendeesOfConcert,
 }

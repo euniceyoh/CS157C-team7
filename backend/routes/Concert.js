@@ -46,8 +46,8 @@ router.post("/", function (req, res) {
 router.get("/", function (req, res) {
     // Returns an object where keys are parameters
     const concertParams = req.query;    
-    
-    ConcertAPI.searchConcert(concertParams, dbUtils.getSession(req))
+    console.log(Object.keys(concertParams).length)
+    ConcertAPI.searchConcertWithFilter(concertParams, dbUtils.getSession(req))
     .then(response=>{
         if(res.statusCode === 200){
             res.send(JSON.stringify(response));
@@ -63,7 +63,7 @@ router.get("/", function (req, res) {
 
 router.get("/:name", function (req, res) { 
     console.log(req.params)
-    ConcertAPI.searchConcert(req.params, dbUtils.getSession(req))
+    ConcertAPI.searchConcertWithFilter(req.params, dbUtils.getSession(req))
     .then(response=>{
         if(res.statusCode === 200){
             res.send(JSON.stringify(response));

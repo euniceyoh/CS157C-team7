@@ -27,7 +27,7 @@ app.listen(3000 , () =>{
 
 // test 
 app.get('/', function(req, res) {
-    res.send("Hello World")
+    res.render("templates/landingPage", {isLoggedIn:true})
 })
 
 // search for concert page
