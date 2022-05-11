@@ -6,11 +6,125 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" type="text/css" href="/static/css/concert.css">
+  <link rel="stylesheet" type="text/css" href="/static/css/profile.css">
   <title>Concert Details</title>
 </head>
 
 <body>
-  <div>Attendee Profile</div>
+  <nav>
+    Navigation Bar
+  </nav>
+  <div class='top_row'>
+    
+    <img src='https://www.pngmagic.com/product_images/gray-solid-circle-png-image.png' alt="profile">
+    
+    <div class='profile_info'>
+      <h1>First Last</h1>
+      <button>Contact</button>
+      <button>Add Friend</button>
+    </div>
+
+  </div>
+  <hr> <!-- A LINEEEE!! -->
+  <nav class='nav_row'>
+    <button id="bioBtn" class="activeBtn" onclick="clickedBio()">bio</button>
+    <button id="pConcertBtn" onclick="clickedPastConcerts()">past concerts</button>
+    <button onclick="clickedUpcomingConcerts()">upcoming concerts</button>
+    <button>friends</button>
+    <button>edit</button>
+    <div class='content'>
+      <!-- content to display based on nav button -->
+    </div>
+  </nav> 
+
+  <template id='bio'>
+    <h2>summary:</h2>
+    <p></p>
+    <h2>favorite artists:</h2>
+    <div id="f_artists">
+      <!-- enter content here -->
+    </div>
+    <h2>favorite genres:</h2>
+    <div id="f_genres">
+      <!-- enter content here -->
+    </div>
+  </template>
+  <template id='past_concerts'>
+
+  </template>
+  <template id='upcoming_concerts'>
+
+  </template>
+  <template id="friends">
+
+  </template>
+  
+  <script>
+    function resetActiveButton(currentButton) {
+      let intraNav = document.querySelector(".nav_row")
+      let navButtons = intraNav.querySelectorAll("button")
+      
+      for(let index = 0; index < navButtons.length; index++) {
+        let btn = navButtons[index]
+        if(btn.id != currentButton) {
+          btn.classList.remove("activeBtn")
+        }
+      }
+
+      let btn = document.querySelector("#" + currentButton)
+      btn.classList.add("activeBtn")
+    }
+
+    // based on button, show something different in content
+    clickedBio() // default 
+
+    function clickedBio() {
+      resetActiveButton("bioBtn")
+      //content.innerHTML = '' // clear whatever was showing before 
+      let mainContent = document.querySelector(".content") 
+      // clear
+      mainContent.innerHTML = '';
+
+      let bioTemplate = document.querySelector("#bio")
+      let clone = bioTemplate.content.cloneNode(true)
+
+      let summary = clone.querySelector("p")
+      summary.innerText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar aliquam ullamcorper. Quisque suscipit commodo neque, cursus porttitor dolor. Nam non tempor nulla. Pellentesque mattis, orci vitae molestie pellentesque, velit neque gravida massa, at mollis tortor ante vitae leo. Maecenas lacinia a ante id pharetra. Aliquam in rutrum ipsum. Interdum et malesuada fames ac ante ipsum primis in faucibus."
+      let favArtists = clone.querySelector("#f_artists") // a div 
+      let listOfFavArists = ["Justin Bieber", "NCT 127"]
+      
+      listOfFavArists.forEach((artist) => {
+        let artistDisplay = document.createElement("span")
+        artistDisplay.innerText = artist
+        artistDisplay.classList.add("single_artist")
+        favArtists.appendChild(artistDisplay)
+        //favArtists.appendChild(document.createElement("br"))
+      })
+
+      mainContent.appendChild(clone)
+    }
+
+    function clickedPastConcerts() {
+      // remove "activeBtn" for everythng else 
+      resetActiveButton("pConcertBtn")
+
+      let mainContent = document.querySelector(".content") 
+      mainContent.innerHTML = '';
+      
+      let child = document.createElement("h2")
+      child.innerText = "past concerts"
+      mainContent.appendChild(child)
+
+      // call query to get a user's past concerts 
+    }
+
+    function clickedUpcomingConcerts() {
+      let child = document.querySelector('#upcoming')
+      // child.style.display = ''
+    }
+
+  </script>
+
 </body>
 </html>
+

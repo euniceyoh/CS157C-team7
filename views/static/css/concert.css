@@ -24,6 +24,15 @@ form {
   margin-bottom: 30px; 
 }
 
+#concertInfo button {
+  font-family: Futura;
+  font-size: medium;
+  text-decoration: none;
+  border-radius: 25px; 
+  background: none;
+  padding: 5px 45px 5px 45px;
+}
+
 .list_of_attendees {
   display: flex; 
   flex-wrap: wrap; 
@@ -41,7 +50,7 @@ form {
     margin-bottom: 40px; 
   }
 
-  button {
+  .card_container button {
     background-color: white;
     color: black;
     border: 2px solid #555555;

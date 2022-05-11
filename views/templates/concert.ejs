@@ -24,6 +24,25 @@
         <h3>Venue:</h3>
         <p></p>
       </div>
+      <template id="attendance">
+        <button onclick="attendConcert()"></button>
+      </template>
+
+      <script>
+        function attendConcert() {
+          // create new relationship between current or logged in user & artist 
+
+          // fetch("http://localhost:3000/api/v1/concert/willAttendExists") 
+          // create request body to pass to: user & concert name
+
+          // if user already has WILL_ATTEND rel w/ concert, button shows "Attending (with check mark)"
+          // if user does not have WILL_ATTEND rel w/ concert, button shows "Attend"
+          // if user does not want to attend anymore, button shows "Not Attending"
+          
+          // how to do user login? need current user's name 
+          
+        }
+      </script>
     </div>
 
     <div class='attendee_column'>
@@ -135,7 +154,8 @@
     function viewDetails() {
       alert("did it work")
       //document.getElementById("butt").setAttribute("href", "https://www.google.com/")
-      location.href=`http://localhost:3000/concert/${name}/attendee`
+      let id = "someUniqueId"
+      location.href=`http://localhost:3000/attendee/${id}`
     }
   
   </script>

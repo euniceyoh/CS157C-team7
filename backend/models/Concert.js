@@ -1,5 +1,6 @@
 // Concert End Point
 
+const { response } = require("express");
 const Concert = require("./schema/Concert");
 const Person = require("./schema/Person");
 
@@ -28,6 +29,45 @@ function createConcert(concert, session) {
     })
 }
 
+function checkWillAttendRelExists(data, session) {
+    const query = `
+    RETURN EXISTS
+    ((:Person {name: '${data.user}'})-[:WILL_ATTEND]-(:Concert {name:'${data.concert}'}))`
+
+    console.log(query)
+
+    return session.readTransaction((tx) => {
+        return tx.run(query)
+    })
+    .then(response => {
+        console.log(response)
+        return response.records
+    }, error => {
+        return error
+    })
+}
+
+function addNewAttendConcert(data, session) { 
+    console.log(data)
+
+    const query = `
+    match (p:Person {name: "${data.user}"}), (c:Concert {name: "${data.concert}"})
+    create (p)-[r:WILL_ATTEND]->(c)
+    return type(r)
+    `
+    console.log(query)
+
+    return session.writeTransaction((tx) => {
+        return tx.run(query)
+    })
+    .then(response => {
+        console.log(response)
+        return response.records
+    }, error => {
+        return error
+    })
+}
+
 const filterConcert = (concert_category, session) => {
     // prefixBuilder will initialize variables that are used in the query
     // Below variables are optional and they will be empty if user didn't specify additional features
@@ -47,7 +87,7 @@ const filterConcert = (concert_category, session) => {
         ).then(parseConcert);
 }
 
-const parseConcert = (result) =>{
+const parseConcert = (result) => {
     return result.records.map(r => new Concert(r.get('concert')));
 }
 
@@ -126,4 +166,6 @@ module.exports = {
     "createConcert": createConcert ,
     "searchConcert": filterConcert,
     "searchAttendees": filterAttendees,
+    "addNewAttendConcert": addNewAttendConcert,
+    "attendeeExists": checkWillAttendRelExists
 }

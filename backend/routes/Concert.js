@@ -2,10 +2,35 @@ const ConcertAPI = require('../models/Concert')
 const DateTime = require('../models/schema/DateTime')
 const Concert = require('../models/schema/Concert')
 const dbUtils = require('../dbUtils');
-const express = require('express')
+const express = require('express');
+const res = require('express/lib/response');
 const router = express.Router()
 
 router.use(express.json())
+
+router.post("/willAttend", function (req, res) {
+    console.log(req.body)
+
+    ConcertAPI.addNewAttendConcert(req.body, dbUtils.getSession(req))
+    .then(result => {
+        res.send(result)
+    })
+    .catch(error => {
+        throw error
+    })
+})
+
+router.get("/willAttendExists", (req, res) => {
+    console.log(req.body)
+
+    ConcertAPI.attendeeExists(req.body, dbUtils.getSession(req))
+    .then(result => {
+        res.send(result)
+    })
+    .catch(error => {
+        throw error
+    })
+})
 
 router.post("/", function (req, res) {
     
