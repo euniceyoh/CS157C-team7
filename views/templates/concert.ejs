@@ -24,23 +24,48 @@
         <h3>Venue:</h3>
         <p></p>
       </div>
+
       <template id="attendance">
-        <button onclick="attendConcert()"></button>
+        <button id="attendButton" onclick="modifyAttend()"></button>
       </template>
 
       <script>
-        function attendConcert() {
-          // create new relationship between current or logged in user & artist 
+        function modifyAttend() {
+          let concertName = '<%-name%>'
+          let button = document.querySelector("#attendButton")
+          let data = {user: "Eunice", concert: concertName} // update user to current logged in user !!
+          console.log(data)
 
-          // fetch("http://localhost:3000/api/v1/concert/willAttendExists") 
-          // create request body to pass to: user & concert name
+          if(button.innerText == "Attend") {
 
-          // if user already has WILL_ATTEND rel w/ concert, button shows "Attending (with check mark)"
-          // if user does not have WILL_ATTEND rel w/ concert, button shows "Attend"
-          // if user does not want to attend anymore, button shows "Not Attending"
-          
-          // how to do user login? need current user's name 
-          
+            fetch(`http://localhost:3000/api/v1/concert/willAttend`, {
+              method: 'POST', 
+              headers: {
+              'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(data)
+            })
+            .then( res => res.json())
+            .then(data => {
+              console.log(data)
+              button.innerText = "Attending"
+            })
+          } else if(button.innerText == "Attending") {
+            alert("No longer attending")
+
+            fetch(`http://localhost:3000/api/v1/concert/deleteAttend`, {
+              method: 'POST', 
+              headers: {
+              'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(data)
+            })
+            .then( res => res.json())
+            .then(data => {
+              console.log(data)
+              button.innerText = "Attend"
+            })
+          }
         }
       </script>
     </div>
@@ -85,29 +110,71 @@
     let name = '<%-name%>'
     let date = ""
     let gender = "" 
+    let concertLocation = ""
 
     getConcert(); 
     getAttendees(); 
+    displayAttendButton()
+    getLocation()
+
+      function displayAttendButton() {
+        console.log("diplay attend")
+        let concertInfo = document.querySelector("#concertInfo")
+        let template = document.querySelector("#attendance")
+        let child = template.content.cloneNode(true)
+        let button = child.querySelector("button")
+
+        // display correct status 
+        let user = "Eunice"
+        let concert = "After Hours Til Dawn Tour"
+
+        fetch(`http://localhost:3000/api/v1/concert/willAttendExists?name=${user}&concert=${concert}`)
+        .then(res => res.json())
+        .then(data => {
+          console.log(data)
+
+          if(data == true) {
+            button.innerText = "Attending"
+          } else {
+            button.innerText = "Attend"
+          }
+          concertInfo.appendChild(child)
+        })
+    }
+
+    function getLocation() {
+      fetch(`http://localhost:3000/api/v1/concert/location?concert=${name}`)
+        .then(res => res.json())
+        .then(data => {
+          console.log(data)
+          locationSplit = data[0]['_fields'][0]['properties']
+          concertLocation = locationSplit['city'] + ", " + locationSplit["state"]
+          console.log(concertLocation)
+        })
+    }
 
     function getConcert() {
       // query concert data here here 
       fetch(`http://localhost:3000/api/v1/concert/?name=${name}`)
       .then(res => res.json())
       .then(data => {
-        console.log(data)
+        console.log(data) 
+
         let concertInfo = document.querySelector('#concertInfo')
         let imgContent = concertInfo.querySelector("img")
         let url = data[0]['datetime']['properties']['imgurl']
-        let venue = data[0]['datetime']['properties']['concert_date']['timeZoneId'] // update 
-        let date = "" // update 
+        let venue = concertLocation // update to query "has location"
 
-        console.log(url)
-        console.log(venue)
+        let date = data[0]['datetime']['properties']['concert_date']
+        let month = date['month']['low']
+        let day = date['day']['low']
+        let year = date['year']['low']
+        let fullDate = month + '/' + day + '/' + year
 
         imgContent.setAttribute('src', url)
         let otherContent = concertInfo.querySelectorAll("p")
-        otherContent[0].innerText = venue; 
-        otherContent[1].innerText = date; 
+        otherContent[0].innerText = fullDate; 
+        otherContent[1].innerText = venue; 
       })
     }
 

@@ -31,6 +31,13 @@ form {
   border-radius: 25px; 
   background: none;
   padding: 5px 45px 5px 45px;
+  background-color: white;
+  color: black;
+}
+
+#concertInfo button:hover {
+  background-color: #555555;
+  color: white;
 }
 
 .list_of_attendees {
@@ -57,7 +64,7 @@ form {
     border-radius: 12px; 
   }
 
-  button:hover {
+  .card_container button:hover {
     background-color: #555555;
     color: white;
   }

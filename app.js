@@ -40,6 +40,6 @@ app.get('/concert/:name', function(req, res) {
     res.render("templates/concert", {name:req.params['name']})
 })
 
-app.get('/concert/:name/attendee', function(req, res) {
+app.get('/attendee/:id', function(req, res) {
     res.render("templates/attendee")
 })
