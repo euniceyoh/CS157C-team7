@@ -11,9 +11,9 @@
       e.preventDefault();
       userCardContainer.innerHTML = '';
       concertNameField.classList.add("hidden");
-
-      const url_ = buildURI();
-
+      const concertName = document.querySelector("#concert-name").value;
+      const url_ = buildURI(concertName);
+     
       if(concertName !== '' && concertName !==null){
         getConcert(url_);
       }else{
@@ -21,8 +21,8 @@
       }
       
     })
-    const buildURI = () => {
-      const concertName = document.querySelector("#concert-name").value;
+    const buildURI = (concertName) => {
+
       const artistName = document.querySelector("#artist-name").value;
       const cityName = document.querySelector("#city-name").value;
       let url_ = `api/v1/concert/?name=${concertName}`

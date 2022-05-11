@@ -27,12 +27,12 @@ app.listen(3000 , () =>{
 
 // test 
 app.get('/', function(req, res) {
-    res.render("templates/landingPage", {isLoggedIn:true})
+    res.render("templates/landingPage", {isLoggedIn:true}) 
 })
 
 // search for concert page
 app.get('/concert-search', function(req, res) {
-    res.render("templates/filterConcert")
+    res.render("templates/filterConcert", {isLoggedIn:true})
 })
 
 
