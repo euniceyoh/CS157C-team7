@@ -2,6 +2,67 @@ const ConcertAPI = require('../models/Concert')
 const DateTime = require('../models/schema/DateTime')
 const Concert = require('../models/schema/Concert')
 const dbUtils = require('../dbUtils');
+const express = require('express');
+const res = require('express/lib/response');
+const router = express.Router()
+
+router.use(express.json())
+
+router.post("/willAttend", function (req, res) {
+    console.log("/willAttend: " + req.body)
+
+    ConcertAPI.addNewAttendConcert(req.body, dbUtils.getSession(req))
+    .then(result => {
+        console.log(result)
+        res.send(result)
+    })
+    .catch(error => {
+        throw error
+    })
+})
+
+router.post("/deleteAttend", function (req, res) {
+    console.log("/deleteAttend: " + req.body)
+
+    ConcertAPI.deleteAttendConcert(req.body, dbUtils.getSession(req))
+    .then(result => {
+        console.log(result)
+        res.send(result)
+    })
+    .catch(error => {
+        throw error
+    })
+})
+
+router.get("/willAttendExists", (req, res) => {
+    //console.log(req.body)
+    console.log(req.query)
+
+    ConcertAPI.attendeeExists(req.query, dbUtils.getSession(req))
+    .then(result => {
+        console.log(result[0]._fields[0]) // value 
+        res.send(result[0]._fields[0])
+    })
+    .catch(error => {
+        throw error
+    })
+})
+
+router.get("/location", (req, res) => {
+    console.log(req.query)
+    
+    ConcertAPI.getConcertLocation(req.query, dbUtils.getSession(req))
+    .then(result => {
+        console.log(result) // value 
+        res.send(result)
+    })
+    .catch(error => {
+        throw error
+    })
+})
+
+router.post("/", function (req, res) {
+    
 const express = require('express')
 const router = express.Router();
 const path = require("path");
@@ -30,10 +91,6 @@ const upload = multer({
     },
     fileFilter:fileTypeFilter
 });
-
-router.use(express.json())
-
-
 
 router.post("/", upload.single("concertImage"), function (req, res) {
 

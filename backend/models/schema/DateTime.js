@@ -10,6 +10,10 @@ class DateTime{
         this.second = second;
         // this.timezone = timezone; 
     }
+    
+    toString() {
+        return "datetime to string"
+    }
 }
 
 module.exports = DateTime;

@@ -24,6 +24,50 @@
         <h3>Venue:</h3>
         <p></p>
       </div>
+
+      <template id="attendance">
+        <button id="attendButton" onclick="modifyAttend()"></button>
+      </template>
+
+      <script>
+        function modifyAttend() {
+          let concertName = '<%-name%>'
+          let button = document.querySelector("#attendButton")
+          let data = {user: "Eunice", concert: concertName} // update user to current logged in user !!
+          console.log(data)
+
+          if(button.innerText == "Attend") {
+
+            fetch(`http://localhost:3000/api/v1/concert/willAttend`, {
+              method: 'POST', 
+              headers: {
+              'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(data)
+            })
+            .then( res => res.json())
+            .then(data => {
+              console.log(data)
+              button.innerText = "Attending"
+            })
+          } else if(button.innerText == "Attending") {
+            alert("No longer attending")
+
+            fetch(`http://localhost:3000/api/v1/concert/deleteAttend`, {
+              method: 'POST', 
+              headers: {
+              'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(data)
+            })
+            .then( res => res.json())
+            .then(data => {
+              console.log(data)
+              button.innerText = "Attend"
+            })
+          }
+        }
+      </script>
     </div>
 
     <div class='attendee_column'>
@@ -54,11 +98,7 @@
         </script>
     </div>
     <template id='card'>
-      <div class='card_container'>
-        <img alt='profile'>
-        <h4></h4>
-        <button onclick="viewDetails()"></button>
-      </div>
+      <%- include('partials/card.ejs') %>
     </template>
   </div>
 
@@ -66,29 +106,71 @@
     let name = '<%-name%>'
     let date = ""
     let gender = "" 
+    let concertLocation = ""
 
     getConcert(); 
     getAttendees(); 
+    displayAttendButton()
+    getLocation()
+
+      function displayAttendButton() {
+        console.log("diplay attend")
+        let concertInfo = document.querySelector("#concertInfo")
+        let template = document.querySelector("#attendance")
+        let child = template.content.cloneNode(true)
+        let button = child.querySelector("button")
+
+        // display correct status 
+        let user = "Eunice"
+        let concert = "After Hours Til Dawn Tour"
+
+        fetch(`http://localhost:3000/api/v1/concert/willAttendExists?name=${user}&concert=${concert}`)
+        .then(res => res.json())
+        .then(data => {
+          console.log(data)
+
+          if(data == true) {
+            button.innerText = "Attending"
+          } else {
+            button.innerText = "Attend"
+          }
+          concertInfo.appendChild(child)
+        })
+    }
+
+    function getLocation() {
+      fetch(`http://localhost:3000/api/v1/concert/location?concert=${name}`)
+        .then(res => res.json())
+        .then(data => {
+          console.log(data)
+          locationSplit = data[0]['_fields'][0]['properties']
+          concertLocation = locationSplit['city'] + ", " + locationSplit["state"]
+          console.log(concertLocation)
+        })
+    }
 
     function getConcert() {
       // query concert data here here 
       fetch(`http://localhost:3000/api/v1/concert/?name=${name}`)
       .then(res => res.json())
       .then(data => {
-        console.log(data)
+        console.log(data) 
+
         let concertInfo = document.querySelector('#concertInfo')
         let imgContent = concertInfo.querySelector("img")
         let url = data[0]['datetime']['properties']['imgurl']
-        let venue = data[0]['datetime']['properties']['concert_date']['timeZoneId'] // update 
-        let date = "" // update 
+        let venue = concertLocation // update to query "has location"
 
-        console.log(url)
-        console.log(venue)
+        let date = data[0]['datetime']['properties']['concert_date']
+        let month = date['month']['low']
+        let day = date['day']['low']
+        let year = date['year']['low']
+        let fullDate = month + '/' + day + '/' + year
 
         imgContent.setAttribute('src', url)
         let otherContent = concertInfo.querySelectorAll("p")
-        otherContent[0].innerText = venue; 
-        otherContent[1].innerText = date; 
+        otherContent[0].innerText = fullDate; 
+        otherContent[1].innerText = venue; 
       })
     }
 
@@ -125,18 +207,28 @@
           url.setAttribute('src', person.id.properties.imgurl)
           const button = child.querySelector("button") 
           button.innerText = "view details"
-          
+          button.setAttribute("onclick", `viewDetails('${person.id.properties.name}', 'person')`)
+
           list.appendChild(child)
         })
       })
     }
 
-    // update location and time using parsed data
-    function viewDetails() {
-      alert("did it work")
-      //document.getElementById("butt").setAttribute("href", "https://www.google.com/")
-      location.href=`http://localhost:3000/concert/${name}/attendee`
+    function viewDetails(url, type) {
+      alert("did it work part 2")
+      if(type == 'concert')
+        location.href=`http://localhost:3000/concert/${url}`
+      if(type == 'person')
+        location.href=`http://localhost:3000/attendee/${url}`
     }
+
+    // update location and time using parsed data
+    // function viewDetails() {
+    //   alert("did it work")
+    //   //document.getElementById("butt").setAttribute("href", "https://www.google.com/")
+    //   let id = "someUniqueId"
+    //   location.href=`http://localhost:3000/attendee/${id}`
+    // }
   
   </script>
 
