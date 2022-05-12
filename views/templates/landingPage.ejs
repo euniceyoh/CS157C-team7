@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/additionalStyle.css">
+    <title>Concert Mate</title>
+</head>
+<body>
+    <%- include('partials/nav.ejs') %> 
+    <main class="text-gray-400  bg-white  body-font relative ">
+        <div class="container px-5 pt-16 mx-auto  ">
+            <div class="flex flex-col text-center w-full py-12">
+                <h1 class="sm:text-5xl text-2xl font-medium title-font mb-4 text-gray-900">Concert Mate</h1>
+            </div>
+            <div class="lg:w-3/4 md:w-3/4 mx-auto">
+                <form class="flex flex-wrap -m-2" >
+                    <div class="p-1 w-full mx-1">
+                        <div class="relative">
+                            <input placeholder="Upcoming Concert? "
+                                type="text"
+                                id="concert-name"
+                                class=" w-full bg-gray-100 rounded-3xl border border-gray-600 
+                                placeholder-gray-500
+                focus:border-gray-600 focus:ring-2 focus:ring-gray-600 text-base outline-none 
+                text-gray-900 py-2 px-3 leading-8 transition-colors duration-200 ease-in-out" />
+                        </div>
+                    </div>
+                    <div class="mb-10 w-full">
+                        <button id="search-btn" class="flex mx-auto my-10 text-white bg-gray-400 border-0 py-2 px-8 focus:outline-none hover:bg-gray-700 rounded text-lg">Search</button>
+                    </div>
+                </form>
+            </div>
+            <div class="concerts" data-user-cards-container>
+                <template data-user-template>
+                  <a class="concert">
+                    <div class="header" data-header></div>
+                    <div class="body" data-body></div>
+                  </a>
+                </template>
+              </div>
+        </div>
+    </main>
+    <script src="static/js/landingPageScript.js"></script>
+</body>
+</html>
