@@ -113,8 +113,8 @@ function createConcert(concert, session) {
         }),
         url: "${concert.url}"
     })`
-        console.log(query)
-    // tx either succeeds or fails       timezone: "${concert.datetime.timezone}"
+    console.log(query)
+    // tx either succeeds or fails 
     return session.writeTransaction((tx) => 
         tx.run(query) 
     )

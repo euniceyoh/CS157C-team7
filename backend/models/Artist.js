@@ -13,7 +13,26 @@ const parseArtists = (result) =>{
     return result.records.map(r => new Artist(r.get('n')));
 }
 
+const performs = (artistName, concertName, session)=>{
+    const query = 
+    `
+    MATCH (artist:Artist{name:${artistName}}), (concert:Concert{name:${concertName}})
+    CREATE (artist)-[r:PERFORMS]->(concert)
+    return type(r)
+    `
+    return session.writeTransaction((tx) => {
+        return tx.run(query)
+    })
+    .then(response => {
+        console.log(response)
+        return response.records
+    }, error => {
+        return error
+    })
+
+}
 
 module.exports = {
-    "getAll": getAll
+    "getAll": getAll,
+    "perfoms": performs
 }

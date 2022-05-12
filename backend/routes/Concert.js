@@ -112,7 +112,8 @@ router.post("/", function (req, res) {
     ConcertAPI.createConcert(sampleConcert, dbUtils.getSession(req))
     .then(
     response=>{
-        if(res.statusCode === 201){
+        if(response.statusCode === 201){
+            console.log("Created! "+response);
             res.send(JSON.stringify(response));
         }else{
             res.status(res.statusCode);
