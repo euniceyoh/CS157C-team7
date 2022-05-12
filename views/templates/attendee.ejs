@@ -16,7 +16,7 @@
   </nav>
   <div class='top_row'>
     
-    <img src='https://www.pngmagic.com/product_images/gray-solid-circle-png-image.png' alt="profile">
+    <img id="userPP" alt="profile">
     
     <div class='profile_info'>
       <h1>First Last</h1>
@@ -29,9 +29,9 @@
   <nav class='nav_row'>
     <button id="bioBtn" class="activeBtn" onclick="clickedBio()">bio</button>
     <button id="pConcertBtn" onclick="clickedPastConcerts()">past concerts</button>
-    <button onclick="clickedUpcomingConcerts()">upcoming concerts</button>
-    <button>friends</button>
-    <button>edit</button>
+    <button id="upConcertBtn" onclick="clickedUpcomingConcerts()">upcoming concerts</button>
+    <button id="friendsBtn" onclick="clickedFriends()">friends</button>
+    <button id="editBtn" onclick="clickedEdit()">edit</button>
     <div class='content'>
       <!-- content to display based on nav button -->
     </div>
@@ -49,6 +49,7 @@
       <!-- enter content here -->
     </div>
   </template>
+  
   <template id='past_concerts'>
 
   </template>
@@ -60,6 +61,23 @@
   </template>
   
   <script>
+    // get user info 
+    let userName = "Eunice"
+
+    getUserInfo()
+
+    function getUserInfo() {
+      fetch(`http://localhost:3000/api/v1/person/getUser?name=${userName}`)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+        
+        let image = document.querySelector("#userPP")
+        let imageUrl = data['imgurl']
+        image.setAttribute("src", imageUrl)
+      })
+    }
+
     function resetActiveButton(currentButton) {
       let intraNav = document.querySelector(".nav_row")
       let navButtons = intraNav.querySelectorAll("button")
@@ -90,37 +108,75 @@
 
       let summary = clone.querySelector("p")
       summary.innerText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar aliquam ullamcorper. Quisque suscipit commodo neque, cursus porttitor dolor. Nam non tempor nulla. Pellentesque mattis, orci vitae molestie pellentesque, velit neque gravida massa, at mollis tortor ante vitae leo. Maecenas lacinia a ante id pharetra. Aliquam in rutrum ipsum. Interdum et malesuada fames ac ante ipsum primis in faucibus."
-      let favArtists = clone.querySelector("#f_artists") // a div 
-      let listOfFavArists = ["Justin Bieber", "NCT 127"]
       
-      listOfFavArists.forEach((artist) => {
-        let artistDisplay = document.createElement("span")
-        artistDisplay.innerText = artist
-        artistDisplay.classList.add("single_artist")
-        favArtists.appendChild(artistDisplay)
-        //favArtists.appendChild(document.createElement("br"))
+      let favArtists = clone.querySelector("#f_artists") // a div 
+      let favGenres = clone.querySelector("#f_genres") // a div 
+      
+      fetch(`http://localhost:3000/api/v1/person/getRelations?name=${userName}&rel=FAVORITES&outgoingNode=Artist`)
+      .then(res => res.json())
+      .then(data => {
+
+        data.forEach(artist => {
+          artist._fields.forEach(artistField => {
+            console.log(artistField.properties.name)
+            let artistDisplay = document.createElement("span")
+            artistDisplay.innerText = artistField.properties.name
+            artistDisplay.classList.add("single")
+            favArtists.appendChild(artistDisplay)
+          })
+        })
+      })
+
+      fetch(`http://localhost:3000/api/v1/person/getRelations?name=${userName}&rel=FAVORITES&outgoingNode=Genre`)
+      .then(res => res.json())
+      .then(data => {
+
+        data.forEach(genre => {
+          genre._fields.forEach(genreField => {
+            console.log(genreField.properties.name)
+            let genreDisplay = document.createElement("span")
+            genreDisplay.innerText = genreField.properties.name
+            genreDisplay.classList.add("single")
+            favGenres.appendChild(genreDisplay)
+          })
+        })
+        // mainContent.appendChild(clone)
       })
 
       mainContent.appendChild(clone)
+
+    }
+
+    function resetContent(title) {
+      let mainContent = document.querySelector(".content") 
+      mainContent.innerHTML = '';
+      
+      let child = document.createElement("h2")
+      child.innerText = title
+      mainContent.appendChild(child)
     }
 
     function clickedPastConcerts() {
       // remove "activeBtn" for everythng else 
       resetActiveButton("pConcertBtn")
-
-      let mainContent = document.querySelector(".content") 
-      mainContent.innerHTML = '';
-      
-      let child = document.createElement("h2")
-      child.innerText = "past concerts"
-      mainContent.appendChild(child)
+      resetContent("past concerts")
 
       // call query to get a user's past concerts 
     }
 
     function clickedUpcomingConcerts() {
-      let child = document.querySelector('#upcoming')
-      // child.style.display = ''
+      resetActiveButton("upConcertBtn")
+      resetContent("upcoming concerts")
+    }
+
+    function clickedFriends() {
+      resetActiveButton("friendsBtn")
+      resetContent("friends")
+    }
+
+    function clickedEdit() {
+      resetActiveButton("editBtn")
+      resetContent("edit")
     }
 
   </script>

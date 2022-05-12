@@ -6,6 +6,7 @@ const { use } = require('express/lib/application');
 
 const artistRouter = require("./backend/routes/Artist");
 const concertRouter = require("./backend/routes/Concert");
+const personRouter = require("./backend/routes/Person")
 const res = require("express/lib/response");
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/api/v1/artist",artistRouter)
 app.use("/api/v1/concert", concertRouter)
+app.use("/api/v1/person", personRouter)
 
 app.listen(3000 , () =>{
     console.log("Server is running on port 3000...");
