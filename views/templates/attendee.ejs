@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" type="text/css" href="/static/css/profile.css">
+  <title>Concert Details</title>
+</head>
+
+<body>
+  
+  <div class='top_row'>
+    
+    <img id="userPP" alt="profile">
+    
+    <div class='profile_info'>
+      <h1></h1>
+      <button>Contact</button>
+      <button>Add Friend</button>
+    </div>
+
+  </div>
+  <hr> <!-- A LINEEEE!! -->
+  <nav class='nav_row'>
+    <button id="bioBtn" class="activeBtn" onclick="clickedBio()">bio</button>
+    <button id="pConcertBtn" onclick="clickedPastConcerts()">past concerts</button>
+    <button id="upConcertBtn" onclick="clickedUpcomingConcerts()">upcoming concerts</button>
+    <button id="friendsBtn" onclick="clickedFriends()">friends</button>
+    <button id="editBtn" onclick="clickedEdit()">edit</button>
+  </nav> 
+  <div class='content'>
+    <h2></h2>
+    <div class='actual_content'>
+      <!-- content to display based on nav button -->
+    </div>
+  </div>
+
+  <template id='bio'>
+    <p></p>
+    <h2>favorite artists:</h2>
+    <div id="f_artists">
+      <!-- enter content here -->
+    </div>
+    <h2>favorite genres:</h2>
+    <div id="f_genres">
+      <!-- enter content here -->
+    </div>
+  </template>
+  
+  <template id='past_concerts'>
+    <%- include('partials/card.ejs') %>
+  </template>
+  <template id='upcoming_concerts'>
+    <%- include('partials/card.ejs') %>
+  </template>
+  <template id="friends">
+    <%- include('partials/card.ejs') %>
+  </template>
+  
+  <script>
+    // get user info 
+    let userName = "Eunice"
+
+    getUserInfo()
+
+    function getUserInfo() {
+      fetch(`http://localhost:3000/api/v1/person/getUser?name=${userName}`)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+        
+        let image = document.querySelector("#userPP")
+        let imageUrl = data['imgurl']
+        image.setAttribute("src", imageUrl)
+
+        let profile = document.querySelector('.profile_info')
+        let profileName = profile.querySelector('h1')
+        profileName.innerText = data['name']
+      })
+    }
+
+    function resetActiveButton(currentButton) {
+      let intraNav = document.querySelector(".nav_row")
+      let navButtons = intraNav.querySelectorAll("button")
+      
+      for(let index = 0; index < navButtons.length; index++) {
+        let btn = navButtons[index]
+        if(btn.id != currentButton) {
+          btn.classList.remove("activeBtn")
+        }
+      }
+
+      let btn = document.querySelector("#" + currentButton)
+      btn.classList.add("activeBtn")
+    }
+
+    function viewDetails(url, type) {
+      alert("did it work part 2")
+      if(type == 'concert')
+        location.href=`http://localhost:3000/concert/${url}`
+      if(type == 'person')
+        location.href=`http://localhost:3000/attendee/${url}`
+    }
+
+    // based on button, show something different in content
+    clickedBio() // default 
+
+    function clickedBio() {
+      resetActiveButton("bioBtn")
+      resetContent("summary")
+      //content.innerHTML = '' // clear whatever was showing before 
+      let mainContent = document.querySelector(".actual_content") 
+      // clear
+      mainContent.innerHTML = '';
+
+      let bioTemplate = document.querySelector("#bio")
+      let clone = bioTemplate.content.cloneNode(true)
+
+      let summary = clone.querySelector("p")
+      summary.innerText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pulvinar aliquam ullamcorper. Quisque suscipit commodo neque, cursus porttitor dolor. Nam non tempor nulla. Pellentesque mattis, orci vitae molestie pellentesque, velit neque gravida massa, at mollis tortor ante vitae leo. Maecenas lacinia a ante id pharetra. Aliquam in rutrum ipsum. Interdum et malesuada fames ac ante ipsum primis in faucibus."
+      
+      let favArtists = clone.querySelector("#f_artists") // a div 
+      let favGenres = clone.querySelector("#f_genres") // a div 
+      
+      fetch(`http://localhost:3000/api/v1/person/getRelations?name=${userName}&rel=FAVORITES&outgoingNode=Artist`)
+      .then(res => res.json())
+      .then(data => {
+
+        data.forEach(artist => {
+          artist._fields.forEach(artistField => {
+            console.log(artistField.properties.name)
+            let artistDisplay = document.createElement("span")
+            artistDisplay.innerText = artistField.properties.name
+            artistDisplay.classList.add("single")
+            favArtists.appendChild(artistDisplay)
+          })
+        })
+      })
+
+      fetch(`http://localhost:3000/api/v1/person/getRelations?name=${userName}&rel=FAVORITES&outgoingNode=Genre`)
+      .then(res => res.json())
+      .then(data => {
+
+        data.forEach(genre => {
+          genre._fields.forEach(genreField => {
+            console.log(genreField.properties.name)
+            let genreDisplay = document.createElement("span")
+            genreDisplay.innerText = genreField.properties.name
+            genreDisplay.classList.add("single")
+            favGenres.appendChild(genreDisplay)
+          })
+        })
+        // mainContent.appendChild(clone)
+      })
+
+      mainContent.appendChild(clone)
+
+    }
+
+    function resetContent(title) {
+      let mainContent = document.querySelector(".content") 
+      
+      let child = document.querySelector("h2")
+      child.innerText = title
+
+      let actualContent = document.querySelector(".actual_content")
+      actualContent.classList.remove("displayCards")
+      actualContent.innerHTML = '' 
+    }
+
+    function clickedPastConcerts() {
+      // remove "activeBtn" for everythng else 
+      resetActiveButton("pConcertBtn")
+      resetContent("past concerts")
+
+      // call query to get a user's past concerts 
+      let mainContent = document.querySelector(".actual_content") 
+      mainContent.classList.add("displayCards")
+      let card = document.querySelector("#upcoming_concerts")
+
+      fetch(`http://localhost:3000/api/v1/person/getRelations?name=${userName}&rel=HAS_ATTENDED&outgoingNode=Concert`)
+      .then(res => res.json())
+      .then(data => {
+        data.forEach(concert => {
+          concert._fields.forEach(concertField => {
+            console.log(concertField.properties)
+
+            const child = card.content.cloneNode(true)
+            const text = child.querySelector("h4")
+            text.innerText = concertField.properties.name
+            const url = child.querySelector("img")
+            url.setAttribute('src', concertField.properties.imgurl)
+            const button = child.querySelector("button") // fix button on click 
+            button.innerText = "view details"
+
+            let concertName = concertField.properties.name
+            button.setAttribute("onclick", `viewDetails('${concertName}', 'concert')`)
+            
+            mainContent.appendChild(child)
+
+          })
+        })
+      })
+    }
+
+    function clickedUpcomingConcerts() {
+      resetActiveButton("upConcertBtn")
+      resetContent("upcoming concerts")
+
+      let mainContent = document.querySelector(".actual_content") 
+      mainContent.classList.add("displayCards")
+      let card = document.querySelector("#upcoming_concerts")
+
+      fetch(`http://localhost:3000/api/v1/person/getRelations?name=${userName}&rel=WILL_ATTEND&outgoingNode=Concert`)
+      .then(res => res.json())
+      .then(data => {
+        data.forEach(concert => {
+          concert._fields.forEach(concertField => {
+            console.log(concertField.properties)
+
+            const child = card.content.cloneNode(true)
+            const text = child.querySelector("h4")
+            text.innerText = concertField.properties.name
+            const url = child.querySelector("img")
+            url.setAttribute('src', concertField.properties.imgurl)
+            const button = child.querySelector("button") // fix button on click 
+            button.innerText = "view details"
+
+            let concertName = concertField.properties.name
+            button.setAttribute("onclick", `viewDetails('${concertName}', 'concert')`)
+            
+            mainContent.appendChild(child)
+
+          })
+        })
+      })
+    }
+
+    function clickedFriends() {
+      resetActiveButton("friendsBtn")
+      resetContent("friends")
+
+      let mainContent = document.querySelector(".actual_content") 
+      mainContent.classList.add("displayCards")
+      let card = document.querySelector("#friends")
+
+      fetch(`http://localhost:3000/api/v1/person/getRelations?name=${userName}&rel=IS_FRIENDS&outgoingNode=Person`)
+      .then(res => res.json())
+      .then(data => {
+        data.forEach(person => {
+          person._fields.forEach(personField => {
+            console.log(personField.properties)
+
+            const child = card.content.cloneNode(true)
+            const text = child.querySelector("h4")
+            text.innerText = personField.properties.name
+            const url = child.querySelector("img")
+            url.setAttribute('src', personField.properties.imgurl)
+            const button = child.querySelector("button") 
+            button.innerText = "view details"
+
+            mainContent.appendChild(child)
+
+          })
+        })
+      })
+    }
+
+    function clickedEdit() {
+      resetActiveButton("editBtn")
+      resetContent("edit")
+    }
+
+  </script>
+
+</body>
+</html>
+

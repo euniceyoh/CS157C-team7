@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" type="text/css" href="/static/css/concert.css">
+  <title>Concert Details</title>
+</head>
+
+<body>
+  
+  <div class='row'>
+    <div class="concert_column">
+      <div id='concertInfo'>
+        <h1><%= name %></h1>
+        <img alt='profile'>
+        <h3>Date:</h3>
+        <p></p>
+        <h3>Venue:</h3>
+        <p></p>
+      </div>
+
+      <template id="attendance">
+        <button id="attendButton" onclick="modifyAttend()"></button>
+      </template>
+
+      <script>
+        function modifyAttend() {
+          let concertName = '<%-name%>'
+          let button = document.querySelector("#attendButton")
+          let data = {user: "Eunice", concert: concertName} // update user to current logged in user !!
+          console.log(data)
+
+          if(button.innerText == "Attend") {
+
+            fetch(`http://localhost:3000/api/v1/concert/willAttend`, {
+              method: 'POST', 
+              headers: {
+              'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(data)
+            })
+            .then( res => res.json())
+            .then(data => {
+              console.log(data)
+              button.innerText = "Attending"
+            })
+          } else if(button.innerText == "Attending") {
+            alert("No longer attending")
+
+            fetch(`http://localhost:3000/api/v1/concert/deleteAttend`, {
+              method: 'POST', 
+              headers: {
+              'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(data)
+            })
+            .then( res => res.json())
+            .then(data => {
+              console.log(data)
+              button.innerText = "Attend"
+            })
+          }
+        }
+      </script>
+    </div>
+
+    <div class='attendee_column'>
+      <h1>Attendees</h1>
+      <div>
+        <form> <!-- action set to current page -->
+          <label>Filter by gender</label>
+          <select id='gender'>
+            <option value=""></option>
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+          </select><br>
+          <label>Filter by age</label>
+          <select id='age'>
+            <option value=""></option>
+            <option value="18to25">18 to 25</option>
+          </select><br>
+          <input id='submit' type="submit" value="Apply filters">
+        </form>
+      </div>
+        <div class='list_of_attendees'> 
+          <!-- data included here -->
+        </div>
+        <script>
+          function randdom() {
+            document.getElementById("butt").innerHTML="different click"
+          }
+        </script>
+    </div>
+    <template id='card'>
+      <%- include('partials/card.ejs') %>
+    </template>
+  </div>
+
+  <script>
+    let name = '<%-name%>'
+    let date = ""
+    let gender = "" 
+    let concertLocation = ""
+
+    getConcert(); 
+    getAttendees(); 
+    displayAttendButton()
+    getLocation()
+
+      function displayAttendButton() {
+        console.log("diplay attend")
+        let concertInfo = document.querySelector("#concertInfo")
+        let template = document.querySelector("#attendance")
+        let child = template.content.cloneNode(true)
+        let button = child.querySelector("button")
+
+        // display correct status 
+        let user = "Eunice"
+        let concert = "After Hours Til Dawn Tour"
+
+        fetch(`http://localhost:3000/api/v1/concert/willAttendExists?name=${user}&concert=${concert}`)
+        .then(res => res.json())
+        .then(data => {
+          console.log(data)
+
+          if(data == true) {
+            button.innerText = "Attending"
+          } else {
+            button.innerText = "Attend"
+          }
+          concertInfo.appendChild(child)
+        })
+    }
+
+    function getLocation() {
+      fetch(`http://localhost:3000/api/v1/concert/location?concert=${name}`)
+        .then(res => res.json())
+        .then(data => {
+          console.log(data)
+          locationSplit = data[0]['_fields'][0]['properties']
+          concertLocation = locationSplit['city'] + ", " + locationSplit["state"]
+          console.log(concertLocation)
+        })
+    }
+
+    function getConcert() {
+      // query concert data here here 
+      fetch(`http://localhost:3000/api/v1/concert/?name=${name}`)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data) 
+
+        let concertInfo = document.querySelector('#concertInfo')
+        let imgContent = concertInfo.querySelector("img")
+        let url = data[0]['datetime']['properties']['imgurl']
+        let venue = concertLocation // update to query "has location"
+
+        let date = data[0]['datetime']['properties']['concert_date']
+        let month = date['month']['low']
+        let day = date['day']['low']
+        let year = date['year']['low']
+        let fullDate = month + '/' + day + '/' + year
+
+        imgContent.setAttribute('src', url)
+        let otherContent = concertInfo.querySelectorAll("p")
+        otherContent[0].innerText = fullDate; 
+        otherContent[1].innerText = venue; 
+      })
+    }
+
+    let submitButton = document.querySelector('#submit')
+    submitButton.addEventListener("click", (e) => { // does "click" have any other additional meaning?"
+      e.preventDefault()
+      getFormData()
+      getAttendees()
+    })
+    
+    function getFormData() {
+      console.log("submitted form")
+      gender = document.querySelector('#gender').value;
+      date = document.querySelector('#age').value;
+    }
+
+    function getAttendees() {
+      console.log("frontend: " + gender)
+      console.log("frontend: " + date)
+      fetch(`http://localhost:3000/api/v1/concert/attendees?name=${name}&date=${date}&gender=${gender}`)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+
+        let list = document.querySelector('.list_of_attendees')
+        list.innerHTML = ''
+        let card = document.querySelector('#card') // template 
+
+        data.forEach((person) => {
+          const child = card.content.cloneNode(true)
+          const text = child.querySelector("h4")
+          text.innerText = person.id.properties.name
+          const url = child.querySelector("img")
+          url.setAttribute('src', person.id.properties.imgurl)
+          const button = child.querySelector("button") 
+          button.innerText = "view details"
+          button.setAttribute("onclick", `viewDetails('${person.id.properties.name}', 'person')`)
+
+          list.appendChild(child)
+        })
+      })
+    }
+
+    function viewDetails(url, type) {
+      alert("did it work part 2")
+      if(type == 'concert')
+        location.href=`http://localhost:3000/concert/${url}`
+      if(type == 'person')
+        location.href=`http://localhost:3000/attendee/${url}`
+    }
+
+    // update location and time using parsed data
+    // function viewDetails() {
+    //   alert("did it work")
+    //   //document.getElementById("butt").setAttribute("href", "https://www.google.com/")
+    //   let id = "someUniqueId"
+    //   location.href=`http://localhost:3000/attendee/${id}`
+    // }
+  
+  </script>
+
+</body>
+</html>
