@@ -1,0 +1,31 @@
+.card_container {
+    color: black;
+    border-style: solid;
+    border-radius: 25px;
+    height: 300px;
+    width: 200px;
+    text-align: center; /* this line just seems to work */
+    padding-top: 40px; 
+    margin-right: 40px; 
+    margin-bottom: 40px; 
+  }
+
+  .card_container button {
+    background-color: white;
+    color: black;
+    border: 2px solid #555555;
+    border-radius: 12px; 
+  }
+
+  .card_container button:hover {
+    background-color: #555555;
+    color: white;
+  }
+  
+  .card_container img { /* is this right*/
+    /* border-style: solid; */
+    border-radius: 50%;
+    height: 150px;
+    width: 150px;
+    object-fit: cover; 
+  }

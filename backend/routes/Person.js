@@ -1,19 +1,15 @@
-const bcrypt = require("bcrypt");
-const PersonAPI = require('../models/Person')
+const PersonAPI = require("../models/Person")
 const Person = require('../models/schema/Person')
 const dbUtils = require('../dbUtils');
 const express = require('express');
+const router = express.Router()
+const bcrypt = require("bcrypt");
 const { render } = require('express/lib/response');
-const router = express.Router();
 const _ = require('lodash');
 const { hash } = require("bcrypt");
 const jwt = require('jsonwebtoken');
-const controller = require("./backend/controllers/controller")
-
-
 
 const cookieParser = require("cookie-parser");
-
 
 router.use(cookieParser());
 router.use(express.json())
@@ -73,9 +69,7 @@ router.post('/login', function (req, res) {
     const LpasswordHash = bcrypt.hashSync(req.body.password, 12);
     console.log(req.body)
     console.log(LpasswordHash)
-    //login(dbUtils.getSession(req), req.body.email, LpasswordHash);
-   
-    
+    //login(dbUtils.getSession(req), req.body.email, LpasswordHash); 
 
 })
 
@@ -121,8 +115,31 @@ var login = function(session, email, Lpass) {
         });
 };
 
+router.get("/getUser", (req, res) => {
+    console.log(req.query)
 
+    PersonAPI.getUser(req.query, dbUtils.getSession(req))
+    .then(result => {
+        console.log(result)
+        res.send(result[0]['_fields'][0]['properties'])
+    })
+    .catch(error => {
+        throw error
+    })
+})
 
+router.get("/getRelations", (req, res) => {
+    console.log(req.query)
 
+    PersonAPI.getUserRelations(req.query, dbUtils.getSession(req))
+    .then(result => {
+        console.log(result)
+        res.send(result)
+    })
+    .catch(error => {
+        throw error
+    })
+})
 
-module.exports = router;
+module.exports = router
+

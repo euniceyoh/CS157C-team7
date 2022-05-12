@@ -5,22 +5,27 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <link rel="stylesheet" href="/static/css/filterConcert.css">
+  <link rel="stylesheet" href="/static/css/additionalStyle.css">
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
   <title>Sign Up Success</title>
 </head>
     <body>
-        <h1>Welcome to Concert Mate, <%= accountData.name %>!</h1><br>
-        <h3>Your account has been created, with these spceifications below as you entered.</h3> <br>
-        <ul>
-        <h4>Name: <%= accountData.name %></h4>
-        <h4>Email: <%= accountData.email %></h4>
-        <h4>Gender: <%= accountData.gender %></h4>
-        <h4>Year of Birth: <%= accountData.dob %></h4>
+      <main class="text-gray-400  bg-white  body-font relative ">
+        <div class="container px-5 pt-16 mx-auto  ">
+            <div class="flex flex-col text-center w-full py-12">
+                <h1 class="sm:text-5xl text-2xl font-medium title-font mb-4 text-gray-900">Welcome to Concert Mate, <%= accountData.name %>!</h1>
+                <h3>Your account has been created, with these spceifications below as you entered.</h3> <br>
+                <ul>
+                <h4>Name: <%= accountData.name %></h4>
+                <h4>Email: <%= accountData.email %></h4>
+                <h4>Gender: <%= accountData.gender %></h4>
+                <h4>Year of Birth: <%= accountData.dob %></h4>
+              </div>
+        </div>
+      </ul>        
         <!--<h4>Music Prefrences: <%= accountData.musicPreferences %></h4>
         <h4>Favorite Artists:  <%= accountData.favoriteArtists %></h4>
         <h4>Past Concerts Attended:  <%= accountData.pastConcerts %></h4>
         <h4>Fututre Concerts Will Attend: <%= accountData.futureConcerts %></h4>-->
-        </ul>
     </body>
 </html>
