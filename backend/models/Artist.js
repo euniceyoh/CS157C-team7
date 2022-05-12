@@ -13,6 +13,7 @@ const parseArtists = (result) =>{
     return result.records.map(r => new Artist(r.get('n')));
 }
 
+
 module.exports = {
     "getAll": getAll
 }

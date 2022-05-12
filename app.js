@@ -30,11 +30,14 @@ app.get('/', function(req, res) {
     res.render("templates/landingPage", {isLoggedIn:true}) 
 })
 
+app.get("/create-concert", (req, res)=>{
+    res.render("templates/createConcert", {isLoggedIn:true})
+})
+
 // search for concert page
 app.get('/concert-search', function(req, res) {
     res.render("templates/filterConcert", {isLoggedIn:true})
 })
-
 
 app.get('/concert/:name', function(req, res) {
     console.log(req.params);

@@ -2,11 +2,12 @@
 
     const userCardTemplate = document.querySelector("[data-user-template]")
     const userCardContainer = document.querySelector("[data-user-cards-container]")
-    const button = document.querySelector("#search-btn");
+    const searchBtn = document.querySelector("#search-btn");
+    const createBtn = document.querySelector("#create-btn");
     const concertNameField = document.querySelector(".error-msg")
     const concertClicked = document.querySelector(".concert");
 
-    button.addEventListener("click", (e) => {
+    searchBtn.addEventListener("click", (e) => {
   
       e.preventDefault();
       userCardContainer.innerHTML = '';

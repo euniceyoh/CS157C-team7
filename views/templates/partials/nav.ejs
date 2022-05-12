@@ -1,5 +1,6 @@
 <nav class="text-gray-700 bg-gray-400 body-font m">
     <ul class="container mx-auto flex flex-row-reverse p-10 md:flex-row-reverse ">
+        
         <%if (isLoggedIn) { 
             %>
             <li class="mx-2"><a href="#">Log Out</a></li>
@@ -11,5 +12,6 @@
             else{%>
                 <li class="mx-2"><a href="#">Log In</a></li>
                 <% } %>
+                <li class="mx-2"><a href="/">Home</a></li>
     </ul>
 </nav>

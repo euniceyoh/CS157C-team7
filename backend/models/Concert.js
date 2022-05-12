@@ -5,8 +5,21 @@ const Concert = require("./schema/Concert");
 const Person = require("./schema/Person");
 
 function createConcert(concert, session) { 
+    // Create(concert:Concert{
+    //     name:"testInCLI",
+    //     concert_date:datetime({
+    //         year:2022,
+    //         month:7,
+    //         day:1,
+    //         hour:18,
+    //         minute:0,
+    //         second:0
+    //     }),
+    //     url:"https://cdn.pixabay.com/photo/2013/07/12/17/47/test-pattern-152459_960_720.png"
+    // })
 
-    const query = `CREATE (concert: Concert{
+    console.log(concert.datetime);
+    const query = `Create(concert:Concert{
         name:"${concert.name}", 
         concert_date: datetime({
             year: ${concert.datetime.year}, 
@@ -15,21 +28,22 @@ function createConcert(concert, session) {
             hour: ${concert.datetime.hour}, 
             minute: ${concert.datetime.minute}, 
             second: ${concert.datetime.second}, 
-            timezone: "${concert.datetime.timezone}"
-    })})`
+      
+        }),
+        url: "${concert.url}"})`
 
-    // tx either succeeds or fails 
+    // tx either succeeds or fails       timezone: "${concert.datetime.timezone}"
     return session.writeTransaction((tx) => 
         tx.run(query) 
     )
     .then(result => { // returns a promise 
         return result.summary
     }, error => {
-        return error
+        return error.summary
     })
 }
 
-// Concert lookup endpoint
+// Concert Lookup Endpoint
 const searchConcertWithFilter = (concert_category, session) => {
     const numberOfparametes = Object.keys(concert_category).length;
     let query = "";
@@ -98,7 +112,7 @@ const parseConcert = (result) =>{
     return result.records.map(r => new Concert(r.get('concert')));
 }
 
-// All attendees of a concert Endpoint
+// All attendees of a concert endpoint
 const searchAttendeesOfConcert  = (concert_category, session) => {
     const query = `
     MATCH (person : Person), (concert : Concert)
