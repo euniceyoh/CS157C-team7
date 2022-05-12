@@ -1,6 +1,5 @@
 // Concert End Point
 
-const { response } = require("express");
 const { session } = require("neo4j-driver");
 const Concert = require("./schema/Concert");
 const Person = require("./schema/Person");
@@ -44,94 +43,7 @@ function createConcert(concert, session) {
     })
 }
 
-function checkWillAttendRelExists(data, session) {
-    let user = data.name
-    let concert = data.concert
-
-    const query = `
-    RETURN EXISTS
-    ((:Person {name: '${user}'})-[:WILL_ATTEND]-(:Concert {name:'${concert}'}))`
-
-    console.log(query)
-
-    return session.readTransaction((tx) => {
-        return tx.run(query)
-    })
-    .then(response => {
-        console.log(response)
-        return response.records
-    }, error => {
-        return error
-    })
-}
-
-function addNewAttendConcert(data, session) { 
-    console.log(data)
-
-    const query = `
-    match (p:Person {name: "${data.user}"}), (c:Concert {name: "${data.concert}"})
-    create (p)-[r:WILL_ATTEND]->(c)
-    return type(r)
-    `
-    console.log(query)
-
-    return session.writeTransaction((tx) => {
-        return tx.run(query)
-    })
-    .then(response => {
-        console.log(response)
-        return response.records
-    }, error => {
-        return error
-    })
-}
-
-function deleteAttendConcert(data, session) {
-    console.log(data)
-    const query = `
-    match (:Person {name:'${data.user}'})-[r:WILL_ATTEND]-(:Concert {name:'${data.concert}'})
-    delete r
-    `
-    console.log(query)
-
-    return session.writeTransaction((tx) => {
-        return tx.run(query)
-    })
-    .then(response => {
-        console.log(response)
-        return response
-    }, error => {
-        return error
-    })
-}
-
-function getConcertLocation(data, session) {
-    console.log(data)
-
-    const query = `
-    match (n:Concert{name:"${data.concert}"})-[:HAS_LOCATION]-(location)
-    return location
-    `
-    console.log(query)
-
-    return session.writeTransaction((tx) => {
-        return tx.run(query)
-    })
-    .then(response => {
-        console.log(response)
-        return response.records
-    }, error => {
-        return error
-    })
-}
-
-const filterConcert = (concert_category, session) => {
-    // prefixBuilder will initialize variables that are used in the query
-    // Below variables are optional and they will be empty if user didn't specify additional features
-    let [ optionalCondition, prefixBuilder ] = queryConcertBuilder(concert_category);
-    console.log(concert_category)
 // Concert Lookup Endpoint
-  
 const searchConcertWithFilter = (concert_category, session) => {
     const numberOfparametes = Object.keys(concert_category).length;
     let query = "";
@@ -143,21 +55,14 @@ const searchConcertWithFilter = (concert_category, session) => {
         query = queryConcertWithAllFilterBuilder(concert_category);
     }
 
-    const query = `
-    MATCH (concert : Concert) ${prefixBuilder}
-    WHERE concert.name CONTAINS "${concert_category.name}" 
-    ${optionalCondition}
-    RETURN concert
-    `;
-    console.log("filter concert: " + query);
-
+    console.log(query);
+    
     return session.readTransaction(
         (tx) => tx.run(query)
         ).then(parseConcert);
 }
 
-
-const parseConcert = (result) => {
+const parseConcert = (result) =>{
     return result.records.map(r => new Concert(r.get('concert')));
 }
 
@@ -191,10 +96,10 @@ const queryConcertWithFilterBuilder = (concert_category) =>{
     ${optionalCondition}
     RETURN concert
     `;
+
     return query;
 }
 
-// Query base on concert name AND artist AND city
 const queryConcertWithAllFilterBuilder = (concert_category) =>{
     const query = `
     MATCH (concert : Concert), (artist : Artist), (location : Location)
@@ -205,11 +110,6 @@ const queryConcertWithAllFilterBuilder = (concert_category) =>{
     `;
     return query;
 }
-
-const parseConcert = (result) =>{
-    return result.records.map(r => new Concert(r.get('concert')));
-}
-
 
 const filterAttendees  = (filters, session) => {
     // prefixBuilder will initialize variables that are used in the query
@@ -238,7 +138,8 @@ const filterAttendees  = (filters, session) => {
         }
     }
     
-    const query = `
+    const query = 
+    `
     MATCH (person : Person), (concert : Concert)
     WHERE concert.name CONTAINS "${filters.name}" 
     AND ((person)-[:HAS_ATTENDED]->(concert) OR (person)-[:WILL_ATTEND] ->(concert))
@@ -258,12 +159,7 @@ const parseAttendees = (result) =>{
 }
 
 module.exports = {
-    "createConcert": createConcert ,
+    "createConcert": createConcert,
     "searchConcertWithFilter": searchConcertWithFilter,
     "searchAttendees": filterAttendees,
-    "addNewAttendConcert": addNewAttendConcert,
-    "attendeeExists": checkWillAttendRelExists, 
-    "deleteAttendConcert": deleteAttendConcert,
-    "getConcertLocation": getConcertLocation
 }
-

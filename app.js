@@ -3,7 +3,6 @@
 const express = require("express");
 const bodyParser = require('body-parser');
 const { use } = require('express/lib/application');
-
 const artistRouter = require("./backend/routes/Artist");
 const concertRouter = require("./backend/routes/Concert");
 const personRouter = require("./backend/routes/Person")
