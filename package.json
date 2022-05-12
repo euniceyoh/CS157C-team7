@@ -1,17 +1,32 @@
 {
-  "name": "sina_remote",
+  "name": "nodecrashcourse",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app",
+    "dev": "nodemon app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/canhuynh1998/NodeJS-ExpressJSTut.git"
   },
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/canhuynh1998/NodeJS-ExpressJSTut/issues"
+  },
+  "homepage": "https://github.com/canhuynh1998/NodeJS-ExpressJSTut#readme",
   "dependencies": {
-    "body-parser": "^1.20.0",
+    "bcrypt": "^5.0.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.2",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.0.0",
     "ejs": "^3.1.6",
-    "express": "^4.17.3",
+    "express": "^4.18.1",
+    "morgan": "^1.10.0",
+    "neo4j-driver": "^4.4.5",
     "nodemon": "^2.0.15"
   }
 }
