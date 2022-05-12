@@ -5,7 +5,8 @@ const bodyParser = require('body-parser');
 const { use } = require('express/lib/application');
 
 const artistRouter = require("./backend/routes/Artist");
-const concertRouter = require("./backend/routes/Concert")
+const concertRouter = require("./backend/routes/Concert");
+const res = require("express/lib/response");
 const app = express();
 
 //set view engine to be able to visit views 
@@ -13,7 +14,6 @@ app.set('view engine', 'ejs');
 
 //middleware for styles to be loaded on pages when req made by views
 app.use(express.static(__dirname+'/views'));
-
 
 // middleware to parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -41,6 +41,9 @@ app.get('/concert-search', function(req, res) {
 
 app.get('/concert/:name', function(req, res) {
     console.log(req.params);
-
     res.render("templates/concert", {name:req.params['name']})
+})
+
+app.get('/concert/:name/attendee', function(req, res) {
+    res.render("templates/attendee")
 })

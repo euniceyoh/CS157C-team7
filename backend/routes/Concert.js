@@ -79,7 +79,6 @@ router.post("/", upload.single("concertImage"), function (req, res) {
     })
 })
 
-
 // Filter Concert 
 router.get("/", function (req, res) {
     // Returns an object where keys are parameters
@@ -112,9 +111,8 @@ router.get("/:name", function (req, res) {
     })
     .catch(err=>{
         throw err;
-    });
+    })
 })
-
 
 // Filter Attendees to the concert
 router.get("/:name/attendees", (req, res)=>{
@@ -131,8 +129,7 @@ router.get("/:name/attendees", (req, res)=>{
     })
     .catch(err=>{
         throw err;
-    })
+    });
 })
 
 module.exports = router;
-

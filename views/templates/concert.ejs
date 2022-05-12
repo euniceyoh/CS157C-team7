@@ -7,22 +7,138 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link rel="stylesheet" type="text/css" href="/static/css/concert.css">
-  <title>Search For Concert</title>
+  <title>Concert Details</title>
 </head>
 
 <body>
-  <div class="container">
-    <h1><%= name %></h1>
-    <div class="controller">
-      <p>Location</p>
+  <nav>
+    Navigation Bar
+  </nav>
+  <div class='row'>
+    <div class="concert_column">
+      <div id='concertInfo'>
+        <h1><%= name %></h1>
+        <img alt='profile'>
+        <h3>Date:</h3>
+        <p></p>
+        <h3>Venue:</h3>
+        <p></p>
+      </div>
     </div>
-    
-    <div class="controller">
-      <p>Time</p>
-    </div>
-  </div>
-  
-  <!-- <script src="/static/js/filterConcertScript.js"></script> -->
-</body>
 
+    <div class='attendee_column'>
+      <h1>Attendees</h1>
+      <div>
+        <form> <!-- action set to current page -->
+          <label>Filter by gender</label>
+          <select id='gender'>
+            <option value=""></option>
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+          </select><br>
+          <label>Filter by age</label>
+          <select id='age'>
+            <option value=""></option>
+            <option value="18to25">18 to 25</option>
+          </select><br>
+          <input id='submit' type="submit" value="Apply filters">
+        </form>
+      </div>
+        <div class='list_of_attendees'> 
+          <!-- data included here -->
+        </div>
+        <script>
+          function randdom() {
+            document.getElementById("butt").innerHTML="different click"
+          }
+        </script>
+    </div>
+    <template id='card'>
+      <div class='card_container'>
+        <img alt='profile'>
+        <h4></h4>
+        <button onclick="viewDetails()"></button>
+      </div>
+    </template>
+  </div>
+
+  <script>
+    let name = '<%-name%>'
+    let date = ""
+    let gender = "" 
+
+    getConcert(); 
+    getAttendees(); 
+
+    function getConcert() {
+      // query concert data here here 
+      fetch(`http://localhost:3000/api/v1/concert/?name=${name}`)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+        let concertInfo = document.querySelector('#concertInfo')
+        let imgContent = concertInfo.querySelector("img")
+        let url = data[0]['datetime']['properties']['imgurl']
+        let venue = data[0]['datetime']['properties']['concert_date']['timeZoneId'] // update 
+        let date = "" // update 
+
+        console.log(url)
+        console.log(venue)
+
+        imgContent.setAttribute('src', url)
+        let otherContent = concertInfo.querySelectorAll("p")
+        otherContent[0].innerText = venue; 
+        otherContent[1].innerText = date; 
+      })
+    }
+
+    let submitButton = document.querySelector('#submit')
+    submitButton.addEventListener("click", (e) => { // does "click" have any other additional meaning?"
+      e.preventDefault()
+      getFormData()
+      getAttendees()
+    })
+    
+    function getFormData() {
+      console.log("submitted form")
+      gender = document.querySelector('#gender').value;
+      date = document.querySelector('#age').value;
+    }
+
+    function getAttendees() {
+      console.log("frontend: " + gender)
+      console.log("frontend: " + date)
+      fetch(`http://localhost:3000/api/v1/concert/attendees?name=${name}&date=${date}&gender=${gender}`)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+
+        let list = document.querySelector('.list_of_attendees')
+        list.innerHTML = ''
+        let card = document.querySelector('#card') // template 
+
+        data.forEach((person) => {
+          const child = card.content.cloneNode(true)
+          const text = child.querySelector("h4")
+          text.innerText = person.id.properties.name
+          const url = child.querySelector("img")
+          url.setAttribute('src', person.id.properties.imgurl)
+          const button = child.querySelector("button") 
+          button.innerText = "view details"
+          
+          list.appendChild(child)
+        })
+      })
+    }
+
+    // update location and time using parsed data
+    function viewDetails() {
+      alert("did it work")
+      //document.getElementById("butt").setAttribute("href", "https://www.google.com/")
+      location.href=`http://localhost:3000/concert/${name}/attendee`
+    }
+  
+  </script>
+
+</body>
 </html>
