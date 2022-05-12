@@ -19,7 +19,7 @@
     <img id="userPP" alt="profile">
     
     <div class='profile_info'>
-      <h1>First Last</h1>
+      <h1></h1>
       <button>Contact</button>
       <button>Add Friend</button>
     </div>
@@ -77,6 +77,10 @@
         let image = document.querySelector("#userPP")
         let imageUrl = data['imgurl']
         image.setAttribute("src", imageUrl)
+
+        let profile = document.querySelector('.profile_info')
+        let profileName = profile.querySelector('h1')
+        profileName.innerText = data['name']
       })
     }
 
