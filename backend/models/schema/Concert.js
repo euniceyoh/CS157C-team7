@@ -1,9 +1,10 @@
 'use strict';
 
 class Concert{
-    constructor(datetime, name){
+    constructor(datetime, name, url ){
         this.datetime = datetime; 
         this.name = name;
+        this.url = url;
     }
 }
 

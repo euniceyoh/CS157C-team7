@@ -18,7 +18,6 @@ app.use(express.static(__dirname+'/views'));
 // middleware to parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
 app.use("/api/v1/artist",artistRouter)
 app.use("/api/v1/concert", concertRouter)
 
@@ -28,14 +27,17 @@ app.listen(3000 , () =>{
 
 // test 
 app.get('/', function(req, res) {
-    res.send("Hello World")
+    res.render("templates/landingPage", {isLoggedIn:true}) 
+})
+
+app.get("/create-concert", (req, res)=>{
+    res.render("templates/createConcert", {isLoggedIn:true})
 })
 
 // search for concert page
 app.get('/concert-search', function(req, res) {
-    res.render("templates/filterConcert")
+    res.render("templates/filterConcert", {isLoggedIn:true})
 })
-
 
 app.get('/concert/:name', function(req, res) {
     console.log(req.params);
