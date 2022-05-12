@@ -26,19 +26,16 @@ creatBtn.addEventListener("click", (e)=>{
     }
     console.log(submitObj);
 
-    // for(let i = 0; i < files.files.length; i++){
-        
-    // }
-    // formdata.append("files", files.files[0] )
     fetch("api/v1/concert",{
         method:"POST",
         headers:{
             "Content-Type": "application/json"
         },
         body: JSON.stringify(submitObj)
-    }).then(response=>response.json())
-    .then((data) =>{
-        console.log("DONE")
     })
+    .then(response=>console.log(response))
+    .then(() =>console.log("DONE")).catch((error) => {
+        console.error('Error:', error);
+      });
   
 })

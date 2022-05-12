@@ -26,12 +26,13 @@ function createConcert(concert, session) {
             month: ${concert.datetime.month}, 
             day: ${concert.datetime.day}, 
             hour: ${concert.datetime.hour}, 
-            minute: ${concert.datetime.minute}, 
-            second: ${concert.datetime.second}, 
-      
+            minute: ${concert.datetime.minute},
+             
+            second: ${concert.datetime.second}
         }),
-        url: "${concert.url}"})`
-
+        url: "${concert.url}"
+    })`
+        console.log(query)
     // tx either succeeds or fails       timezone: "${concert.datetime.timezone}"
     return session.writeTransaction((tx) => 
         tx.run(query) 
@@ -39,7 +40,7 @@ function createConcert(concert, session) {
     .then(result => { // returns a promise 
         return result.summary
     }, error => {
-        return error.summary
+        return error
     })
 }
 
