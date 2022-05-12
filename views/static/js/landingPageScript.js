@@ -6,7 +6,7 @@ const concertNameField = document.querySelector("#concert-name");
 searchBtn.addEventListener("click", (e)=>{
     e.preventDefault();
     const concertName = concertNameField.value;
- 
+    userCardContainer.innerHTML = '';
     if(concertName !== '' && concertName !==null){
 
         let url_ = `api/v1/concert/?name=${concertName}`
