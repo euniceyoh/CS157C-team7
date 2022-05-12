@@ -4,6 +4,87 @@ const { session } = require("neo4j-driver");
 const Concert = require("./schema/Concert");
 const Person = require("./schema/Person");
 
+function checkWillAttendRelExists(data, session) {
+    let user = data.name
+    let concert = data.concert
+
+    const query = `
+    RETURN EXISTS
+    ((:Person {name: '${user}'})-[:WILL_ATTEND]-(:Concert {name:'${concert}'}))`
+
+    console.log(query)
+
+    return session.readTransaction((tx) => {
+        return tx.run(query)
+    })
+    .then(response => {
+        console.log(response)
+        return response.records
+    }, error => {
+        return error
+    })
+}
+
+function addNewAttendConcert(data, session) { 
+    console.log(data)
+
+    const query = `
+    match (p:Person {name: "${data.user}"}), (c:Concert {name: "${data.concert}"})
+    create (p)-[r:WILL_ATTEND]->(c)
+    return type(r)
+    `
+    console.log(query)
+
+    return session.writeTransaction((tx) => {
+        return tx.run(query)
+    })
+    .then(response => {
+        console.log(response)
+        return response.records
+    }, error => {
+        return error
+    })
+}
+
+function deleteAttendConcert(data, session) {
+    console.log(data)
+    const query = `
+    match (:Person {name:'${data.user}'})-[r:WILL_ATTEND]-(:Concert {name:'${data.concert}'})
+    delete r
+    `
+    console.log(query)
+
+    return session.writeTransaction((tx) => {
+        return tx.run(query)
+    })
+    .then(response => {
+        console.log(response)
+        return response
+    }, error => {
+        return error
+    })
+}
+
+function getConcertLocation(data, session) {
+    console.log(data)
+
+    const query = `
+    match (n:Concert{name:"${data.concert}"})-[:HAS_LOCATION]-(location)
+    return location
+    `
+    console.log(query)
+
+    return session.writeTransaction((tx) => {
+        return tx.run(query)
+    })
+    .then(response => {
+        console.log(response)
+        return response.records
+    }, error => {
+        return error
+    })
+}
+
 function createConcert(concert, session) { 
     // Create(concert:Concert{
     //     name:"testInCLI",
@@ -111,7 +192,7 @@ const queryConcertWithAllFilterBuilder = (concert_category) =>{
     return query;
 }
 
-const filterAttendees  = (filters, session) => {
+const filterAttendees = (filters, session) => {
     // prefixBuilder will initialize variables that are used in the query
     // Below variables are optional and they will be empty if user didn't specify additional features
     console.log("filterAttendees" + JSON.stringify(filters))
@@ -162,4 +243,8 @@ module.exports = {
     "createConcert": createConcert,
     "searchConcertWithFilter": searchConcertWithFilter,
     "searchAttendees": filterAttendees,
+    "addNewAttendConcert": addNewAttendConcert,
+    "attendeeExists": checkWillAttendRelExists, 
+    "deleteAttendConcert": deleteAttendConcert,
+    "getConcertLocation": getConcertLocation
 }
