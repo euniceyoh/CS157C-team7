@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Login</title>
+    </head>
+    <body>
+        <h1>Log In Page</h1>
+        <h3>Enter the requested information below for your user profile to be created.</h3> <br>
+        <form id="login-form" action="/login" method="post">
+            <label for="email">Email</label><br>
+            <input type="email" name="email" placeholder="Enter email address" autocomplete="false"  required><br><br>
+            <div class="email error"></div>
+            <label for="password">Password</label><br>
+            <input type="password" name="password" placeholder="Enter password" autocomplete="false" required><br><br>
+            <div class="password error"></div>
+            <button type="submit" name="login-button" form="login-form">Submit</button><br>
+            <!--<input type="submit" value="Submit"><br>-->
+        </form>
+        <hr>
+        <p>Don't have an account? <a href="signup.ejs">Sign Up</a></p>
+        <!--<p>Or go <a href="/">home</a>.</p>-->
+        <script>
+            const form = document.querySelector('form');
+
+            form.addEventListener('submit',(e) => {
+                e.preventDefault();
+                
+                const email = form.email.value;
+                const password = form.password.value;
+
+                console.log(email, password)
+
+            })
+        </script>
+
+    </body>
+</html>

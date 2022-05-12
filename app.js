@@ -5,7 +5,10 @@ const bodyParser = require('body-parser');
 const { use } = require('express/lib/application');
 
 const artistRouter = require("./backend/routes/Artist");
-const concertRouter = require("./backend/routes/Concert")
+const concertRouter = require("./backend/routes/Concert");
+const personRouter = require("./backend/routes/Person");
+const controller = require("./backend/controllers/controller")
+
 const app = express();
 
 //set view engine to be able to visit views 
@@ -19,8 +22,11 @@ app.use(express.static(__dirname+'/views'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
+
 app.use("/api/v1/artist",artistRouter)
 app.use("/api/v1/concert", concertRouter)
+app.use('/', personRouter)
+
 
 app.listen(3000 , () =>{
     console.log("Server is running on port 3000...");
@@ -30,6 +36,13 @@ app.listen(3000 , () =>{
 app.get('/', function(req, res) {
     res.send("Hello World")
 })
+
+
+// app.post('/signup', function(req, res){
+//     console.log(req.body);
+//     res.render('templates//signup_success', {accountData: req.body});
+
+// });
 
 // search for concert page
 app.get('/concert-search', function(req, res) {

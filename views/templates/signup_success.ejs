@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="/static/css/filterConcert.css">
+  <title>Sign Up Success</title>
+</head>
+    <body>
+        <h1>Welcome to Concert Mate, <%= accountData.name %>!</h1><br>
+        <h3>Your account has been created, with these spceifications below as you entered.</h3> <br>
+        <ul>
+        <h4>Name: <%= accountData.name %></h4>
+        <h4>Email: <%= accountData.email %></h4>
+        <h4>Gender: <%= accountData.gender %></h4>
+        <h4>Year of Birth: <%= accountData.dob %></h4>
+        <!--<h4>Music Prefrences: <%= accountData.musicPreferences %></h4>
+        <h4>Favorite Artists:  <%= accountData.favoriteArtists %></h4>
+        <h4>Past Concerts Attended:  <%= accountData.pastConcerts %></h4>
+        <h4>Fututre Concerts Will Attend: <%= accountData.futureConcerts %></h4>-->
+        </ul>
+    </body>
+</html>
