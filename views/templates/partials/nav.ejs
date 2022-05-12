@@ -1,7 +1,10 @@
 <nav class="text-gray-700 bg-gray-400 body-font m">
     <ul class="container mx-auto flex flex-row-reverse p-10 md:flex-row-reverse ">
         
-        <%if (isLoggedIn) { 
+
+        <li class="mx-2"><a href="../signup.ejs">Sign Up</a></li>
+       
+       <%if (isLoggedIn) { 
             %>
             <li class="mx-4 hover:text-white"><a href="#">Log Out</a></li>
             <li class="mx-4 hover:text-white"><a href="#">Profile</a></li>
@@ -14,6 +17,8 @@
             else{%>
                 <li class="mx-4 hover:text-white"><a href="#">Log In</a></li>
                 <% } %>
+
                 <li class="mx-4 hover:text-white"><a href="/">Home</a></li>
+
     </ul>
-</nav>
+
