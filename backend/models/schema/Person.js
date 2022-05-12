@@ -8,6 +8,13 @@ class Person{
         this.dob = dob;
         this.imgurl = imgurl;
         this.password = password;
+
+    constructor(id, name, gender, dob){
+        this.id = id;
+        this.name = name;
+        this.gender = gender;
+        this.dob = dob;
+
     }
 }
 

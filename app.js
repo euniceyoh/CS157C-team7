@@ -23,11 +23,9 @@ app.use("/api/v1/concert", concertRouter)
 app.use("/api/v1/person", personRouter)
 app.use('/', personRouter)
 
-
 app.listen(3000 , () =>{
     console.log("Server is running on port 3000...");
 })
-
 
 // test 
 app.get('/', function(req, res) {

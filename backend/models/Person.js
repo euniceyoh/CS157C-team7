@@ -1,3 +1,4 @@
+
 // Person End Point
 const Person = require("./schema/Person");
 
@@ -54,6 +55,7 @@ function createPerson(person, session) {
 //             }
 //         });
 // };
+
 
 
 function getUser(data, session) {
