@@ -63,6 +63,38 @@ router.get("/location", (req, res) => {
 
 router.post("/", function (req, res) {
     
+const express = require('express')
+const router = express.Router();
+const path = require("path");
+
+// For storing image
+const multer = require("multer");
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+      cb(null, path.join(__dirname,'/uploads/'));
+    },
+    filename: function(req, file, cb) {
+      cb(null,  file.originalname);
+    }
+  });
+const fileTypeFilter = (req, file, cb) =>{
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+        cb(null, true);
+      } else {
+        cb(new Error("Wrong File Type"), false);
+      }
+}
+const upload = multer({
+    storage:storage,
+    limits:{
+        fileSize: 1024 * 1024 * 8
+    },
+    fileFilter:fileTypeFilter
+});
+
+router.post("/", upload.single("concertImage"), function (req, res) {
+
+    console.log(req.body);
     const sampleDateTime = new DateTime(
         `${req.body.year}`,
         `${req.body.month}`,
@@ -70,27 +102,36 @@ router.post("/", function (req, res) {
         `${req.body.hour}`,
         `${req.body.minute}`,
         `${req.body.second}`,
-        `${req.body.timezone}`,
+        // `${req.body.date.timezone}`,
     )
 
     const sampleConcert = new Concert(
         sampleDateTime,
-        `${req.body.name}`
+        `${req.body.name}`,
+        `${req.body.concertImage}`,
     )
 
-    console.log(req.body) 
 
     ConcertAPI.createConcert(sampleConcert, dbUtils.getSession(req))
-    .then(result => { // .then also returns a promise 
-        console.log(result)
-        if(result.hasOwnProperty('code')) { // error checking result, prob not the best way 
-            res.status(500)
-            res.send(result.message)
-        } else {
-            res.send(result) 
+    .then(
+    //     result => { // .then also returns a promise 
+    //     console.log(result)
+    //     if(result.hasOwnProperty('code')) { // error checking result, prob not the best way 
+    //         res.status(500)
+    //         res.send(result.message)
+    //     } else {
+    //         res.send(result) 
+    //     }
+    // }
+    response=>{
+        if(res.statusCode === 201){
+            res.send(JSON.stringify(response));
+        }else{
+            res.status(res.statusCode);
+            res.send(res.message);
         }
-    })
-    .catch(error => {
+    }
+    ).catch(error => {
         throw error 
     })
 })
@@ -99,8 +140,8 @@ router.post("/", function (req, res) {
 router.get("/", function (req, res) {
     // Returns an object where keys are parameters
     const concertParams = req.query;    
-    
-    ConcertAPI.searchConcert(concertParams, dbUtils.getSession(req))
+    console.log(Object.keys(concertParams).length)
+    ConcertAPI.searchConcertWithFilter(concertParams, dbUtils.getSession(req))
     .then(response=>{
         if(res.statusCode === 200){
             res.send(JSON.stringify(response));
@@ -114,12 +155,9 @@ router.get("/", function (req, res) {
     });
 })
 
-// Filter Attendees to the concert
-router.get("/attendees", (req, res)=>{
-    const concertParams = req.query;
-    console.log("/attendees: " + req.query)
-
-    ConcertAPI.searchAttendees(concertParams, dbUtils.getSession(req))
+router.get("/:name", function (req, res) { 
+    console.log(req.params)
+    ConcertAPI.searchConcertWithFilter(req.params, dbUtils.getSession(req))
     .then(response=>{
         if(res.statusCode === 200){
             res.send(JSON.stringify(response));
@@ -133,8 +171,11 @@ router.get("/attendees", (req, res)=>{
     })
 })
 
-router.get("/:name", function (req, res) { 
-    ConcertAPI.searchConcert(req.params, dbUtils.getSession(req))
+// Filter Attendees to the concert
+router.get("/:name/attendees", (req, res)=>{
+    const concertParams = req.params;
+    console.log(concertParams)
+    ConcertAPI.searchAttendees(concertParams, dbUtils.getSession(req))
     .then(response=>{
         if(res.statusCode === 200){
             res.send(JSON.stringify(response));
@@ -149,4 +190,3 @@ router.get("/:name", function (req, res) {
 })
 
 module.exports = router;
-
