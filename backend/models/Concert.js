@@ -1,48 +1,8 @@
 // Concert End Point
 
-const { response } = require("express");
 const { session } = require("neo4j-driver");
 const Concert = require("./schema/Concert");
 const Person = require("./schema/Person");
-
-function createConcert(concert, session) { 
-    // Create(concert:Concert{
-    //     name:"testInCLI",
-    //     concert_date:datetime({
-    //         year:2022,
-    //         month:7,
-    //         day:1,
-    //         hour:18,
-    //         minute:0,
-    //         second:0
-    //     }),
-    //     url:"https://cdn.pixabay.com/photo/2013/07/12/17/47/test-pattern-152459_960_720.png"
-    // })
-
-    console.log(concert.datetime);
-    const query = `Create(concert:Concert{
-        name:"${concert.name}", 
-        concert_date: datetime({
-            year: ${concert.datetime.year}, 
-            month: ${concert.datetime.month}, 
-            day: ${concert.datetime.day}, 
-            hour: ${concert.datetime.hour}, 
-            minute: ${concert.datetime.minute}, 
-            second: ${concert.datetime.second}, 
-      
-        }),
-        url: "${concert.url}"})`
-
-    // tx either succeeds or fails       timezone: "${concert.datetime.timezone}"
-    return session.writeTransaction((tx) => 
-        tx.run(query) 
-    )
-    .then(result => { // returns a promise 
-        return result.summary
-    }, error => {
-        return error.summary
-    })
-}
 
 function checkWillAttendRelExists(data, session) {
     let user = data.name
@@ -125,13 +85,46 @@ function getConcertLocation(data, session) {
     })
 }
 
-const filterConcert = (concert_category, session) => {
-    // prefixBuilder will initialize variables that are used in the query
-    // Below variables are optional and they will be empty if user didn't specify additional features
-    let [ optionalCondition, prefixBuilder ] = queryConcertBuilder(concert_category);
-    console.log(concert_category)
+function createConcert(concert, session) { 
+    // Create(concert:Concert{
+    //     name:"testInCLI",
+    //     concert_date:datetime({
+    //         year:2022,
+    //         month:7,
+    //         day:1,
+    //         hour:18,
+    //         minute:0,
+    //         second:0
+    //     }),
+    //     url:"https://cdn.pixabay.com/photo/2013/07/12/17/47/test-pattern-152459_960_720.png"
+    // })
+
+    console.log(concert.datetime);
+    const query = `Create(concert:Concert{
+        name:"${concert.name}", 
+        concert_date: datetime({
+            year: ${concert.datetime.year}, 
+            month: ${concert.datetime.month}, 
+            day: ${concert.datetime.day}, 
+            hour: ${concert.datetime.hour}, 
+            minute: ${concert.datetime.minute}, 
+            second: ${concert.datetime.second}, 
+      
+        }),
+        url: "${concert.url}"})`
+
+    // tx either succeeds or fails       timezone: "${concert.datetime.timezone}"
+    return session.writeTransaction((tx) => 
+        tx.run(query) 
+    )
+    .then(result => { // returns a promise 
+        return result.summary
+    }, error => {
+        return error.summary
+    })
+}
+
 // Concert Lookup Endpoint
-  
 const searchConcertWithFilter = (concert_category, session) => {
     const numberOfparametes = Object.keys(concert_category).length;
     let query = "";
@@ -143,21 +136,14 @@ const searchConcertWithFilter = (concert_category, session) => {
         query = queryConcertWithAllFilterBuilder(concert_category);
     }
 
-    const query = `
-    MATCH (concert : Concert) ${prefixBuilder}
-    WHERE concert.name CONTAINS "${concert_category.name}" 
-    ${optionalCondition}
-    RETURN concert
-    `;
-    console.log("filter concert: " + query);
-
+    console.log(query);
+    
     return session.readTransaction(
         (tx) => tx.run(query)
         ).then(parseConcert);
 }
 
-
-const parseConcert = (result) => {
+const parseConcert = (result) =>{
     return result.records.map(r => new Concert(r.get('concert')));
 }
 
@@ -191,10 +177,10 @@ const queryConcertWithFilterBuilder = (concert_category) =>{
     ${optionalCondition}
     RETURN concert
     `;
+
     return query;
 }
 
-// Query base on concert name AND artist AND city
 const queryConcertWithAllFilterBuilder = (concert_category) =>{
     const query = `
     MATCH (concert : Concert), (artist : Artist), (location : Location)
@@ -206,12 +192,7 @@ const queryConcertWithAllFilterBuilder = (concert_category) =>{
     return query;
 }
 
-const parseConcert = (result) =>{
-    return result.records.map(r => new Concert(r.get('concert')));
-}
-
-
-const filterAttendees  = (filters, session) => {
+const filterAttendees = (filters, session) => {
     // prefixBuilder will initialize variables that are used in the query
     // Below variables are optional and they will be empty if user didn't specify additional features
     console.log("filterAttendees" + JSON.stringify(filters))
@@ -238,7 +219,8 @@ const filterAttendees  = (filters, session) => {
         }
     }
     
-    const query = `
+    const query = 
+    `
     MATCH (person : Person), (concert : Concert)
     WHERE concert.name CONTAINS "${filters.name}" 
     AND ((person)-[:HAS_ATTENDED]->(concert) OR (person)-[:WILL_ATTEND] ->(concert))
@@ -258,7 +240,7 @@ const parseAttendees = (result) =>{
 }
 
 module.exports = {
-    "createConcert": createConcert ,
+    "createConcert": createConcert,
     "searchConcertWithFilter": searchConcertWithFilter,
     "searchAttendees": filterAttendees,
     "addNewAttendConcert": addNewAttendConcert,
@@ -266,4 +248,3 @@ module.exports = {
     "deleteAttendConcert": deleteAttendConcert,
     "getConcertLocation": getConcertLocation
 }
-

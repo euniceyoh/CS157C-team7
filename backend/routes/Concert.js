@@ -5,6 +5,7 @@ const dbUtils = require('../dbUtils');
 const express = require('express');
 const res = require('express/lib/response');
 const router = express.Router()
+const path = require("path");
 
 router.use(express.json())
 
@@ -61,11 +62,7 @@ router.get("/location", (req, res) => {
     })
 })
 
-router.post("/", function (req, res) {
-    
-const express = require('express')
-const router = express.Router();
-const path = require("path");
+// router.post("/", function (req, res) {
 
 // For storing image
 const multer = require("multer");
@@ -90,7 +87,7 @@ const upload = multer({
         fileSize: 1024 * 1024 * 8
     },
     fileFilter:fileTypeFilter
-});
+})
 
 router.post("/", upload.single("concertImage"), function (req, res) {
 
@@ -155,6 +152,25 @@ router.get("/", function (req, res) {
     });
 })
 
+// Filter Attendees to the concert
+router.get("/attendees", (req, res)=>{
+    const concertParams = req.query;
+    console.log(concertParams)
+
+    ConcertAPI.searchAttendees(concertParams, dbUtils.getSession(req))
+    .then(response=>{
+        if(res.statusCode === 200){
+            res.send(JSON.stringify(response));
+        }else{
+            res.status(res.statusCode);
+            res.send(res.message);
+        }
+    })
+    .catch(err=>{
+        throw err;
+    });
+})
+
 router.get("/:name", function (req, res) { 
     console.log(req.params)
     ConcertAPI.searchConcertWithFilter(req.params, dbUtils.getSession(req))
@@ -171,22 +187,5 @@ router.get("/:name", function (req, res) {
     })
 })
 
-// Filter Attendees to the concert
-router.get("/:name/attendees", (req, res)=>{
-    const concertParams = req.params;
-    console.log(concertParams)
-    ConcertAPI.searchAttendees(concertParams, dbUtils.getSession(req))
-    .then(response=>{
-        if(res.statusCode === 200){
-            res.send(JSON.stringify(response));
-        }else{
-            res.status(res.statusCode);
-            res.send(res.message);
-        }
-    })
-    .catch(err=>{
-        throw err;
-    });
-})
 
-module.exports = router;
+module.exports = router
