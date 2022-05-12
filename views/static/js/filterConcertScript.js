@@ -29,10 +29,10 @@
       let url_ = `api/v1/concert/?name=${concertName}`
       
       if (artistName !== "" && artistName !== null) {
-        url_ += `&artistName=${artistName}`
+        url_ += `&artistName="${artistName}"`
       }
       if (cityName !== "" && cityName !== null) {
-        url_ += `&city=${cityName}`
+        url_ += `&city="${cityName}"`
       }
       console.log(url_)
     

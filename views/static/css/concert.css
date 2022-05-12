@@ -1,8 +1,67 @@
-.container {
+body {
+  font-family: Futura;
+  margin: 75px; 
+}
+
+h1, h2, h3, h4 {
+  font-weight: normal; 
+}
+
+.row {
+  display: flex; 
+  flex-wrap: wrap;
+}
+
+.concert_column {
+  flex: 30%;
+}
+
+.attendee_column {
+  flex: 70%;
+}
+
+form {
+  margin-bottom: 30px; 
+}
+
+#concertInfo button {
+  font-family: Futura;
+  font-size: medium;
+  text-decoration: none;
+  border-radius: 25px; 
+  background: none;
+  padding: 5px 45px 5px 45px;
+  background-color: white;
+  color: black;
+}
+
+#concertInfo button:hover {
+  background-color: #555555;
+  color: white;
+}
+
+.list_of_attendees {
+  display: flex; 
+  flex-wrap: wrap; 
+}
+
+
+  .concert_column img {
+    width: 350px;
+    height: 350px;
+    object-fit: cover; 
+    border-radius: 5%;
+  }
+
+  
+
+  /* .concert_column {
     padding: 1rem;
     margin: 2rem auto;
     width: 50rem;
     max-width: 95%;
     border-radius: 12px;
     text-align: center;
-  }
+    /* color: blue; */
+  /* } */ 
+  
