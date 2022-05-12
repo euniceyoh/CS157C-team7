@@ -1,0 +1,43 @@
+.concerts template {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.concert:hover {
+  background-color: rgb(156 163 175);
+  border-color: rgb(156 163 175);
+}
+
+.concert {
+  text-decoration: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column-reverse;
+  border: 1px solid #4b4b4b;
+  border-radius: 0.5em;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  background-color: rgb(229 231 235);
+}
+
+a.concert {
+  margin: 0 8em;
+}
+
+.concert>.header {
+  font-size: 1rem;
+  flex: 1;
+  margin: 1rem;
+  padding: 0;
+  color: rgb(55 65 81);
+}
+
+.hidden{
+  display: none;
+  color: rgb(153 27 27);
+}
+
+
