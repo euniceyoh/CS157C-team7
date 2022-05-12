@@ -98,11 +98,7 @@
         </script>
     </div>
     <template id='card'>
-      <div class='card_container'>
-        <img alt='profile'>
-        <h4></h4>
-        <button onclick="viewDetails()"></button>
-      </div>
+      <%- include('partials/card.ejs') %>
     </template>
   </div>
 
@@ -211,19 +207,28 @@
           url.setAttribute('src', person.id.properties.imgurl)
           const button = child.querySelector("button") 
           button.innerText = "view details"
-          
+          button.setAttribute("onclick", `viewDetails('${person.id.properties.name}', 'person')`)
+
           list.appendChild(child)
         })
       })
     }
 
-    // update location and time using parsed data
-    function viewDetails() {
-      alert("did it work")
-      //document.getElementById("butt").setAttribute("href", "https://www.google.com/")
-      let id = "someUniqueId"
-      location.href=`http://localhost:3000/attendee/${id}`
+    function viewDetails(url, type) {
+      alert("did it work part 2")
+      if(type == 'concert')
+        location.href=`http://localhost:3000/concert/${url}`
+      if(type == 'person')
+        location.href=`http://localhost:3000/attendee/${url}`
     }
+
+    // update location and time using parsed data
+    // function viewDetails() {
+    //   alert("did it work")
+    //   //document.getElementById("butt").setAttribute("href", "https://www.google.com/")
+    //   let id = "someUniqueId"
+    //   location.href=`http://localhost:3000/attendee/${id}`
+    // }
   
   </script>
 

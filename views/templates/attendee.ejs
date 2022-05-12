@@ -32,13 +32,15 @@
     <button id="upConcertBtn" onclick="clickedUpcomingConcerts()">upcoming concerts</button>
     <button id="friendsBtn" onclick="clickedFriends()">friends</button>
     <button id="editBtn" onclick="clickedEdit()">edit</button>
-    <div class='content'>
+  </nav> 
+  <div class='content'>
+    <h2></h2>
+    <div class='actual_content'>
       <!-- content to display based on nav button -->
     </div>
-  </nav> 
+  </div>
 
   <template id='bio'>
-    <h2>summary:</h2>
     <p></p>
     <h2>favorite artists:</h2>
     <div id="f_artists">
@@ -51,13 +53,13 @@
   </template>
   
   <template id='past_concerts'>
-
+    <%- include('partials/card.ejs') %>
   </template>
   <template id='upcoming_concerts'>
-
+    <%- include('partials/card.ejs') %>
   </template>
   <template id="friends">
-
+    <%- include('partials/card.ejs') %>
   </template>
   
   <script>
@@ -93,13 +95,22 @@
       btn.classList.add("activeBtn")
     }
 
+    function viewDetails(url, type) {
+      alert("did it work part 2")
+      if(type == 'concert')
+        location.href=`http://localhost:3000/concert/${url}`
+      if(type == 'person')
+        location.href=`http://localhost:3000/attendee/${url}`
+    }
+
     // based on button, show something different in content
     clickedBio() // default 
 
     function clickedBio() {
       resetActiveButton("bioBtn")
+      resetContent("summary")
       //content.innerHTML = '' // clear whatever was showing before 
-      let mainContent = document.querySelector(".content") 
+      let mainContent = document.querySelector(".actual_content") 
       // clear
       mainContent.innerHTML = '';
 
@@ -149,11 +160,13 @@
 
     function resetContent(title) {
       let mainContent = document.querySelector(".content") 
-      mainContent.innerHTML = '';
       
-      let child = document.createElement("h2")
+      let child = document.querySelector("h2")
       child.innerText = title
-      mainContent.appendChild(child)
+
+      let actualContent = document.querySelector(".actual_content")
+      actualContent.classList.remove("displayCards")
+      actualContent.innerHTML = '' 
     }
 
     function clickedPastConcerts() {
@@ -162,16 +175,96 @@
       resetContent("past concerts")
 
       // call query to get a user's past concerts 
+      let mainContent = document.querySelector(".actual_content") 
+      mainContent.classList.add("displayCards")
+      let card = document.querySelector("#upcoming_concerts")
+
+      fetch(`http://localhost:3000/api/v1/person/getRelations?name=${userName}&rel=HAS_ATTENDED&outgoingNode=Concert`)
+      .then(res => res.json())
+      .then(data => {
+        data.forEach(concert => {
+          concert._fields.forEach(concertField => {
+            console.log(concertField.properties)
+
+            const child = card.content.cloneNode(true)
+            const text = child.querySelector("h4")
+            text.innerText = concertField.properties.name
+            const url = child.querySelector("img")
+            url.setAttribute('src', concertField.properties.imgurl)
+            const button = child.querySelector("button") // fix button on click 
+            button.innerText = "view details"
+
+            let concertName = concertField.properties.name
+            button.setAttribute("onclick", `viewDetails('${concertName}', 'concert')`)
+            
+            mainContent.appendChild(child)
+
+          })
+        })
+      })
     }
 
     function clickedUpcomingConcerts() {
       resetActiveButton("upConcertBtn")
       resetContent("upcoming concerts")
+
+      let mainContent = document.querySelector(".actual_content") 
+      mainContent.classList.add("displayCards")
+      let card = document.querySelector("#upcoming_concerts")
+
+      fetch(`http://localhost:3000/api/v1/person/getRelations?name=${userName}&rel=WILL_ATTEND&outgoingNode=Concert`)
+      .then(res => res.json())
+      .then(data => {
+        data.forEach(concert => {
+          concert._fields.forEach(concertField => {
+            console.log(concertField.properties)
+
+            const child = card.content.cloneNode(true)
+            const text = child.querySelector("h4")
+            text.innerText = concertField.properties.name
+            const url = child.querySelector("img")
+            url.setAttribute('src', concertField.properties.imgurl)
+            const button = child.querySelector("button") // fix button on click 
+            button.innerText = "view details"
+
+            let concertName = concertField.properties.name
+            button.setAttribute("onclick", `viewDetails('${concertName}', 'concert')`)
+            
+            mainContent.appendChild(child)
+
+          })
+        })
+      })
     }
 
     function clickedFriends() {
       resetActiveButton("friendsBtn")
       resetContent("friends")
+
+      let mainContent = document.querySelector(".actual_content") 
+      mainContent.classList.add("displayCards")
+      let card = document.querySelector("#friends")
+
+      fetch(`http://localhost:3000/api/v1/person/getRelations?name=${userName}&rel=IS_FRIENDS&outgoingNode=Person`)
+      .then(res => res.json())
+      .then(data => {
+        data.forEach(person => {
+          person._fields.forEach(personField => {
+            console.log(personField.properties)
+
+            const child = card.content.cloneNode(true)
+            const text = child.querySelector("h4")
+            text.innerText = personField.properties.name
+            const url = child.querySelector("img")
+            url.setAttribute('src', personField.properties.imgurl)
+            const button = child.querySelector("button") 
+            button.innerText = "view details"
+
+            mainContent.appendChild(child)
+
+          })
+        })
+      })
     }
 
     function clickedEdit() {

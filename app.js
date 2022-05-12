@@ -45,3 +45,4 @@ app.get('/concert/:name', function(req, res) {
 app.get('/attendee/:id', function(req, res) {
     res.render("templates/attendee")
 })
+
