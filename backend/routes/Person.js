@@ -1,4 +1,5 @@
 const PersonAPI = require("../models/Person")
+
 const Person = require('../models/schema/Person')
 const dbUtils = require('../dbUtils');
 const express = require('express');
@@ -114,6 +115,13 @@ var login = function(session, email, Lpass) {
             }
         });
 };
+
+
+const dbUtils = require('../dbUtils');
+const express = require('express');
+const router = express.Router()
+
+router.use(express.json())
 
 router.get("/getUser", (req, res) => {
     console.log(req.query)

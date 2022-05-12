@@ -1,3 +1,4 @@
+
 // Person End Point
 const Person = require("./schema/Person");
 
@@ -56,6 +57,7 @@ function createPerson(person, session) {
 // };
 
 
+
 function getUser(data, session) {
     console.log(data)
 
@@ -101,7 +103,9 @@ function getUserRelations(data, session) {
 }
 
 module.exports = {
+
     "createPerson": createPerson,
+
     "getUser": getUser, 
     "getUserRelations": getUserRelations
 }
