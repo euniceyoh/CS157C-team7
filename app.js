@@ -34,6 +34,11 @@ app.get('/', function(req, res) {
     res.render("templates/landingPage", {isLoggedIn:true}) 
 })
 
+app.get('/log-out', function(req, res) {
+    res.render("templates/landingPage", {isLoggedIn:false}) 
+})
+
+
 app.get("/create-concert", (req, res)=>{
     res.render("templates/createConcert", {isLoggedIn:true})
 })
