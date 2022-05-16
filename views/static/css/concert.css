@@ -35,6 +35,35 @@ form {
   color: black;
 }
 
+.attendee_column select {
+  font-family: Futura;
+  font-size: medium;
+  text-decoration: none;
+  border-radius: 25px; 
+  background: none;
+  margin-top: 10px;
+  padding: 5px 25px;
+  background-color: white;
+  color: black;
+}
+
+.attendee_column input {
+  font-family: Futura;
+  font-size: medium;
+  text-decoration: none;
+  border-radius: 25px; 
+  background: none;
+  margin-top: 10px;
+  padding: 5px 10px 5px 10px;
+  background-color: white;
+  color: black;
+}
+
+.attendee_column input:hover {
+  background-color: #555555;
+  color: white;
+}
+
 #concertInfo button:hover {
   background-color: #555555;
   color: white;
