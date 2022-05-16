@@ -12,7 +12,6 @@ function createPerson(person, session) {
         imgurl: "${person.imgurl}",
         password: "${person.password}"
     })`
-
     // tx either succeeds or fails 
     return session.writeTransaction((tx) => 
         tx.run(query) 
@@ -24,6 +23,34 @@ function createPerson(person, session) {
     })
 }
 
+
+function existingUser(person, session) { 
+   
+    let email = person.email
+    
+    const query = `
+    OPTIONAL MATCH (p:Person {email: '${email}'})
+    RETURN p IS NOT NULL AS emailExists`
+
+    console.log("before query test")
+    console.log(query)
+    console.log("after query test")
+
+    return session.readTransaction((tx) => {
+        return tx.run(query)
+    })
+    .then(response => {
+        console.log("before reponse test")
+        console.log(response)
+        console.log("after reponse test")
+        console.log("------------------")
+        console.log(response.records)
+
+        return response.records
+    }, error => {
+        return error
+    })
+}
 
 // function createPerson(person, session) {
 //     return session.run('MATCH (person:Person {email: {email}}) RETURN person', {
@@ -104,7 +131,7 @@ function getUserRelations(data, session) {
 
 module.exports = {
     "createPerson": createPerson,
-
+    "existingUser": existingUser,
     "getUser": getUser, 
     "getUserRelations": getUserRelations
 }
