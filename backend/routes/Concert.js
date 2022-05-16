@@ -89,7 +89,7 @@ const upload = multer({
     fileFilter:fileTypeFilter
 })
 
-router.post("/", upload.single("concertImage"), function (req, res) {
+router.post("/", function (req, res) {
 
     console.log(req.body);
     const sampleDateTime = new DateTime(
@@ -98,30 +98,22 @@ router.post("/", upload.single("concertImage"), function (req, res) {
         `${req.body.day}`,
         `${req.body.hour}`,
         `${req.body.minute}`,
-        `${req.body.second}`,
+        `${req.body.second}`
         // `${req.body.date.timezone}`,
     )
 
     const sampleConcert = new Concert(
         sampleDateTime,
         `${req.body.name}`,
-        `${req.body.concertImage}`,
+        `${req.body.concertImage}`
     )
 
 
     ConcertAPI.createConcert(sampleConcert, dbUtils.getSession(req))
     .then(
-    //     result => { // .then also returns a promise 
-    //     console.log(result)
-    //     if(result.hasOwnProperty('code')) { // error checking result, prob not the best way 
-    //         res.status(500)
-    //         res.send(result.message)
-    //     } else {
-    //         res.send(result) 
-    //     }
-    // }
     response=>{
-        if(res.statusCode === 201){
+        if(response.statusCode === 201){
+            console.log("Created! "+response);
             res.send(JSON.stringify(response));
         }else{
             res.status(res.statusCode);

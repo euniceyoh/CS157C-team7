@@ -1,17 +1,21 @@
 <nav class="text-gray-700 bg-gray-400 body-font m">
     <ul class="container mx-auto flex flex-row-reverse p-10 md:flex-row-reverse ">
-        
-        <%if (isLoggedIn) { 
+       <%if (isLoggedIn) { 
             %>
-            <li class="mx-2"><a href="#">Log Out</a></li>
-            <li class="mx-2"><a href="#">Profile</a></li>
-            <li class="mx-2"><a href="#">Artist</a></li>
-            <li class="mx-2"><a href="/concert-search">Concert</a></li>
+            <li class="mx-4 hover:text-white"><a href="/log-out">Log Out</a></li>
+            <li class="mx-4 hover:text-white"><a href="#">Profile</a></li>
+            <li class="mx-4 hover:text-white"><a href="/create-artist">Add Artist</a></li>
+            <li class="mx-4 hover:text-white"><a href="#">Artist</a></li>
+            <li class="mx-4 hover:text-white"><a href="/create-concert">Add Concert</a></li>
+            <li class="mx-4 hover:text-white"><a href="/concert-search">Concert</a></li>
        
             <% } 
             else{%>
-                <li class="mx-2"><a href="#">Log In</a></li>
+                <li class="mx-4 hover:text-white"><a href="/sign-in">Log In</a></li>
+                <li class="mx-2"><a href="/signup">Sign Up</a></li>
                 <% } %>
-                <li class="mx-2"><a href="/">Home</a></li>
+
+                <li class="mx-4 hover:text-white"><a href="/">Home</a></li>
+
     </ul>
-</nav>
+

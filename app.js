@@ -21,15 +21,23 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api/v1/artist",artistRouter)
 app.use("/api/v1/concert", concertRouter)
 app.use("/api/v1/person", personRouter)
+app.use('/', personRouter)
+
 
 app.listen(3000 , () =>{
     console.log("Server is running on port 3000...");
 })
 
+
 // test 
 app.get('/', function(req, res) {
     res.render("templates/landingPage", {isLoggedIn:true}) 
 })
+
+app.get('/log-out', function(req, res) {
+    res.render("templates/landingPage", {isLoggedIn:false}) 
+})
+
 
 app.get("/create-concert", (req, res)=>{
     res.render("templates/createConcert", {isLoggedIn:true})

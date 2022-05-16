@@ -17,6 +17,10 @@ router.get("/", (req, res, next)=>{
     .catch(next);
 })
 
+router.post("/perform", (req, res, next)=>{
+    console.log(req.body)
+    // Artist.perfoms(req.body.)
+})
 
 
 module.exports = router;
