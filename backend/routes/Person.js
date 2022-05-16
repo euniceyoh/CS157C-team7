@@ -70,10 +70,10 @@ router.post('/login', function (req, res) {
     const LpasswordHash = bcrypt.hashSync(req.body.password, 12);
     console.log(req.body)
     console.log(LpasswordHash)
-    //login(dbUtils.getSession(req), req.body.email, LpasswordHash); 
+    //login(dbUtils.getSession(req), req.body.email, passwordHash); 
 
 })
-
+//authenticate
 var me = function(session, email) {
     return session.run('MATCH (user:Person {email: $email}) RETURN user', {
             email: email

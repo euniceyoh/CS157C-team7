@@ -103,7 +103,6 @@ function getUserRelations(data, session) {
 }
 
 module.exports = {
-
     "createPerson": createPerson,
 
     "getUser": getUser, 
