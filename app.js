@@ -45,6 +45,10 @@ app.get("/create-concert", (req, res)=>{
     res.render("templates/createConcert", {isLoggedIn:true})
 })
 
+
+app.get("/create-artist", (req, res)=>{
+    res.render("templates/createArtist", {isLoggedIn:true})
+})
 // search for concert page
 app.get('/concert-search', function(req, res) {
     res.render("templates/filterConcert", {isLoggedIn:true})
