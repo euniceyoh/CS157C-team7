@@ -1,5 +1,4 @@
 
-
     const userCardTemplate = document.querySelector("[data-user-template]")
     const userCardContainer = document.querySelector("[data-user-cards-container]")
     const searchBtn = document.querySelector("#search-btn");
@@ -23,9 +22,8 @@
       
     })
 
-    
-    const buildURI = (concertName) => {
 
+    const buildURI = (concertName) => {
       const artistName = document.querySelector("#artist-name").value;
       const cityName = document.querySelector("#city-name").value;
       let url_ = `api/v1/concert/?name=${concertName}`

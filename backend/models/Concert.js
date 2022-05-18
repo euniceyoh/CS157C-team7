@@ -95,21 +95,20 @@ function createConcert(concert, session) {
             month: ${concert.datetime.month}, 
             day: ${concert.datetime.day}, 
             hour: ${concert.datetime.hour}, 
-            minute: ${concert.datetime.minute},
-             
-            second: ${concert.datetime.second}
+            minute: ${concert.datetime.minute}, 
+            second: ${concert.datetime.second}, 
+      
         }),
-        url: "${concert.url}"
-    })`
-    console.log(query)
-    // tx either succeeds or fails 
+        url: "${concert.url}"})`
+
+    // tx either succeeds or fails       timezone: "${concert.datetime.timezone}"
     return session.writeTransaction((tx) => 
         tx.run(query) 
     )
     .then(result => { // returns a promise 
         return result.summary
     }, error => {
-        return error
+        return error.summary
     })
 }
 
@@ -225,6 +224,7 @@ const filterAttendees = (filters, session) => {
 }
 
 const parseAttendees = (result) =>{
+    
     return result.records.map(r => new Person(r.get('person')));
 }
 
