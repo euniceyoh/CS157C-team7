@@ -35,21 +35,8 @@ router.post('/signup', function (req, res) {
     } catch (err) 
     {
         console.log(err);
-    }
-
-    // check if user already exist
-    // Validate if user exist in our database
-    //  const existingUser = await dbUtils.getSession.readTransaction(req.body.email ,async tx => {
-    //     const result = await tx.run('MATCH (a:Person) RETURN a.email AS email')
-    //     return result.records.map(record => record.get('email'))
-    //     if (existingUser) {
-    //         return res.status(409).send("User Already Exist. Please Login");
-    //       }
-    // })
-    //  if (existingUser) {
-    //    return res.status(409).send("User Already Exist. Please Login");
-    //  }
-
+    }   
+    
     const passwordHash = bcrypt.hashSync(req.body.password, 12);
    
     const samplePesron = new Person(
@@ -120,56 +107,22 @@ router.get('/login', function(req, res) {
     res.render("templates/login");
 })
 
-router.post('/login', function (req, res) {
+router.post('/login', async function (req, res) {
 
-    const LpasswordHash = bcrypt.hashSync(req.body.password, 12);
-    console.log(req.body)
-    console.log(LpasswordHash)
-    //login(dbUtils.getSession(req), req.body.email, LpasswordHash); 
+    try{
+        const {email, password } = req.body;
+
+    if (!(email && password)) {
+      res.status(400).send("All input is required");
+    }
+    }
+    catch(err) {
+        throw err
+    }
+
+    PersonAPI.loginUser(req.body,dbUtils.getSession(req))
 
 })
-
-var me = function(session, email) {
-    return session.run('MATCH (user:Person {email: $email}) RETURN user', {
-            email: email
-        })
-        .then(results => {
-            if (_.isEmpty(results.records)) {
-                throw {
-                    message: 'Email Not Found',
-                    status: 401
-                };
-            }
-            return new Person(results.records[0].get('user'));
-        });
-};
-
-var login = function(session, email, Lpass) {
-    return session.run('MATCH (user:Person {email: $email}) RETURN user', {
-            email: email
-        })
-        .then(results => {
-            if (_.isEmpty(results.records)) {
-                throw {
-                    email: 'Email does not exist in the db',
-                    status: 400
-                }
-            }
-            
-            else {
-                var dbUser = _.get(results.records[0].get('user'), 'properties');
-                if (dbUser.password != Lpass) {
-                    throw {
-                        password: 'wrong password',
-                        status: 400
-                    }
-                }
-                return {
-                    token: _.get(dbUser, 'email')
-                };
-            }
-        });
-};
 
 router.get("/getUser", (req, res) => {
     console.log(req.query)

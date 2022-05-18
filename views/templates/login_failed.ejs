@@ -7,17 +7,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/static/css/additionalStyle.css">
   <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
-  <title>Signup Failed</title>
+  <title>Login Failed</title>
 </head>
     <body>
       <main class="text-gray-400  bg-white  body-font relative ">
         <div class="container px-5 pt-16 mx-auto ">
             <div class="flex flex-col text-center w-full py-12">
                 <h1 class="sm:text-5xl text-2xl font-medium title-font mb-4 text-gray-900">Signup failed, <%= formData.name %>!</h1>
-                <h4>This email: <%= formData.email %> is accosiated with an existing account, please try again with a new email or log in!</h4>
+                <h4>This email address: <%= formData.email %> is not accosiated with an existing account, please try again with another email address or sign up!</h4>
               </div>
         </div>
-        <p>Already have an account? <a href="./login">Log In</a></p>
         <p>Don't have an account? <a href="./signup">Sign Up</a></p>
     </body>
 </html>

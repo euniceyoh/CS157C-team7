@@ -1,6 +1,8 @@
 
 // Person End Point
 const Person = require("./schema/Person");
+const bcrypt = require("bcrypt");
+
 
 function createPerson(person, session) { 
 
@@ -31,19 +33,20 @@ function existingUser(person, session) {
     const query = `
     OPTIONAL MATCH (p:Person {email: '${email}'})
     RETURN p IS NOT NULL AS emailExists`
-
+    
     console.log("before query test")
     console.log(query)
     console.log("after query test")
-
+   
     return session.readTransaction((tx) => {
+        console.log(".then test reached")
         return tx.run(query)
     })
     .then(response => {
         console.log("before reponse test")
         console.log(response)
-        console.log("after reponse test")
         console.log("------------------")
+        console.log("before reponse.records test")
         console.log(response.records)
 
         return response.records
@@ -52,37 +55,66 @@ function existingUser(person, session) {
     })
 }
 
-// function createPerson(person, session) {
-//     return session.run('MATCH (person:Person {email: {email}}) RETURN person', {
-//             email: email
-//         })
-//         .then(results => {
-//             if (!_.isEmpty(results.records)) {
-//                 throw {
-//                     email: 'Email already in use',
-//                     status: 400
-//                 }
-//             }
-//             else {
-//                 return session.run('CREATE (person:Person {id: {id}, email: {email}, name: {name}, gender: {gender}, dob: {dob}, imgurl: {imgurl} ,password: {password}, api_key: {api_key}}) RETURN person', {
-//                     id: uuid.v4(),
-//                     name: name,
-//                     email: email,
-//                     gender: gender,
-//                     dob: dob,
-//                     imgurl: imgurl,
-//                     password: hashPassword(email, password),
-//                     api_key: randomstring.generate({
-//                         length: 20,
-//                         charset: 'hex'
-//                     })
-//                 }).then(results => {
-//                     return new Person(results.records[0].get('person'));
-//                 })
-//             }
-//         });
-// };
+async function loginUser(person, session) {
 
+    const emailMatchResult = await existingUser(person, session)
+    .then(result=>{
+        console.log("Reached test0")
+        console.log(result)
+        console.log("Reached test1")
+        console.log(result[0]._fields[0]) 
+        console.log("Reached test1.5")
+        return result[0]._fields[0]   
+    })
+    .catch(err=>{
+            throw err;
+    })
+    console.log("Reached test8")
+    console.log(emailMatchResult)
+
+    if (emailMatchResult) {
+       
+        console.log("reached test9")
+            
+        let email = person.email
+        let password = person.password
+        let  usersHashedPassword
+
+        const queryHashedPassword = `
+        MATCH (p:Person {email: '${email}'}) 
+        RETURN p.password AS hashedPassword`
+
+        await session.readTransaction((tx) => {
+        return tx.run(queryHashedPassword)
+        })
+        .then(result => {
+            console.log("before hashed passwrod reponse test")
+            console.log("-----------------------------------")
+            console.log(result.records[0])
+            console.log(result.records[0]._fields[0])
+            usersHashedPassword = result.records[0]._fields[0]
+            return usersHashedPassword
+        })
+        .catch(err=>{
+            throw err;
+        })
+        console.log("log it!")
+        console.log(usersHashedPassword)
+
+        await bcrypt.compare(password, usersHashedPassword, function(err, result) {
+            if (err){
+                throw err;
+            }
+            if (result){
+                console.log("Correct password!")
+            }else {
+                console.log("wrong password!")
+            }
+        });
+    } else {
+        console.log("email not found!")
+    }
+}
 
 
 function getUser(data, session) {
@@ -132,6 +164,7 @@ function getUserRelations(data, session) {
 module.exports = {
     "createPerson": createPerson,
     "existingUser": existingUser,
+    "loginUser": loginUser,
     "getUser": getUser, 
     "getUserRelations": getUserRelations
 }
