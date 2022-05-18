@@ -5,7 +5,8 @@ const bodyParser = require('body-parser');
 const { use } = require('express/lib/application');
 const artistRouter = require("./backend/routes/Artist");
 const concertRouter = require("./backend/routes/Concert");
-const personRouter = require("./backend/routes/Person")
+const personRouter = require("./backend/routes/Person");
+const locationRouter = require("./backend/routes/Location")
 const res = require("express/lib/response");
 const app = express();
 
@@ -14,13 +15,14 @@ app.set('view engine', 'ejs');
 
 //middleware for styles to be loaded on pages when req made by views
 app.use(express.static(__dirname+'/views'));
-
+app.use(express.json());
 // middleware to parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/api/v1/artist",artistRouter)
 app.use("/api/v1/concert", concertRouter)
 app.use("/api/v1/person", personRouter)
+app.use("/api/v1/location", locationRouter)
 app.use('/', personRouter)
 
 

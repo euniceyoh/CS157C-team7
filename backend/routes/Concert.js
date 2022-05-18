@@ -1,4 +1,5 @@
 const ConcertAPI = require('../models/Concert')
+const ArtistAPI = require('../models/Artist')
 const DateTime = require('../models/schema/DateTime')
 const Concert = require('../models/schema/Concert')
 const dbUtils = require('../dbUtils');
@@ -62,32 +63,7 @@ router.get("/location", (req, res) => {
     })
 })
 
-// router.post("/", function (req, res) {
 
-// For storing image
-const multer = require("multer");
-const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-      cb(null, path.join(__dirname,'/uploads/'));
-    },
-    filename: function(req, file, cb) {
-      cb(null,  file.originalname);
-    }
-  });
-const fileTypeFilter = (req, file, cb) =>{
-    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
-        cb(null, true);
-      } else {
-        cb(new Error("Wrong File Type"), false);
-      }
-}
-const upload = multer({
-    storage:storage,
-    limits:{
-        fileSize: 1024 * 1024 * 8
-    },
-    fileFilter:fileTypeFilter
-})
 
 router.post("/", function (req, res) {
 
@@ -101,7 +77,6 @@ router.post("/", function (req, res) {
         `${req.body.second}`
         // `${req.body.date.timezone}`,
     )
-
     const sampleConcert = new Concert(
         sampleDateTime,
         `${req.body.name}`,

@@ -22,6 +22,8 @@
       }
       
     })
+
+    
     const buildURI = (concertName) => {
 
       const artistName = document.querySelector("#artist-name").value;

@@ -86,18 +86,6 @@ function getConcertLocation(data, session) {
 }
 
 function createConcert(concert, session) { 
-    // Create(concert:Concert{
-    //     name:"testInCLI",
-    //     concert_date:datetime({
-    //         year:2022,
-    //         month:7,
-    //         day:1,
-    //         hour:18,
-    //         minute:0,
-    //         second:0
-    //     }),
-    //     url:"https://cdn.pixabay.com/photo/2013/07/12/17/47/test-pattern-152459_960_720.png"
-    // })
 
     console.log(concert.datetime);
     const query = `Create(concert:Concert{
