@@ -1,5 +1,6 @@
 'use strict';
 
+const session = require("express-session");
 const Artist = require("./schema/Artist");
 
 
@@ -31,7 +32,7 @@ const createArtist = (artist, session) =>{
     })
 }
 
-const performs = (artistName, concertName, session)=>{
+const performsConnection = (artistName, concertName, session)=>{
     console.log(artistName+" "+concertName);
 
     const query = 
@@ -54,8 +55,25 @@ const performs = (artistName, concertName, session)=>{
     })
 }
 
+const search = (artistName, session) =>{
+    console.log(artistName);
+    const query = 
+    `
+    MATCH (artist:Artist{
+        name: "${artistName}"
+        })
+        return artist
+    `
+    console.log(query);
+
+    return session.readTransaction (
+        txc => txc.run(query)
+    ).then(parseArtists);
+}
+
 module.exports = {
     "getAll": getAll,
-    "perfoms": performs,
-    "create":createArtist
+    "perfoms": performsConnection,
+    "create":createArtist,
+    "search":search
 }

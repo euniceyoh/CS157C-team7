@@ -7,6 +7,7 @@ const express = require('express');
 const res = require('express/lib/response');
 const router = express.Router()
 const path = require("path");
+const { route } = require('./Artist');
 
 router.use(express.json())
 
@@ -62,8 +63,6 @@ router.get("/location", (req, res) => {
         throw error
     })
 })
-
-
 
 router.post("/", function (req, res) {
 
@@ -138,6 +137,24 @@ router.get("/attendees", (req, res)=>{
     });
 })
 
+router.get("/future-concert/:artist", (req, res) =>{
+    console.log(req.params+" Hit")
+    ConcertAPI.futureConcertOfArtist(req.params.artist, dbUtils.getSession(req))
+    .then(response=>{
+        if(res.statusCode === 200){
+            console.log("Returned!!")
+            res.send(JSON.stringify(response));
+        }else{
+            res.status(res.statusCode);
+            res.send(res.message);
+        }
+    })    .catch(err=>{
+        throw err;
+    });
+
+})
+
+
 router.get("/:name", function (req, res) { 
     console.log(req.params)
     ConcertAPI.searchConcertWithFilter(req.params, dbUtils.getSession(req))
@@ -153,6 +170,8 @@ router.get("/:name", function (req, res) {
         throw err;
     })
 })
+
+
 
 
 module.exports = router

@@ -30,7 +30,6 @@ app.listen(3000 , () =>{
     console.log("Server is running on port 3000...");
 })
 
-
 // test 
 app.get('/', function(req, res) {
     res.render("templates/landingPage", {isLoggedIn:true}) 
@@ -40,23 +39,32 @@ app.get('/log-out', function(req, res) {
     res.render("templates/landingPage", {isLoggedIn:false}) 
 })
 
-
 app.get("/create-concert", (req, res)=>{
     res.render("templates/createConcert", {isLoggedIn:true})
 })
 
-
 app.get("/create-artist", (req, res)=>{
     res.render("templates/createArtist", {isLoggedIn:true})
 })
+
 // search for concert page
 app.get('/concert-search', function(req, res) {
     res.render("templates/filterConcert", {isLoggedIn:true})
 })
 
+app.get('/artist-search', function(req, res) {
+    res.render("templates/filterArtist", {isLoggedIn:true})
+})
+
 app.get('/concert/:name', function(req, res) {
     console.log(req.params);
     res.render("templates/concert", {name:req.params['name']})
+})
+
+
+app.get('/artist/:name', function(req, res) {
+    console.log(req.params);
+    res.render("templates/artist", {name:req.params['name'], isLoggedIn:true})
 })
 
 app.get('/attendee/:id', function(req, res) {

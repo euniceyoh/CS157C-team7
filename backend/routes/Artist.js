@@ -19,6 +19,23 @@ router.get("/", (req, res, next) => {
         .catch(next);
 })
 
+router.get("/search", (req, res) =>{
+    const query = req.query
+    console.log(query);
+    ArtistAPI.search(query.name, dbUtils.getSession(req))
+    .then(response=>{
+        if(res.statusCode === 200){
+            res.send(JSON.stringify(response));
+        }else{
+            res.status(res.statusCode);
+            res.send(res.message);
+        }
+    })
+    .catch(err=>{
+        throw err;
+    });
+})
+
 // Create new artist
 router.post("/", (req, res) => {
     console.log(req.body)

@@ -22,7 +22,6 @@
       }
       
     })
-
     
     const buildURI = (concertName) => {
 

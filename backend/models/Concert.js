@@ -224,6 +224,22 @@ const filterAttendees = (filters, session) => {
         ).then(parseAttendees);
 }
 
+const queryFutureConcertOfArtist = (artistName, session) =>{
+    console.log(artistName);
+
+    const query = 
+    `
+    MATCH (artist:Artist{name:"${artistName}"})-[:PERFORMS]->(concert:Concert)
+    WHERE concert.concert_date >= datetime() 
+    RETURN concert
+    `
+    console.log(query)
+    return session.readTransaction(
+        (tx) => tx.run(query)
+        ).then(parseConcert)
+   
+}
+
 const parseAttendees = (result) =>{
     return result.records.map(r => new Person(r.get('person')));
 }
@@ -235,5 +251,6 @@ module.exports = {
     "addNewAttendConcert": addNewAttendConcert,
     "attendeeExists": checkWillAttendRelExists, 
     "deleteAttendConcert": deleteAttendConcert,
-    "getConcertLocation": getConcertLocation
+    "getConcertLocation": getConcertLocation,
+    "futureConcertOfArtist": queryFutureConcertOfArtist
 }
