@@ -157,7 +157,7 @@
         let concertInfo = document.querySelector('#concertInfo')
         let imgContent = concertInfo.querySelector("img")
         let url = data[0]['datetime']['properties']['imgurl']
-        let venue = concertLocation // update to query "has location"
+        //let venue = concertLocation 
 
         let date = data[0]['datetime']['properties']['concert_date']
         let month = date['month']['low']
@@ -168,7 +168,7 @@
         imgContent.setAttribute('src', url)
         let otherContent = concertInfo.querySelectorAll("p")
         otherContent[0].innerText = fullDate; 
-        otherContent[1].innerText = venue; 
+        otherContent[1].innerText = concertLocation; 
       })
     }
 
@@ -218,7 +218,6 @@
     }
 
     function viewDetails(url, type) {
-      alert("did it work part 2")
       if(type == 'concert')
         location.href=`http://localhost:3000/concert/${url}`
       if(type == 'person')

@@ -93,7 +93,6 @@ async function postPerformConnection(artistPerformsConcert){
         body: JSON.stringify(artistPerformsConcert)
     }).then(response=> response)
     .then(data =>{
-
         console.log(`${artistPerformsConcert} is created!`)
     })
     .catch((error) => {
@@ -220,7 +219,7 @@ creatBtn.addEventListener("click", (e)=>{
             }
             postLocation(newLocation);
         }
-
+        spinner.classList.remove("hidden")
         postConcert(concert);
         postHasLocation({city:concert.city, state:concert.state, name:concert.name})
     }
