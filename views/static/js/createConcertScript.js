@@ -93,8 +93,6 @@ async function postPerformConnection(artistPerformsConcert){
         body: JSON.stringify(artistPerformsConcert)
     }).then(response=> response)
     .then(data =>{
-        // alert(`Concert ${concertNameField.value} added successfully!`);
-        // location.href=`http://localhost:3000/`
         console.log(`${artistPerformsConcert} is created!`)
     })
     .catch((error) => {

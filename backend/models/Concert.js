@@ -1,6 +1,5 @@
 // Concert End Point
 
-const { session } = require("neo4j-driver");
 const Concert = require("./schema/Concert");
 const Person = require("./schema/Person");
 
@@ -88,27 +87,24 @@ function getConcertLocation(data, session) {
 function createConcert(concert, session) { 
 
     console.log(concert.datetime);
-    const query = `Create(concert:Concert{
+    const date = `datetime({year: ${concert.datetime.year},month: ${concert.datetime.month},day: ${concert.datetime.day}, hour: ${concert.datetime.hour},minute: ${concert.datetime.minute}, second: ${concert.datetime.second}})`
+    const query = `
+    Create(concert:Concert{
         name:"${concert.name}", 
-        concert_date: datetime({
-            year: ${concert.datetime.year}, 
-            month: ${concert.datetime.month}, 
-            day: ${concert.datetime.day}, 
-            hour: ${concert.datetime.hour}, 
-            minute: ${concert.datetime.minute}, 
-            second: ${concert.datetime.second}, 
-      
-        }),
-        url: "${concert.url}"})`
-
+        url: "${concert.url}",
+        concert_date: ${date}
+    })`
+    console.log(query);
     // tx either succeeds or fails       timezone: "${concert.datetime.timezone}"
-    return session.writeTransaction((tx) => 
-        tx.run(query) 
-    )
-    .then(result => { // returns a promise 
-        return result.summary
+    return session.writeTransaction((tx) => {
+        return tx.run(query)
+    })
+    .then(response => {
+        console.log(response)
+        return response.records
     }, error => {
-        return error.summary
+        console.log(error)
+        return error
     })
 }
 
