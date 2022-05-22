@@ -37,7 +37,6 @@ app.get('/log-out', function(req, res) {
     res.render("templates/landingPage", {isLoggedIn:false}) 
 })
 
-
 app.get("/create-concert", (req, res)=>{
     res.render("templates/createConcert", {isLoggedIn:true})
 })
@@ -49,10 +48,10 @@ app.get('/concert-search', function(req, res) {
 
 app.get('/concert/:name', function(req, res) {
     console.log(req.params);
-    res.render("templates/concert", {name:req.params['name']})
+    res.render("templates/concert", {isLoggedIn:true, name:req.params['name']})
 })
 
 app.get('/attendee/:id', function(req, res) {
-    res.render("templates/attendee")
+    res.render("templates/attendee", {isLoggedIn:true})
 })
 
