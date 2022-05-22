@@ -10,6 +10,12 @@ const getAll = (session) => {
     ).then(parseArtists);
 }
 
+const getArtist = (artistName, session) => {
+    return session.readTransaction (
+        txc => txc.run(`MATCH (artist:Artist{name:"${artistName}"}) RETURN artist`)
+    ).then(parseArtists);
+}
+
 const parseArtists = (result) =>{
     return result.records.map(r => new Artist(r.get('artist')));
 }
@@ -17,9 +23,7 @@ const parseArtists = (result) =>{
 const createArtist = (artist, session) =>{
     const query = 
     `
-    CREATE (artist:Artist{
-        name:"${artist.name}"
-    })
+    CREATE (artist:Artist{name:"${artist.name}", url:"${artist.url}"})
     `
     console.log(query)
     return session.writeTransaction((tx) => 
@@ -71,9 +75,72 @@ const search = (artistName, session) =>{
     ).then(parseArtists);
 }
 
+const favorite = (userName, artistName, session) =>{
+    console.log(userName+" "+artistName);
+    const query = `
+    match (p:Person {name: "${userName}"}), (artist:Artist {name: "${artistName}"})
+    create (p)-[r:FAVORITES]->(artist)
+    return type(r)
+    `
+    console.log(query)
+
+    return session.writeTransaction((tx) => {
+        return tx.run(query)
+    })
+    .then(response => {
+        console.log(response)
+        return response.records
+    }, error => {
+        return error
+    })
+}
+
+const unfavorite = (userName, artistName, session) =>{
+    console.log(userName+" "+artistName);
+    const query = `
+    match (p:Person {name: "${userName}"}), (artist:Artist {name: "${artistName}"})
+    delete r
+    `
+    console.log(query)
+
+    return session.writeTransaction((tx) => {
+        return tx.run(query)
+    })
+    .then(response => {
+        console.log(response)
+        return response.records
+    }, error => {
+        return error
+    })
+}
+
+const isFavorite = (userName, artistName, session) =>{
+    console.log(userName + " "+ artistName);
+
+    const query = `
+    RETURN EXISTS
+    ((:Person {name: '${userName}'})-[:FAVORITES]->(:Artist {name:'${artistName}'}))`
+
+    console.log(query)
+
+    return session.readTransaction((tx) => {
+        return tx.run(query)
+    })
+    .then(response => {
+        console.log(response)
+        return response.records
+    }, error => {
+        return error
+    })
+}
+
 module.exports = {
     "getAll": getAll,
+    "getArtist":getArtist,
     "perfoms": performsConnection,
     "create":createArtist,
-    "search":search
+    "search":search,
+    "favorite":favorite,
+    "unfavorite":unfavorite,
+    "isFavorite":isFavorite,
 }

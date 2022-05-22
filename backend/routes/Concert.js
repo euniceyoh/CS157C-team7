@@ -154,6 +154,23 @@ router.get("/future-concert/:artist", (req, res) =>{
 
 })
 
+router.get("/past-concert/:artist", (req, res) =>{
+    console.log(req.params+" Hit")
+    ConcertAPI.pastConcertOfArtist(req.params.artist, dbUtils.getSession(req))
+    .then(response=>{
+        if(res.statusCode === 200){
+            console.log("Returned!!")
+            res.send(JSON.stringify(response));
+        }else{
+            res.status(res.statusCode);
+            res.send(res.message);
+        }
+    })    .catch(err=>{
+        throw err;
+    });
+
+})
+
 
 router.get("/:name", function (req, res) { 
     console.log(req.params)

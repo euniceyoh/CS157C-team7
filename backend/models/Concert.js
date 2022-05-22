@@ -1,5 +1,4 @@
 // Concert End Point
-
 const { session } = require("neo4j-driver");
 const Concert = require("./schema/Concert");
 const Person = require("./schema/Person");
@@ -240,6 +239,22 @@ const queryFutureConcertOfArtist = (artistName, session) =>{
    
 }
 
+const queryPastConcertOfArtist = (artistName, session) =>{
+    console.log(artistName);
+
+    const query = 
+    `
+    MATCH (artist:Artist{name:"${artistName}"})-[:PERFORMS]->(concert:Concert)
+    WHERE concert.concert_date < datetime() 
+    RETURN concert
+    `
+    console.log(query)
+    return session.readTransaction(
+        (tx) => tx.run(query)
+        ).then(parseConcert)
+   
+}
+
 const parseAttendees = (result) =>{
     return result.records.map(r => new Person(r.get('person')));
 }
@@ -252,5 +267,6 @@ module.exports = {
     "attendeeExists": checkWillAttendRelExists, 
     "deleteAttendConcert": deleteAttendConcert,
     "getConcertLocation": getConcertLocation,
-    "futureConcertOfArtist": queryFutureConcertOfArtist
+    "futureConcertOfArtist": queryFutureConcertOfArtist,
+    "pastConcertOfArtist":queryPastConcertOfArtist
 }

@@ -1,6 +1,6 @@
 const artistNameField = document.querySelector("#artist-name");
 const creatBtn = document.querySelector("#create-btn");
-
+const urlField = document.querySelector("#image-url")
 async function postArtist(newArtist){
     fetch("api/v1/artist",{
         method:"POST",
@@ -23,6 +23,6 @@ creatBtn.addEventListener("click", (e) =>{
     e.preventDefault();
     const artist = artistNameField.value;
     if(artist!= "" && artist != undefined){
-        postArtist({name:artist})
+        postArtist({name:artist, url:urlField.value})
     }
 })

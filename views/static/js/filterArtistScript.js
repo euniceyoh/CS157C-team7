@@ -1,4 +1,5 @@
 const artistNameField = document.querySelector("#artist-name");
+
 const searchBtn = document.querySelector("#search-btn");
 const userCardTemplate = document.querySelector("[data-user-template]")
 const userCardContainer = document.querySelector("[data-user-cards-container]")
@@ -8,8 +9,8 @@ searchBtn.addEventListener("click", (e)=>{
     console.log("Clicked!")
     userCardContainer.innerHTML = '';
     const targetArtist = artistNameField.value;
-    if(targetArtist != '' & targetArtist != undefined){
-        const url = `/api/v1/artist/search/?name=${targetArtist}`
+    if(targetArtist != '' && targetArtist != undefined){
+        const url = `/api/v1/artist/${targetArtist}`
         getArtist(url)
     }
 })
