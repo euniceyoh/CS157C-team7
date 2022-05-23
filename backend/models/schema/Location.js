@@ -1,8 +1,7 @@
 'use strict';
 
 class Location{
-    constructor(id, country, city, state){
-        this.id = id;
+    constructor(country, city, state){
         this.country = country;
         this.city = city;
         this.state = state;

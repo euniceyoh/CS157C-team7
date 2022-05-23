@@ -99,7 +99,7 @@ router.post("/", function (req, res) {
         `${req.body.hour}`,
         `${req.body.minute}`,
         `${req.body.second}`
-        // `${req.body.date.timezone}`,
+
     )
 
     const sampleConcert = new Concert(
@@ -111,18 +111,19 @@ router.post("/", function (req, res) {
 
     ConcertAPI.createConcert(sampleConcert, dbUtils.getSession(req))
     .then(
-    response=>{
-        if(response.statusCode === 201){
-            console.log("Created! "+response);
-            res.send(JSON.stringify(response));
-        }else{
-            res.status(res.statusCode);
-            res.send(res.message);
+        response=>{
+            if(res.statusCode === 201){
+                console.log("Created! "+response);
+                res.send(JSON.stringify(response));
+            }else{
+                console.log("IDK what happened!")
+                res.status(res.statusCode);
+                res.send(res.message);
+            }
         }
-    }
-    ).catch(error => {
-        throw error 
-    })
+        ).catch(error => {
+            throw error 
+        })
 })
 
 // Filter Concert 
