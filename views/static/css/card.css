@@ -21,8 +21,15 @@
     background-color: #555555;
     color: white;
   } */
+
+  .card_container {
+    height: 300px;
+    width: 200px;
+    text-align: center; 
+  }
+
   
-  img { /* is this right*/
+  #card_img { /* is this right*/
     /* border-style: solid; */
     border-radius: 50%;
     height: 150px;
