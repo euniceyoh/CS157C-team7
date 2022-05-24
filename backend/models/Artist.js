@@ -98,7 +98,7 @@ const favorite = (userName, artistName, session) =>{
 const unfavorite = (userName, artistName, session) =>{
     console.log(userName+" "+artistName);
     const query = `
-    match (p:Person {name: "${userName}"}), (artist:Artist {name: "${artistName}"})
+    match (p:Person {name: "${userName}"})-[r:FAVORITES]->(artist:Artist {name: "${artistName}"})
     delete r
     `
     console.log(query)
