@@ -25,6 +25,9 @@
                   <h1 class="title-font font-semibold text-gray-800 tracking-wider text-lg mb-3">Future Concert</h2>
                       <nav id="future-concert" class="flex flex-wrap list-none -mb-1">
                         <!-- Future Concerts will be here -->
+                        <template id='futureConcert' >
+                          <%- include('partials/card.ejs') %>
+                        </template>
                       </nav>
                 </div>
   
@@ -32,7 +35,9 @@
                   <h1 class="title-font font-semibold text-gray-800 tracking-wider text-lg mb-3">Past Concert</h2>
                       <nav id="past-concert" class="flex flex-wrap list-none -mb-1">
     
-  
+                        <template id='pastConcert' >
+                          <%- include('partials/card.ejs') %>
+                        </template>
                       </nav>
                 </div>
              

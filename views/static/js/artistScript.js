@@ -2,6 +2,7 @@ const futureConcertField = document.querySelector("#future-concert");
 const artistName = document.querySelector("#artist-name").innerHTML;
 const pastConcertField = document.querySelector("#past-concert");
 const favoriteBtn = document.querySelector("#fav-btn");
+const deleteBtn = document.querySelector("#delete-btn");
 const artistImg = document.querySelector("#artist-img");
 
 const UserObj = {user: "Can", artist_name: artistName} 
@@ -27,9 +28,7 @@ async function printArtist(){
     if('url' in fetchResult[0]["name"]["properties"]){
         artistImg.setAttribute("src", fetchResult[0]["name"]["properties"]["url"])
     }
-    
 }
-
 
 async function getConcerts(time){
     console.log("Hit")
@@ -66,11 +65,14 @@ async function printConcerts(time){
     result = Object.assign([], rawData);
     result = sortConcertInDateOrder(result);
     console.log(result);
+    let card = undefined;
     let appendedField = undefined;
     if(time ==="future-concert"){
         appendedField =  futureConcertField;
+        card = document.querySelector("#futureConcert")
     }else if(time === "past-concert"){
-       appendedField = pastConcertField
+       appendedField = pastConcertField;
+       card = document.querySelector("#pastConcert")
     }else{
         return;
     }
@@ -85,17 +87,31 @@ async function printConcerts(time){
         const concertProps = result[i]
         const concertURL = `/concert/${concertProps["name"]}`
         const concertDate = concertProps["date"]
-        const concert = 
-        `
-        <a href="${concertURL}" class="w-1/3 md:w-1/3 p-4">
-            <div class="bg-gray-100 p-6 rounded-lg">
-                <img class="h-20 rounded w-full object-contain object-center mb-6" src="${concertProps["url"]}" alt ="concert"}>
-                <h3 class="tracking-widest text-indigo-500 text-xs font-medium title-font">${concertProps["name"]}</h3>
-                <h3 class="tracking-widest text-gray-800 text-xs font-small title-font">${concertDate}</h3>
-            </div>
-        </a>
-        `
-        appendedField.innerHTML += concert;
+        const child = card.content.cloneNode(true);
+        const text = child.querySelector("h4")
+        text.innerText = concertProps["name"]
+
+        const url = child.querySelector("img")
+        url.setAttribute('src', concertProps["url"])
+        const btn = child.querySelector("button")
+        btn.innerText = "view details"
+        btn.setAttribute("onclick",()=>{
+            location.href = concertURL
+        })
+
+
+        // const concert = 
+        // `
+        // <a href="${concertURL}" class="w-1/3 md:w-1/3 p-4">
+        //     <div class="bg-gray-100 p-6 rounded-lg">
+        //         <img class="h-20 rounded w-full object-contain object-center mb-6" src="${concertProps["url"]}" alt ="concert"}>
+        //         <h3 class="tracking-widest text-indigo-500 text-xs font-medium title-font">${concertProps["name"]}</h3>
+        //         <h3 class="tracking-widest text-gray-800 text-xs font-small title-font">${concertDate}</h3>
+        //     </div>
+        // </a>
+        // `
+  
+        appendedField.appendChild(child);
     }
 }
 
@@ -128,7 +144,7 @@ favoriteBtn.addEventListener("click", (e)=>{
         postFavoriteArtist();
         // favoriteBtn.innerHTML = "Un-Favorite"
     }else{
-        // pos
+        postUnFavoriteArtist();
     }
 })
 
@@ -150,3 +166,24 @@ const postFavoriteArtist = async () =>{
         console.error('Error:', error);
       });
 }
+
+
+const postUnFavoriteArtist = async () =>{
+    fetch(`/api/v1/artist/unfavorite`,{
+        method:"POST",
+        headers:{
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(UserObj)
+    })
+    .then(response=> response)
+    .then(data =>{
+        alert(`Artist ${UserObj.artist_name} was unfavorited successfully!`);
+        favoriteBtn.innerHTML = "Favorite"
+        // location.href=`http://localhost:3000/`
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+      });
+}
+

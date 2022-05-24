@@ -68,9 +68,9 @@ router.post("/favorite", (req, res) =>{
 
 router.post("/unfavorite", (req, res) =>{
     console.log(req.body);
-    const {userName, artistName} = req.body;
 
-    ArtistAPI.unfavorite(userName, artistName, dbUtils.getSession(req))
+
+    ArtistAPI.unfavorite(req.body.user, req.body.artist_name, dbUtils.getSession(req))
     .then(
         response=>{
             if(response.statusCode === 204){
