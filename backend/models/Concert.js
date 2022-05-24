@@ -85,6 +85,25 @@ function getConcertLocation(data, session) {
     })
 }
 
+function deleteConcert (concert, session) {
+    console.log(concert) // body needs to use name 
+    
+    const query = `
+    MATCH (c {name: '${concert.name}'}) DETACH DELETE c
+    `
+    console.log(query)
+
+    return session.writeTransaction((tx) => {
+        return tx.run(query)
+    })
+    .then(response => {
+        console.log(response)
+        return response
+    }, error => {
+        return error
+    })
+}
+
 function createConcert(concert, session) { 
     // Create(concert:Concert{
     //     name:"testInCLI",
@@ -123,6 +142,7 @@ function createConcert(concert, session) {
         return error.summary
     })
 }
+
 
 // Concert Lookup Endpoint
 const searchConcertWithFilter = (concert_category, session) => {
@@ -242,6 +262,7 @@ const parseAttendees = (result) =>{
 
 module.exports = {
     "createConcert": createConcert,
+    "deleteConcert": deleteConcert, 
     "searchConcertWithFilter": searchConcertWithFilter,
     "searchAttendees": filterAttendees,
     "addNewAttendConcert": addNewAttendConcert,

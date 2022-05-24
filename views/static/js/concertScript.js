@@ -1,5 +1,7 @@
 let concertName = document.currentScript.getAttribute('name');
 let submitButton = document.querySelector('#submit')
+let deleteButton = document.querySelector('#deleteBtn')
+
 let date = ""
 let gender = "" 
 let concertLocation = ""
@@ -8,7 +10,6 @@ console.log(concertName)
 displayAttendButton() 
 getConcert()
 getAttendees(); 
-getLocation()
 
 function displayAttendButton() {
     console.log("diplay attend")
@@ -76,12 +77,18 @@ function modifyAttend() { // will this still show up
     }
   }
 
+  function getLocation() {
+    return fetch(`http://localhost:3000/api/v1/concert/location?concert=${concertName}`)
+    .then(res => res.json())
+  }
+
   function getConcert() {
     // query concert data here here 
     fetch(`http://localhost:3000/api/v1/concert/?name=${concertName}`)
     .then(res => res.json())
     .then(data => {
       console.log(data) 
+      //getLocation()
 
       let concertInfo = document.querySelector('#concertInfo')
       let imgContent = concertInfo.querySelector("img")
@@ -96,8 +103,17 @@ function modifyAttend() { // will this still show up
 
       imgContent.setAttribute('src', url)
       let otherContent = concertInfo.querySelectorAll("p")
+      
       otherContent[0].innerText = fullDate; 
-      otherContent[1].innerText = concertLocation; 
+
+      getLocation()
+      .then(data => {
+        console.log(data)
+        locationSplit = data[0]['_fields'][0]['properties']
+        concertLocation = locationSplit['city'] + ", " + locationSplit["state"]
+        console.log(concertLocation)
+        otherContent[1].innerText = concertLocation; 
+      })
     })
   }
 
@@ -133,10 +149,34 @@ function modifyAttend() { // will this still show up
     })
   }
 
+function deleteConcert() {
+  let data = {name: concertName}
+  console.log(data)
+
+  fetch(`http://localhost:3000/api/v1/concert/delete`, {
+    method: 'POST', 
+    headers: {
+    'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+  .then( res => res.json())
+  .then(data => {
+    console.log(data)
+    alert("Concert Deleted")
+    location.href=`http://localhost:3000/`
+  })
+}
+
 submitButton.addEventListener("click", (e) => { // does "click" have any other additional meaning?"
     e.preventDefault()
     getFormData()
     getAttendees()
+})
+
+deleteButton.addEventListener("click", (e) => {
+  e.preventDefault()
+  deleteConcert()
 })
 
 function getFormData() {
@@ -152,14 +192,5 @@ function viewDetails(url, type) {
     location.href=`http://localhost:3000/attendee/${url}`
 }
 
-function getLocation() {
-    fetch(`http://localhost:3000/api/v1/concert/location?concert=${concertName}`)
-        .then(res => res.json())
-        .then(data => {
-        console.log(data)
-        locationSplit = data[0]['_fields'][0]['properties']
-        concertLocation = locationSplit['city'] + ", " + locationSplit["state"]
-        console.log(concertLocation)
-        })
-    }
+
     
