@@ -89,8 +89,51 @@ const upload = multer({
     fileFilter:fileTypeFilter
 })
 
-router.post("/", function (req, res) {
+router.post("/update", function(req, res) {
+    console.log(req.body)
+    // check which fields are empty 
+    // fields to update: date, url 
 
+    let dateTime = null
+    console.log("year" + req.body.year)
+
+    if(req.body.year != null) {
+        dateTime = new DateTime(
+            `${req.body.year}`,
+            `${req.body.month}`,
+            `${req.body.day}`,
+            `${req.body.hour}`,
+            `${req.body.minute}`,
+            `${req.body.second}`
+        )
+        console.log(dateTime)
+    }
+
+    const sampleConcert = new Concert(
+        dateTime, // may be null 
+        `${req.body.name}`,
+        `${req.body.concertImage}` // may be empty 
+    )
+    
+    return ConcertAPI.updateConcert(sampleConcert, dbUtils.getSession(req))
+    .then(
+        response=>{
+            console.log(response)
+            if(res.statusCode === 200){
+                console.log("Updated! "+response);
+                res.send(JSON.stringify(response));
+            }else{
+                console.log("IDK what happened!")
+                res.status(res.statusCode);
+                res.send(res.message);
+            }
+        }
+    ).catch(error => {
+        throw error 
+    })
+})
+
+router.post("/", function (req, res) {
     console.log(req.body);
     const sampleDateTime = new DateTime(
         `${req.body.year}`,
@@ -99,7 +142,6 @@ router.post("/", function (req, res) {
         `${req.body.hour}`,
         `${req.body.minute}`,
         `${req.body.second}`
-
     )
 
     const sampleConcert = new Concert(
@@ -107,7 +149,6 @@ router.post("/", function (req, res) {
         `${req.body.name}`,
         `${req.body.concertImage}`
     )
-
 
     ConcertAPI.createConcert(sampleConcert, dbUtils.getSession(req))
     .then(
@@ -126,8 +167,9 @@ router.post("/", function (req, res) {
         })
 })
 
+
 // Filter Concert 
-router.get("/", function (req, res) {
+router.get("/filter", function (req, res) {
     // Returns an object where keys are parameters
     const concertParams = req.query;    
     console.log(Object.keys(concertParams).length)
@@ -143,6 +185,18 @@ router.get("/", function (req, res) {
     .catch(err=>{
         throw err;
     });
+})
+
+// Add get all concerts here 
+router.get("/", function (req, res) {
+    ConcertAPI.getAllConcerts(dbUtils.getSession(req))
+    .then(result => {
+        console.log(result)
+        res.send(result)
+    })
+    .catch(error => {
+        throw error 
+    })
 })
 
 // Filter Attendees to the concert

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/static/css/additionalStyle.css">
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+  <title>Concert Mate</title>
+</head>
+
+<body>
+  <%- include('partials/nav.ejs') %>
+    <main class="text-gray-400  bg-white body-font relative ">
+      <div class="container px-5 py-8 mx-auto">
+        <div class="flex flex-col text-center w-full py-12">
+          <h1 class="sm:text-5xl text-2xl font-medium title-font mb-4 text-gray-900">Update a Concert</h1>
+          <p class="hidden text-blue-400" id="spinner">Updating...</p>
+        </div>
+        <form method="POST"
+          class="lg:w-1/2 md:w-2/3 bg-gray-100 rounded-xl p-10 flex flex-col w-full mx-auto relative shadow-md">
+
+          <div class="relative mb-4">
+            <label for="email" class="leading-7 text-sm text-gray-600">Concert Name</label>
+            <select type="text" name="concert-name" id="concert-name"
+            class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                <option>Choose the Concert</option>
+            </select>
+          </div>
+          <p class="text-red-600 error-msg-1 hidden">You must choose a concert!</p>
+
+          <div class="relative mb-4">
+            <label for="artist-name" class="leading-7 text-sm text-gray-600">Artist Name</label>
+            
+            <select type="text" name="artist-name" id="artist-name"
+              class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+              <option class="choice" value="">Choose the Artist</option>
+              <option class="choice" value="Other">Other</option>
+            </select>
+          </div>
+          <div class="relative mb-4">
+            <label for="new-artist" class="leading-7 text-sm text-gray-600">Other Artist</label>
+            <input type="text" id="new-artist" name="new-artist" placeholder="Not Required"
+              class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+  
+          </div>
+          
+          <div class="relative mb-4">
+            <label for="date" class="leading-7 text-sm text-gray-600">Date</label>
+            <input type="datetime-local" id="date" name="date"
+              class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+          </div>
+
+          <div class="relative mb-4">
+            <label for="location" class="leading-7 text-sm text-gray-600">Location/Venue</label>
+            <select type="text" name="location" id="location"
+              class="location w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+              <option class="choice" value="">Choose the Location</option>
+              <option class="choice" value="Other">Other</option>
+            </select>
+          </div>
+          <div class="flex flex-row relative mb-4">
+            <label for="new-location" class="leading-7 text-sm text-gray-600 mr-1 ">Other Location/Venue</label>
+            <input type="text" id="new-city" name="new-location" placeholder="Not Required"
+              class="mr-1 w-1/2 bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+              <input type="text" id="new-state" name="new-location" placeholder="Not Required"
+              class="w-1/2 bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+              
+          </div>
+          <div class="relative mb-4">
+            <label for="image-url" class="leading-7 text-sm text-gray-600">Image URL</label>
+            <input type="text" id="image-url" name="image-url"
+              class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+          </div>
+          <button id="create-btn"
+            class="flex mx-auto text-white bg-gray-400 border-0 py-2 px-8 focus:outline-none hover:bg-gray-700 rounded text-lg">Save Changes</button>
+        </form>
+      </div>
+    </main>
+
+    <script src="static/js/updateConcert.js"></script>
+</body>
+
+</html>

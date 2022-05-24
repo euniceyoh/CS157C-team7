@@ -1,7 +1,25 @@
 // Concert End Point
 
+const res = require("express/lib/response");
+const { sampleSize } = require("lodash");
 const Concert = require("./schema/Concert");
 const Person = require("./schema/Person");
+
+// add get all concerts here 
+function getAllConcerts(session) {
+    const query = `
+    MATCH (concert:Concert) RETURN concert
+    `
+    console.log(query)
+    return session.readTransaction((tx) => {
+        return tx.run(query)
+    })
+    .then(response => {
+        return parseConcert(response)
+    }, error => {
+        return error
+    })
+}
 
 function checkWillAttendRelExists(data, session) {
     let user = data.name
@@ -85,7 +103,6 @@ function getConcertLocation(data, session) {
 }
 
 function createConcert(concert, session) { 
-
     console.log(concert.datetime);
     const date = `datetime({year: ${concert.datetime.year},month: ${concert.datetime.month},day: ${concert.datetime.day}, hour: ${concert.datetime.hour},minute: ${concert.datetime.minute}, second: ${concert.datetime.second}})`
     const query = `
@@ -105,6 +122,40 @@ function createConcert(concert, session) {
     }, error => {
         console.log(error)
         return error
+    })
+}
+
+function updateConcert(concert, session) {
+    // fields to update: date, url 
+    console.log(concert)
+    let query = `MATCH (c:Concert {name: "${concert.name}"})`
+    let prevSet = false
+
+    if(concert.datetime != null) {
+        // update date 
+        const date = `datetime({year: ${concert.datetime.year},month: ${concert.datetime.month},day: ${concert.datetime.day}, hour: ${concert.datetime.hour},minute: ${concert.datetime.minute}, second: ${concert.datetime.second}})`
+        query += ` SET c.concert_date = ${date}`
+        prevSet = true
+    }
+    if(concert.url != '') {
+        // update url 
+        if(prevSet)
+            query += `, c.url = "${concert.url}"`
+        else
+            query += ` SET c.url = "${concert.url}"`
+    }
+    query += ` return c`
+    console.log(query)
+
+    return session.writeTransaction((tx) => {
+        return tx.run(query)
+    })
+    .then(response => {
+        console.log(response)
+        return response.records
+    }, error => {
+        console.log(error)
+        return error 
     })
 }
 
@@ -225,11 +276,13 @@ const parseAttendees = (result) =>{
 }
 
 module.exports = {
+    "updateConcert": updateConcert, 
+    "getAllConcerts": getAllConcerts, 
     "createConcert": createConcert,
     "searchConcertWithFilter": searchConcertWithFilter,
     "searchAttendees": filterAttendees,
     "addNewAttendConcert": addNewAttendConcert,
     "attendeeExists": checkWillAttendRelExists, 
     "deleteAttendConcert": deleteAttendConcert,
-    "getConcertLocation": getConcertLocation
+    "getConcertLocation": getConcertLocation, 
 }
