@@ -170,7 +170,7 @@ const postFavoriteArtist = async () =>{
 
 const postUnFavoriteArtist = async () =>{
     fetch(`/api/v1/artist/unfavorite`,{
-        method:"POST",
+        method:"DELETE",
         headers:{
             "Content-Type": "application/json"
         },
@@ -187,3 +187,25 @@ const postUnFavoriteArtist = async () =>{
       });
 }
 
+deleteBtn.addEventListener("click", (e)=>{
+    deleteArtist();
+})
+
+const deleteArtist = async () =>{
+    fetch(`/api/v1/artist/${UserObj["artist_name"]}`,{
+        method:"DELETE",
+        headers:{
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(UserObj)
+    })
+    .then(response=> response)
+    .then(data =>{
+        alert(`Artist ${UserObj.artist_name} was deleted successfully!`);
+        // favoriteBtn.innerHTML = "Favorite"
+        location.href=`http://localhost:3000/`
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+      });
+}

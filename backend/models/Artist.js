@@ -134,6 +134,45 @@ const isFavorite = (userName, artistName, session) =>{
     })
 }
 
+const deleteArtist = (artistName, session)=>{
+    console.log(" "+artistName);
+    const query = `
+    match (artist:Artist {name: "${artistName}"})
+    detach delete artist
+    `
+    console.log(query)
+
+    return session.writeTransaction((tx) => {
+        return tx.run(query)
+    })
+    .then(response => {
+        console.log(response)
+        return response.records
+    }, error => {
+        return error
+    })
+}
+
+const updateArtist = (artistName, newUrl, session) =>{
+    console.log(" "+artistName);
+    const query = `
+    match (artist:Artist {name: "${artistName}"})
+    set artist.url ="${newUrl}"
+    return artist
+    `
+    console.log(query)
+
+    return session.writeTransaction((tx) => {
+        return tx.run(query)
+    })
+    .then(response => {
+        console.log(response)
+        return response.records
+    }, error => {
+        return error
+    })
+}
+
 module.exports = {
     "getAll": getAll,
     "getArtist":getArtist,
@@ -143,4 +182,6 @@ module.exports = {
     "favorite":favorite,
     "unfavorite":unfavorite,
     "isFavorite":isFavorite,
+    "delete":deleteArtist,
+    "update":updateArtist,
 }

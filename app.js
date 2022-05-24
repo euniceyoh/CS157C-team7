@@ -56,6 +56,10 @@ app.get('/artist-search', function(req, res) {
     res.render("templates/filterArtist", {isLoggedIn:true})
 })
 
+app.get("/artist-update", function(req, res) {
+    res.render("templates/updateArtist", {isLoggedIn:true})
+})
+
 app.get('/concert/:name', function(req, res) {
     console.log(req.params);
     res.render("templates/concert", {name:req.params['name']})
