@@ -122,6 +122,7 @@ const sortConcertInDateOrder =  (rawData) => {
     for(let i = 0; i < rawData.length; i++){
         const concertObj = {}
         const concertProps = rawData[i]["datetime"]["properties"]
+        console.log(concertProps)
         concertObj["name"] = concertProps["name"]
         concertObj["date"] = new Date(
                                 concertProps["concert_date"]["year"]['low'],
