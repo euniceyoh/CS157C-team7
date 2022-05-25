@@ -21,17 +21,11 @@
       }
       
     })
-<<<<<<< HEAD
-    
-    const buildURI = (concertName) => {
-=======
-
->>>>>>> creatingPage
 
     const buildURI = (concertName) => {
       const artistName = document.querySelector("#artist-name").value;
       const cityName = document.querySelector("#city-name").value;
-      let url_ = `api/v1/concert/?name=${concertName}`
+      let url_ = `api/v1/concert/filter/?name=${concertName}`
       
       if (artistName !== "" && artistName !== null) {
         url_ += `&artistName="${artistName}"`

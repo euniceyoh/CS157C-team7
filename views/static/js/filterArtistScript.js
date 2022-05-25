@@ -21,7 +21,7 @@ async function getArtist(url_){
       .then(response => response.json())
       .then(data => {
         if(data.length === 0){
-          userCardContainer.innerHTML = 'No Concert Found!';
+          userCardContainer.innerHTML = 'No Artist Found!';
         }else{
             console.log(data)
           data.forEach(record => console.log(record["name"]['properties']['name']))
