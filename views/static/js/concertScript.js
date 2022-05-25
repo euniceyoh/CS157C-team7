@@ -84,10 +84,10 @@ function modifyAttend() { // will this still show up
 
   function getConcert() {
     // query concert data here here 
-    fetch(`http://localhost:3000/api/v1/concert/?name=${concertName}`)
+    fetch(`http://localhost:3000/api/v1/concert/filter/?name=${concertName}`)
     .then(res => res.json())
     .then(data => {
-      console.log(data) 
+      
       //getLocation()
 
       let concertInfo = document.querySelector('#concertInfo')
