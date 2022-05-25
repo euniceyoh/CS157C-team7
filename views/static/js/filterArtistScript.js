@@ -32,7 +32,7 @@ async function getArtist(url_){
             const header = card.querySelector("[data-header]")
             header.textContent = user["name"]['properties']['name']
             const concertFullName = header.textContent;
-            // console.log(`concert&name=${concertFullName}`)
+
                 card.setAttribute("href",`artist/${artistName}`)
 
             userCardContainer.append(card)

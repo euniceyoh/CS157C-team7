@@ -82,7 +82,8 @@ async function printConcerts(time){
     if(lengthOfLoop === 0){
         appendedField.innerHTML += "Nothing Found!";
     }
-  
+
+    console.log(lengthOfLoop);
     for(let i = 0; i < lengthOfLoop ; i++){
         const concertProps = result[i]
         const concertURL = `/concert/${concertProps["name"]}`
@@ -95,7 +96,8 @@ async function printConcerts(time){
         url.setAttribute('src', concertProps["url"])
         const btn = child.querySelector("button")
         btn.innerText = "view details"
-        btn.setAttribute("onclick",()=>{
+        btn.addEventListener("click",()=>{
+            console.log("Clicked!")
             location.href = concertURL
         })
 
