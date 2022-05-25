@@ -43,8 +43,12 @@ app.get("/create-concert", (req, res)=>{
     res.render("templates/createConcert", {isLoggedIn:true})
 })
 
+app.get("/create-artist", (req, res)=>{
+    res.render("templates/createArtist", {isLoggedIn:true})})
+
 app.get("/update-concert", (req, res) => {
     res.render("templates/updateConcert", {isLoggedIn:true})
+
 })
 
 // search for concert page
@@ -52,9 +56,23 @@ app.get('/concert-search', function(req, res) {
     res.render("templates/filterConcert", {isLoggedIn:true})
 })
 
+app.get('/artist-search', function(req, res) {
+    res.render("templates/filterArtist", {isLoggedIn:true})
+})
+
+app.get("/artist-update", function(req, res) {
+    res.render("templates/updateArtist", {isLoggedIn:true})
+})
+
 app.get('/concert/:name', function(req, res) {
     console.log(req.params);
     res.render("templates/concert", {isLoggedIn:true, name:req.params['name']})
+})
+
+
+app.get('/artist/:name', function(req, res) {
+    console.log(req.params);
+    res.render("templates/artist", {name:req.params['name'], isLoggedIn:true})
 })
 
 app.get('/attendee/:id', function(req, res) {

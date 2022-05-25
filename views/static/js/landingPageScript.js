@@ -3,11 +3,12 @@ const searchBtn = document.querySelector("#search-btn");
 const userCardTemplate = document.querySelector("[data-user-template]")
 const userCardContainer = document.querySelector("[data-user-cards-container]")
 const concertNameField = document.querySelector("#concert-name");
+
 searchBtn.addEventListener("click", (e)=>{
     e.preventDefault();
     const concertName = concertNameField.value;
     userCardContainer.innerHTML = '';
-    if(concertName !== '' && concertName !==null){
+    if(concertName !== '' && concertName !== undefined){
 
         let url_ = `api/v1/concert/filter/?name=${concertName}`
         getConcert(url_);

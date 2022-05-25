@@ -1,16 +1,16 @@
-.concerts template {
+.concerts template , .artists template {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
 }
 
-.concert:hover {
+.concert:hover, .artist:hover {
   background-color: rgb(156 163 175);
   border-color: rgb(156 163 175);
 }
 
-.concert {
+.concert, .artist {
   text-decoration: none;
   cursor: pointer;
   display: flex;
@@ -23,11 +23,11 @@
   background-color: rgb(229 231 235);
 }
 
-a.concert {
+a.concert, a.artist {
   margin: 0 8em;
 }
 
-.concert>.header {
+.concert>.header, .artist>.header {
   font-size: 1rem;
   flex: 1;
   margin: 1rem;

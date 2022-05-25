@@ -92,7 +92,7 @@ function modifyAttend() { // will this still show up
 
       let concertInfo = document.querySelector('#concertInfo')
       let imgContent = concertInfo.querySelector("img")
-      let url = data[0]['datetime']['properties']['imgurl']
+      let url = data[0]['datetime']['properties']['url']
       //let venue = concertLocation 
 
       let date = data[0]['datetime']['properties']['concert_date']
