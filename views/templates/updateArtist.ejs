@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/additionalStyle.css">
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <title>Concert Mate</title>
+</head>
+
+<body>
+    <%- include('partials/nav.ejs') %>
+        <main class="text-gray-400  bg-white body-font relative ">
+            <div class="container px-5 py-8 mx-auto">
+                <div class="flex flex-col text-center w-full py-12">
+                    <h1 class="sm:text-5xl text-2xl font-medium title-font mb-4 text-gray-900">Update Artist</h1>
+                    <p class="hidden text-blue-400" id="spinner">Updating...</p>
+                </div>
+                <form method="PUT"
+                    class="lg:w-1/2 md:w-2/3 bg-gray-100 rounded-xl p-10 flex flex-col w-full mx-auto relative shadow-md">
+
+                    <div class="relative mb-4">
+                        <label for="email" class="leading-7 text-sm text-gray-600">Artist Name</label>
+                        <select type="text" name="artist-name" id="artist-name"
+                            class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                            <option class="choice" value="">Choose the Artist</option>
+
+                        </select>
+                        <p class="text-red-600 error-msg-1 hidden">This field is required!</p>
+                    </div>
+                    <div class="relative mb-4">
+                        <label for="image-url" class="leading-7 text-sm text-gray-600">Image URL</label>
+                        <input type="text" id="image-url" name="image-url"
+                            class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                    </div>
+                    <p class="text-red-600 error-msg-2 hidden">These fields are required!</p>
+                    <button id="submit-btn"
+                        class="flex mx-auto text-white bg-gray-400 border-0 py-2 px-8 focus:outline-none hover:bg-gray-700 rounded text-lg">Submit</button>
+                </form>
+
+            </div>
+        </main>
+
+        <script src="static/js/updateArtistScript.js"></script>
+</body>
+
+</html>

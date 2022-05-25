@@ -1,8 +1,25 @@
 // Concert End Point
 
-const { session } = require("neo4j-driver");
+const res = require("express/lib/response");
+const { sampleSize } = require("lodash");
 const Concert = require("./schema/Concert");
 const Person = require("./schema/Person");
+
+// add get all concerts here 
+function getAllConcerts(session) {
+    const query = `
+    MATCH (concert:Concert) RETURN concert
+    `
+    console.log(query)
+    return session.readTransaction((tx) => {
+        return tx.run(query)
+    })
+    .then(response => {
+        return parseConcert(response)
+    }, error => {
+        return error
+    })
+}
 
 function checkWillAttendRelExists(data, session) {
     let user = data.name
@@ -85,42 +102,79 @@ function getConcertLocation(data, session) {
     })
 }
 
-function createConcert(concert, session) { 
-    // Create(concert:Concert{
-    //     name:"testInCLI",
-    //     concert_date:datetime({
-    //         year:2022,
-    //         month:7,
-    //         day:1,
-    //         hour:18,
-    //         minute:0,
-    //         second:0
-    //     }),
-    //     url:"https://cdn.pixabay.com/photo/2013/07/12/17/47/test-pattern-152459_960_720.png"
-    // })
+function deleteConcert (concert, session) {
+    console.log(concert) // body needs to use name 
+    
+    const query = `
+    MATCH (c {name: '${concert.name}'}) DETACH DELETE c
+    `
+    console.log(query)
 
-    console.log(concert.datetime);
-    const query = `Create(concert:Concert{
-        name:"${concert.name}", 
-        concert_date: datetime({
-            year: ${concert.datetime.year}, 
-            month: ${concert.datetime.month}, 
-            day: ${concert.datetime.day}, 
-            hour: ${concert.datetime.hour}, 
-            minute: ${concert.datetime.minute}, 
-            second: ${concert.datetime.second}, 
-      
-        }),
-        url: "${concert.url}"})`
-
-    // tx either succeeds or fails       timezone: "${concert.datetime.timezone}"
-    return session.writeTransaction((tx) => 
-        tx.run(query) 
-    )
-    .then(result => { // returns a promise 
-        return result.summary
+    return session.writeTransaction((tx) => {
+        return tx.run(query)
+    })
+    .then(response => {
+        console.log(response)
+        return response
     }, error => {
-        return error.summary
+        return error
+    })
+}
+
+function createConcert(concert, session) { 
+    console.log(concert.datetime);
+    const date = `datetime({year: ${concert.datetime.year},month: ${concert.datetime.month},day: ${concert.datetime.day}, hour: ${concert.datetime.hour},minute: ${concert.datetime.minute}, second: ${concert.datetime.second}})`
+    const query = `
+    Create(concert:Concert{
+        name:"${concert.name}", 
+        url: "${concert.url}",
+        concert_date: ${date}
+    })`
+    console.log(query);
+    // tx either succeeds or fails       timezone: "${concert.datetime.timezone}"
+    return session.writeTransaction((tx) => {
+        return tx.run(query)
+    })
+    .then(response => {
+        console.log(response)
+        return response.records
+    }, error => {
+        console.log(error)
+        return error
+    })
+}
+
+function updateConcert(concert, session) {
+    // fields to update: date, url 
+    console.log(concert)
+    let query = `MATCH (c:Concert {name: "${concert.name}"})`
+    let prevSet = false
+
+    if(concert.datetime != null) {
+        // update date 
+        const date = `datetime({year: ${concert.datetime.year},month: ${concert.datetime.month},day: ${concert.datetime.day}, hour: ${concert.datetime.hour},minute: ${concert.datetime.minute}, second: ${concert.datetime.second}})`
+        query += ` SET c.concert_date = ${date}`
+        prevSet = true
+    }
+    if(concert.url != '') {
+        // update url 
+        if(prevSet)
+            query += `, c.url = "${concert.url}"`
+        else
+            query += ` SET c.url = "${concert.url}"`
+    }
+    query += ` return c`
+    console.log(query)
+
+    return session.writeTransaction((tx) => {
+        return tx.run(query)
+    })
+    .then(response => {
+        console.log(response)
+        return response.records
+    }, error => {
+        console.log(error)
+        return error 
     })
 }
 
@@ -235,17 +289,55 @@ const filterAttendees = (filters, session) => {
         ).then(parseAttendees);
 }
 
+const queryFutureConcertOfArtist = (artistName, session) =>{
+    console.log(artistName);
+
+    const query = 
+    `
+    MATCH (artist:Artist{name:"${artistName}"})-[:PERFORMS]->(concert:Concert)
+    WHERE concert.concert_date >= datetime() 
+    RETURN concert
+    `
+    console.log(query)
+    return session.readTransaction(
+        (tx) => tx.run(query)
+        ).then(parseConcert)
+   
+}
+
+const queryPastConcertOfArtist = (artistName, session) =>{
+    console.log(artistName);
+
+    const query = 
+    `
+    MATCH (artist:Artist{name:"${artistName}"})-[:PERFORMS]->(concert:Concert)
+    WHERE concert.concert_date < datetime() 
+    RETURN concert
+    `
+    console.log(query)
+    return session.readTransaction(
+        (tx) => tx.run(query)
+        ).then(parseConcert)
+   
+}
+
 const parseAttendees = (result) =>{
     
     return result.records.map(r => new Person(r.get('person')));
 }
 
 module.exports = {
+    "updateConcert": updateConcert, 
+    "getAllConcerts": getAllConcerts, 
     "createConcert": createConcert,
+    "deleteConcert": deleteConcert, 
     "searchConcertWithFilter": searchConcertWithFilter,
     "searchAttendees": filterAttendees,
     "addNewAttendConcert": addNewAttendConcert,
     "attendeeExists": checkWillAttendRelExists, 
     "deleteAttendConcert": deleteAttendConcert,
-    "getConcertLocation": getConcertLocation
+    "getConcertLocation": getConcertLocation,
+    "futureConcertOfArtist": queryFutureConcertOfArtist,
+    "pastConcertOfArtist":queryPastConcertOfArtist
+
 }

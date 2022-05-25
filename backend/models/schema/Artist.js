@@ -1,8 +1,9 @@
 'use strict';
 
 class Artist {
-    constructor( name){
+    constructor( name, url){
         this.name = name;
+        this.url = url;
     }
 }
 
