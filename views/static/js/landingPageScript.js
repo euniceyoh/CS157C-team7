@@ -9,7 +9,7 @@ searchBtn.addEventListener("click", (e)=>{
     userCardContainer.innerHTML = '';
     if(concertName !== '' && concertName !==null){
 
-        let url_ = `api/v1/concert/?name=${concertName}`
+        let url_ = `api/v1/concert/filter/?name=${concertName}`
         getConcert(url_);
       }else{
         console.log("Input required!")
