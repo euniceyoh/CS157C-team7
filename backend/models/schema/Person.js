@@ -8,6 +8,8 @@ class Person{
         this.dob = dob;
         this.imgurl = imgurl;
         this.password = password;
+       // this.token = token;
+        
     }
 }
 
