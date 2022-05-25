@@ -102,6 +102,25 @@ function getConcertLocation(data, session) {
     })
 }
 
+function deleteConcert (concert, session) {
+    console.log(concert) // body needs to use name 
+    
+    const query = `
+    MATCH (c {name: '${concert.name}'}) DETACH DELETE c
+    `
+    console.log(query)
+
+    return session.writeTransaction((tx) => {
+        return tx.run(query)
+    })
+    .then(response => {
+        console.log(response)
+        return response
+    }, error => {
+        return error
+    })
+}
+
 function createConcert(concert, session) { 
     console.log(concert.datetime);
     const date = `datetime({year: ${concert.datetime.year},month: ${concert.datetime.month},day: ${concert.datetime.day}, hour: ${concert.datetime.hour},minute: ${concert.datetime.minute}, second: ${concert.datetime.second}})`
@@ -279,6 +298,7 @@ module.exports = {
     "updateConcert": updateConcert, 
     "getAllConcerts": getAllConcerts, 
     "createConcert": createConcert,
+    "deleteConcert": deleteConcert, 
     "searchConcertWithFilter": searchConcertWithFilter,
     "searchAttendees": filterAttendees,
     "addNewAttendConcert": addNewAttendConcert,

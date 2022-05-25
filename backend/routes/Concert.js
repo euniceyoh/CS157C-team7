@@ -9,6 +9,7 @@ const path = require("path");
 
 router.use(express.json())
 
+
 router.post("/willAttend", function (req, res) {
     console.log("/willAttend: " + req.body)
 
@@ -66,6 +67,7 @@ router.get("/location", (req, res) => {
 
 // For storing image
 const multer = require("multer");
+const { resourceUsage } = require('process');
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
       cb(null, path.join(__dirname,'/uploads/'));
@@ -167,6 +169,23 @@ router.post("/", function (req, res) {
         })
 })
 
+router.post("/delete", function(req, res) {
+    const concertParams = req.body
+    console.log(concertParams)
+
+    ConcertAPI.deleteConcert(concertParams, dbUtils.getSession(req))
+    .then(response => {
+        if(res.statusCode === 200) {
+            res.send(JSON.stringify(response))
+        } else {
+            res.status(res.statusCode)
+            res.send(res.message)
+        }
+    })
+    .catch(err => {
+        throw err 
+    })
+})
 
 // Filter Concert 
 router.get("/filter", function (req, res) {

@@ -1,13 +1,4 @@
-body {
-    font-family: Futura;
-    margin: 75px; 
-  }
-  
-  h1, h2, h3, h4 {
-    font-weight: normal; 
-  }
-
-  .top_row {
+   .top_row {
     display: flex; 
     align-items: center; /* didn't quite expect this to work */
   }
@@ -17,24 +8,31 @@ body {
     height: 250px;
     object-fit: cover; 
     border-radius: 50%; 
-    margin: 50px 50px 50px 0px;
+    margin: 0px 50px 50px 0px;
   }
 
   .profile_info button {
     margin-right: 15px;
   }
 
+  .displayCards {
+    display: flex; /* inconsistent card size for concerts */
+  }
+
+  .nav_row .activeBtn {
+    text-decoration: underline;
+  }
+
+  .nav_row button {
+    padding: 0px 10px 10px 0px;
+  }
+
+  /* 
   .content {
     border-style: solid;
     padding: 10px 24px 30px 24px;
     border-radius: 30px;  
     margin-top: 20px;
-    /* width: 1000px;
-    height: 500px; */
-  }
-
-  .displayCards {
-    display: flex; 
   }
 
   .profile_info button {
@@ -55,10 +53,6 @@ body {
     padding: 10px 10px 10px 0px;
   }
 
-  .nav_row .activeBtn {
-    text-decoration: underline;
-  }
-
   .single {
     border-style: solid;
     border-radius: 25px; 
@@ -73,4 +67,4 @@ body {
     border-style: solid;
     color: red; 
   }
-
+ */
