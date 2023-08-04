@@ -1,3 +1,5 @@
+// entry file 
+
 'use strict';
 
 const express = require("express");
@@ -9,6 +11,7 @@ const personRouter = require("./backend/routes/Person");
 const locationRouter = require("./backend/routes/Location")
 const res = require("express/lib/response");
 const app = express();
+const PORT = process.env.PORT || 3000; 
 
 //set view engine to be able to visit views 
 app.set('view engine', 'ejs');
@@ -26,8 +29,9 @@ app.use("/api/v1/location", locationRouter)
 app.use('/', personRouter)
 
 
-app.listen(3000 , () =>{
-    console.log("Server is running on port 3000...");
+// use process.env.PORT variable instead
+app.listen(PORT , () =>{
+    console.log(`server started on port ${PORT}`);
 })
 
 // test 
