@@ -1,4 +1,4 @@
-const Location = require("./schema/Location");
+const Location = require("../schema/Location");
 
 const getAll = (session) => {
     return session.readTransaction (

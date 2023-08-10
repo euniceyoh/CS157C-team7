@@ -1,4 +1,4 @@
-const LocationAPI = require("../models/Location")
+const LocationAPI = require("../models/api/Location")
 const Location = require("../models/schema/Location")
 const dbUtils = require("../dbUtils");
 const express = require("express");

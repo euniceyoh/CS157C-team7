@@ -1,10 +1,11 @@
+// calls the api 
+
 'use strict';
-const ArtistAPI = require("../models/Artist");
+const ArtistAPI = require("../models/api/Artist");
 const Artist = require("../models/schema/Artist")
 const dbUtils = require("../dbUtils");
 const express = require("express");
-const { response } = require("express");
-const router = express.Router();
+const router = express.Router(); // specifying a router 
 
 // Get all artists
 router.get("/is-favorite", (req, res)=>{
@@ -46,7 +47,6 @@ router.get("/", (req, res, next) => {
         .catch(next);
 })
 
-
 router.post("/favorite", (req, res) =>{
     console.log(req.body);
 
@@ -65,8 +65,6 @@ router.post("/favorite", (req, res) =>{
             throw error 
         })
 })
-
-
 
 
 // Create PERFORMS connection
@@ -103,7 +101,6 @@ router.post("/", (req, res) => {
             }else{
                 res.status(res.statusCode);
                 res.send(res.message);
-                res
             }
         }
         ).catch(error => {

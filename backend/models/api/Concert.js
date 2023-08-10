@@ -1,11 +1,6 @@
-// Concert End Point
+const Concert = require("../schema/Concert");
+const Person = require("../schema/Person");
 
-const res = require("express/lib/response");
-const { sampleSize } = require("lodash");
-const Concert = require("./schema/Concert");
-const Person = require("./schema/Person");
-
-// add get all concerts here 
 function getAllConcerts(session) {
     const query = `
     MATCH (concert:Concert) RETURN concert
@@ -201,11 +196,11 @@ const parseConcert = (result) =>{
     return result.records.map(r => new Concert(r.get('concert')));
 }
 
-// Query base on the concert name only
+// query base on the concert name only
 const queryForUpcomingConcert = (concert_category)=>{
     const query = `
         MATCH (concert : Concert)
-        WHERE concert.name CONTAINS "${concert_category.name}" AND concert.concert_date >= datetime() 
+        WHERE concert.name CONTAINS "${concert_category.name}"  
         RETURN concert
     `
     return query;
@@ -249,10 +244,9 @@ const queryConcertWithAllFilterBuilder = (concert_category) =>{
 const filterAttendees = (filters, session) => {
     // prefixBuilder will initialize variables that are used in the query
     // Below variables are optional and they will be empty if user didn't specify additional features
-    console.log("filterAttendees" + JSON.stringify(filters))
+    console.log("called filterAttendees()" + JSON.stringify(filters))
     let optionalCondition = ""
 
-    console.log("filters: ")
     for(let filter in filters) {
         console.log(filter)
         let date = filters["date"]

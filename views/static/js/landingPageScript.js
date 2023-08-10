@@ -9,7 +9,6 @@ searchBtn.addEventListener("click", (e)=>{
     const concertName = concertNameField.value;
     userCardContainer.innerHTML = '';
     if(concertName !== '' && concertName !== undefined){
-
         let url_ = `api/v1/concert/filter/?name=${concertName}`
         getConcert(url_);
       }else{

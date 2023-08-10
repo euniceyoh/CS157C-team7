@@ -27,7 +27,7 @@ We wanted to provide a platform for people who enjoy attending concerts and have
 - Neo4j (+ Cypher Query Language) 
 - Javascript 
 - Express.js 
-- HTML 
+- EJS  
 - Plain CSS + Tailwind CSS 
 
 ## Installation

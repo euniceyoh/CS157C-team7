@@ -1,4 +1,4 @@
-const PersonAPI = require("../models/Person")
+const PersonAPI = require("../models/api/Person")
 const session = require('express-session');
 const Person = require('../models/schema/Person')
 const dbUtils = require('../dbUtils');
@@ -16,19 +16,17 @@ router.use(session({secret: 'mySecret', resave: false, saveUninitialized: false}
 router.use(cookieParser());
 router.use(express.json())
 
-
 router.get('/signup', function(req, res) {
-    res.render("templates/signup");
+    res.render("../views/templates/signup", {isLoggedIn:false}) 
 })
 
-router.post('/signup', function (req, res) {
- 
-    //Fields input check
+router.post('/signup', function (req, res) { // when or how is this called? 
+    //Fields input check 
    try {
      // Get user input
      const { name, email, gender, dob , imgurl, password } = req.body;
 
-     // Validate user input
+    // Validate user input
      if (!(name && email && gender && dob && imgurl && password)) {
        res.status(400).send("All input is required");
         }
@@ -39,7 +37,7 @@ router.post('/signup', function (req, res) {
     
     const passwordHash = bcrypt.hashSync(req.body.password, 12);
    
-    const samplePesron = new Person(
+    const samplePerson = new Person(
         `${req.body.name}`,
         `${req.body.email}`,
         `${req.body.gender}`,
@@ -49,7 +47,7 @@ router.post('/signup', function (req, res) {
         //`${token}`
     )
 
-    PersonAPI.existingUser(samplePesron,dbUtils.getSession(req))
+    PersonAPI.existingUser(samplePerson,dbUtils.getSession(req))
     .then(result=>{
         console.log("Reached test0")
         console.log(result)
@@ -62,7 +60,7 @@ router.post('/signup', function (req, res) {
             req.session.context = req.body ;
             return res.redirect(302, '/signup_failed');
         }else{
-            PersonAPI.createPerson(samplePesron, dbUtils.getSession(req))
+            PersonAPI.createPerson(samplePerson, dbUtils.getSession(req))
             .then(result=>{
                 console.log(result)
                 console.log("Reached test4")
@@ -130,11 +128,11 @@ router.get("/getUser", (req, res) => {
     PersonAPI.getUser(req.query, dbUtils.getSession(req))
     .then(result => {
         console.log(result)
-        res.send(result[0]['_fields'][0]['properties'])
+        res.send(result[0]['_fields'][0]['properties']) // TypeError: Cannot read properties of undefines 
     })
     .catch(error => {
-        throw error
-    })
+        throw error // error thrown: Neo4jError: Could not perform discovery. No routing servers available. Known routing table: RoutingTable[database=default database, expirationTime=0, currentTime=1691142239152, routers=[], readers=[], writers=[]]
+    })              // i think b/c data instance doesn't exist anymore (i could specifically check for this error)
 })
 
 router.get("/getRelations", (req, res) => {

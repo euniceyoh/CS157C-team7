@@ -1,13 +1,16 @@
+// contains the actual cypher queries, contains the functions used in routes 
+
 'use strict';
 
-const session = require("express-session");
-const Artist = require("./schema/Artist");
-
+const Artist = require("../schema/Artist");
 
 const getAll = (session) => {
-    return session.readTransaction (
+    return session.readTransaction ( // readTransaction signals to driver i want to read data
         txc => txc.run(`MATCH (artist:Artist) RETURN artist`)
-    ).then(parseArtists);
+        // passing in a function that performs work of transaction 
+        // useful since i might write multiple queries, in which i want all to succeed or none 
+        // https://community.neo4j.com/t/difference-between-session-run-and-session-readtransaction-or-session-writetransaction/14720/6
+    ).then(parseArtists); // attach a callback with the data returned 
 }
 
 const getArtist = (artistName, session) => {
@@ -25,11 +28,11 @@ const createArtist = (artist, session) =>{
     `
     CREATE (artist:Artist{name:"${artist.name}", url:"${artist.url}"})
     `
-    console.log(query)
+    // this is an async function 
     return session.writeTransaction((tx) => 
         tx.run(query) 
     )
-    .then(result => { // returns a promise 
+    .then(result => {  
         return result.summary
     }, error => {
         return error
@@ -37,8 +40,6 @@ const createArtist = (artist, session) =>{
 }
 
 const performsConnection = (artistName, concertName, session)=>{
-    console.log(artistName+" "+concertName);
-
     const query = 
     `
     MATCH (artist:Artist{name:"${artistName}"}), (concert:Concert{name:"${concertName}"})
@@ -46,13 +47,10 @@ const performsConnection = (artistName, concertName, session)=>{
     CREATE (artist)-[r:PERFORMS]->(concert)
     return type(r)
     `
-    console.log(query)
-
     return session.writeTransaction((tx) => {
         return tx.run(query)
     })
     .then(response => {
-        console.log(response)
         return response.records
     }, error => {
         return error
@@ -60,7 +58,6 @@ const performsConnection = (artistName, concertName, session)=>{
 }
 
 const search = (artistName, session) =>{
-    console.log(artistName);
     const query = 
     `
     MATCH (artist:Artist{
@@ -68,27 +65,18 @@ const search = (artistName, session) =>{
         })
         return artist
     `
-    console.log(query);
-
-    return session.readTransaction (
-        txc => txc.run(query)
-    ).then(parseArtists);
+    return session.readTransaction (txc => txc.run(query))
+    .then(parseArtists);
 }
 
 const favorite = (userName, artistName, session) =>{
-    console.log(userName+" "+artistName);
     const query = `
     match (p:Person {name: "${userName}"}), (artist:Artist {name: "${artistName}"})
     create (p)-[r:FAVORITES]->(artist)
     return type(r)
     `
-    console.log(query)
-
-    return session.writeTransaction((tx) => {
-        return tx.run(query)
-    })
+    return session.writeTransaction((tx) => { return tx.run(query) })
     .then(response => {
-        console.log(response)
         return response.records
     }, error => {
         return error
@@ -96,18 +84,12 @@ const favorite = (userName, artistName, session) =>{
 }
 
 const unfavorite = (userName, artistName, session) =>{
-    console.log(userName+" "+artistName);
     const query = `
     match (p:Person {name: "${userName}"})-[r:FAVORITES]->(artist:Artist {name: "${artistName}"})
     delete r
     `
-    console.log(query)
-
-    return session.writeTransaction((tx) => {
-        return tx.run(query)
-    })
+    return session.writeTransaction((tx) => { return tx.run(query)})
     .then(response => {
-        console.log(response)
         return response.records
     }, error => {
         return error
@@ -115,19 +97,14 @@ const unfavorite = (userName, artistName, session) =>{
 }
 
 const isFavorite = (userName, artistName, session) =>{
-    console.log(userName + " "+ artistName);
-
     const query = `
     RETURN EXISTS
     ((:Person {name: '${userName}'})-[:FAVORITES]->(:Artist {name:'${artistName}'}))`
-
-    console.log(query)
 
     return session.readTransaction((tx) => {
         return tx.run(query)
     })
     .then(response => {
-        console.log(response)
         return response.records
     }, error => {
         return error
@@ -135,18 +112,14 @@ const isFavorite = (userName, artistName, session) =>{
 }
 
 const deleteArtist = (artistName, session)=>{
-    console.log(" "+artistName);
     const query = `
     match (artist:Artist {name: "${artistName}"})
     detach delete artist
     `
-    console.log(query)
-
     return session.writeTransaction((tx) => {
         return tx.run(query)
     })
     .then(response => {
-        console.log(response)
         return response.records
     }, error => {
         return error
@@ -154,19 +127,15 @@ const deleteArtist = (artistName, session)=>{
 }
 
 const updateArtist = (artistName, newUrl, session) =>{
-    console.log(" "+artistName);
     const query = `
     match (artist:Artist {name: "${artistName}"})
     set artist.url ="${newUrl}"
     return artist
     `
-    console.log(query)
-
     return session.writeTransaction((tx) => {
         return tx.run(query)
     })
     .then(response => {
-        console.log(response)
         return response.records
     }, error => {
         return error

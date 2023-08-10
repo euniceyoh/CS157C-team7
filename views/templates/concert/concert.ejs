@@ -10,7 +10,7 @@
   <title>Concert Details</title>
 </head>
 <body>  
-  <%- include('partials/nav.ejs') %> 
+  <%- include('../partials/nav.ejs') %> 
 
   <main class="text-black bg-white">
     <div class="m-16">
@@ -24,10 +24,10 @@
             <h3 class="mt-8 text-2xl font-medium">Venue:</h3>
             <p></p>
           </div>
-          <button 
+          <!-- <button 
           id="deleteBtn"
           class="mt-8 text-white bg-gray-400 border-0 py-2 px-8 focus:outline-none hover:bg-gray-700 rounded text-lg"
-          >Delete</button>
+          >Delete</button> -->
 
           <template id="attendance">
             <button id="attendButton"
@@ -61,13 +61,13 @@
         </div>
 
         <template id='card' >
-          <%- include('partials/card.ejs') %>
+          <%- include('../partials/card.ejs') %>
         </template>
         
       </div>
     </div>
   
   </main>
-  <script src="/static/js/concertScript.js" name='<%-name%>'></script>
+  <script src="../../static/js/concert/concertScript.js" name='<%-name%>'></script>
 </body>
 </html>

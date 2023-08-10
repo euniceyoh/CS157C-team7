@@ -1,6 +1,7 @@
+let user = "John Doe" 
 let concertName = document.currentScript.getAttribute('name');
-let submitButton = document.querySelector('#submit')
-let deleteButton = document.querySelector('#deleteBtn')
+let submitButton = document.querySelector('#submit') // apply filters button 
+//let deleteButton = document.querySelector('#deleteBtn')
 
 let date = ""
 let gender = "" 
@@ -12,21 +13,21 @@ getConcert()
 getAttendees(); 
 
 function displayAttendButton() {
+    console.log(document.baseURI); 
+
     console.log("diplay attend")
     let concertInfo = document.querySelector("#concertInfo")
     let template = document.querySelector("#attendance")
     let child = template.content.cloneNode(true)
     let button = child.querySelector("button")
 
-    // display correct status 
-    let user = "Eunice"
-    let concert = "After Hours Til Dawn Tour"
+    // how do i not make this local host 
 
-    fetch(`http://localhost:3000/api/v1/concert/willAttendExists?name=${user}&concert=${concert}`)
+    fetch(`/api/v1/concert/willAttendExists?name=${user}&concert=${concertName}`)
     .then(res => res.json())
     .then(data => {
       console.log(data)
-
+      
       if(data == true) {
         button.innerText = "Attending"
       } else {
@@ -42,34 +43,34 @@ function displayAttendButton() {
     })
 }
 
-function modifyAttend() { // will this still show up 
+function modifyAttend() { 
     // let button = document.querySelector("#attendButton")
-    let data = {user: "Eunice", concert: concertName} // update user to current logged in user !!
+    let data = {user: user, concert: concertName} 
     console.log(data)
 
     if(attendButton.innerText == "Attend") {
-      fetch(`http://localhost:3000/api/v1/concert/willAttend`, {
+      fetch(`/api/v1/concert/willAttend`, {
         method: 'POST', 
         headers: {
         'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
       })
-      .then( res => res.json())
+      .then(res => res.json())
       .then(data => {
         console.log(data)
         attendButton.innerText = "Attending"
       })
     } else if(attendButton.innerText == "Attending") {
       alert("No longer attending")
-      fetch(`http://localhost:3000/api/v1/concert/deleteAttend`, {
+      fetch(`/api/v1/concert/deleteAttend`, {
         method: 'POST', 
         headers: {
         'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
       })
-      .then( res => res.json())
+      .then(res => res.json())
       .then(data => {
         console.log(data)
         attendButton.innerText = "Attend"
@@ -78,18 +79,15 @@ function modifyAttend() { // will this still show up
   }
 
   function getLocation() {
-    return fetch(`http://localhost:3000/api/v1/concert/location?concert=${concertName}`)
+    return fetch(`/api/v1/concert/location?concert=${concertName}`)
     .then(res => res.json())
   }
 
   function getConcert() {
-    // query concert data here here 
-    fetch(`http://localhost:3000/api/v1/concert/filter/?name=${concertName}`)
+    fetch(`/api/v1/concert/filter/?name=${concertName}`)
     .then(res => res.json())
     .then(data => {
       
-      //getLocation()
-
       let concertInfo = document.querySelector('#concertInfo')
       let imgContent = concertInfo.querySelector("img")
       let url = data[0]['datetime']['properties']['url']
@@ -117,10 +115,9 @@ function modifyAttend() { // will this still show up
     })
   }
 
-  function getAttendees() {
-    console.log("frontend: " + gender)
-    console.log("frontend: " + date)
-    fetch(`http://localhost:3000/api/v1/concert/attendees?name=${concertName}&date=${date}&gender=${gender}`)
+function getAttendees() {
+    console.log("called getAttendees()")
+    fetch(`/api/v1/concert/attendees?name=${concertName}&date=${date}&gender=${gender}`)
     .then(res => res.json())
     .then(data => {
       console.log("concert attendees:" + JSON.stringify(data))
@@ -153,7 +150,7 @@ function deleteConcert() {
   let data = {name: concertName}
   console.log(data)
 
-  fetch(`http://localhost:3000/api/v1/concert/delete`, {
+  fetch(`/api/v1/concert/delete`, {
     method: 'POST', 
     headers: {
     'Content-Type': 'application/json'
@@ -164,32 +161,34 @@ function deleteConcert() {
   .then(data => {
     console.log(data)
     alert("Concert Deleted")
-    location.href=`http://localhost:3000/`
+    location.href=`/`
   })
 }
 
+// filtering the list of attendees 
 submitButton.addEventListener("click", (e) => { // does "click" have any other additional meaning?"
     e.preventDefault()
     getFormData()
     getAttendees()
 })
 
-deleteButton.addEventListener("click", (e) => {
-  e.preventDefault()
-  deleteConcert()
-})
+// deleteButton.addEventListener("click", (e) => {
+//   e.preventDefault()
+//   deleteConcert()
+// })
 
 function getFormData() {
     console.log("submitted form")
     gender = document.querySelector('#gender').value;
     date = document.querySelector('#age').value;
+    console.log(gender + " " + date); 
 }
 
 function viewDetails(url, type) {
     if(type == 'concert')
-    location.href=`http://localhost:3000/concert/${url}`
+    location.href=`/concert/${url}`
     if(type == 'person')
-    location.href=`http://localhost:3000/attendee/${url}`
+    location.href=`/attendee/${url}`
 }
 
 

@@ -1,4 +1,4 @@
-const ConcertAPI = require('../models/Concert')
+const ConcertAPI = require('../models/api/Concert')
 const DateTime = require('../models/schema/DateTime')
 const Concert = require('../models/schema/Concert')
 const dbUtils = require('../dbUtils');
@@ -9,7 +9,6 @@ const path = require("path");
 const { route } = require('./Artist');
 
 router.use(express.json())
-
 
 router.post("/willAttend", function (req, res) {
     console.log("/willAttend: " + req.body)
@@ -273,7 +272,6 @@ router.get("/past-concert/:artist", (req, res) =>{
 
 })
 
-
 router.get("/:name", function (req, res) { 
     console.log(req.params)
     ConcertAPI.searchConcertWithFilter(req.params, dbUtils.getSession(req))
@@ -289,8 +287,5 @@ router.get("/:name", function (req, res) {
         throw err;
     })
 })
-
-
-
 
 module.exports = router

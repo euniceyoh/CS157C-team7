@@ -1,11 +1,9 @@
 
 // Person End Point
-const Person = require("./schema/Person");
 const bcrypt = require("bcrypt");
 
 
 function createPerson(person, session) { 
-
     const query = `CREATE (person: Person{
         name:"${person.name}",
         email: "${person.email}",
@@ -34,9 +32,7 @@ function existingUser(person, session) {
     OPTIONAL MATCH (p:Person {email: '${email}'})
     RETURN p IS NOT NULL AS emailExists`
     
-    console.log("before query test")
     console.log(query)
-    console.log("after query test")
    
     return session.readTransaction((tx) => {
         console.log(".then test reached")
@@ -56,7 +52,6 @@ function existingUser(person, session) {
 }
 
 async function loginUser(person, session) {
-
     const emailMatchResult = await existingUser(person, session)
     .then(result=>{
         console.log("Reached test0")

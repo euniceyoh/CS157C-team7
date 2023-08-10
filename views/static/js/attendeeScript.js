@@ -1,4 +1,4 @@
-let userName = "Eunice"
+let userName = "John Doe" // 
 
 let bioButton = document.querySelector('#bioBtn')
 let pConcertBtn = document.querySelector('#pConcertBtn')
@@ -35,7 +35,7 @@ editBtn.addEventListener("click", (e) => {
 })
 
 function getUserInfo() {
-  fetch(`http://localhost:3000/api/v1/person/getUser?name=${userName}`)
+  fetch(`/api/v1/person/getUser?name=${userName}`)
   .then(res => res.json())
   .then(data => {
     console.log(data)
@@ -67,9 +67,9 @@ function resetActiveButton(currentButton) {
 
 function viewDetails(url, type) { // prob need to use event listener 
     if(type == 'concert')
-      location.href=`http://localhost:3000/concert/${url}`
+      location.href=`/concert/${url}`
     if(type == 'person')
-      location.href=`http://localhost:3000/attendee/${url}`
+      location.href=`/attendee/${url}`
 }
 
 function clickedBio() {
@@ -89,7 +89,7 @@ function clickedBio() {
     let favArtists = clone.querySelector("#f_artists") // a div 
     let favGenres = clone.querySelector("#f_genres") // a div 
     
-    fetch(`http://localhost:3000/api/v1/person/getRelations?name=${userName}&rel=FAVORITES&outgoingNode=Artist`)
+    fetch(`/api/v1/person/getRelations?name=${userName}&rel=FAVORITES&outgoingNode=Artist`)
     .then(res => res.json())
     .then(data => {
 
@@ -104,7 +104,7 @@ function clickedBio() {
       })
     })
 
-    fetch(`http://localhost:3000/api/v1/person/getRelations?name=${userName}&rel=FAVORITES&outgoingNode=Genre`)
+    fetch(`/api/v1/person/getRelations?name=${userName}&rel=FAVORITES&outgoingNode=Genre`)
     .then(res => res.json())
     .then(data => {
 
@@ -145,7 +145,7 @@ function clickedBio() {
     mainContent.classList.add("displayCards")
     let card = document.querySelector("#upcoming_concerts")
 
-    fetch(`http://localhost:3000/api/v1/person/getRelations?name=${userName}&rel=HAS_ATTENDED&outgoingNode=Concert`)
+    fetch(`/api/v1/person/getRelations?name=${userName}&rel=HAS_ATTENDED&outgoingNode=Concert`)
     .then(res => res.json())
     .then(data => {
       data.forEach(concert => {
@@ -178,7 +178,7 @@ function clickedBio() {
     mainContent.classList.add("displayCards")
     let card = document.querySelector("#upcoming_concerts")
 
-    fetch(`http://localhost:3000/api/v1/person/getRelations?name=${userName}&rel=WILL_ATTEND&outgoingNode=Concert`)
+    fetch(`/api/v1/person/getRelations?name=${userName}&rel=WILL_ATTEND&outgoingNode=Concert`)
     .then(res => res.json())
     .then(data => {
       data.forEach(concert => {
@@ -211,7 +211,7 @@ function clickedBio() {
     mainContent.classList.add("displayCards")
     let card = document.querySelector("#friends")
 
-    fetch(`http://localhost:3000/api/v1/person/getRelations?name=${userName}&rel=IS_FRIENDS&outgoingNode=Person`)
+    fetch(`/api/v1/person/getRelations?name=${userName}&rel=IS_FRIENDS&outgoingNode=Person`)
     .then(res => res.json())
     .then(data => {
       data.forEach(person => {
