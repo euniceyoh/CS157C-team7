@@ -1,4 +1,16 @@
-let userName = "John Doe" // 
+// if session is set & current url is not already set, set the url here 
+/**
+ * 1. get current url of the page (.../attendee)
+ * 1.5: attendee.ejs should pass info to attendeeScript.js (this is new part)
+ * 2. if the session profile is not set --> do nothing (should just return error page)
+ * 3. else, get the session user information (specifically name)
+ * 4.  set a 'userName' variable, so page can make queries to the specific username 
+ * 5. done 
+ */
+
+let userName = loggedInUserName // accessing a global variable (TODO: is this an okay practice?)
+let email = userName + "@gmail.com" // TODO: fix this 
+console.log(email)
 
 let bioButton = document.querySelector('#bioBtn')
 let pConcertBtn = document.querySelector('#pConcertBtn')
@@ -7,7 +19,7 @@ let friendsBtn = document.querySelector('#friendsBtn')
 let editBtn = document.querySelector('#editBtn')
 
 getUserInfo()
-clickedBio() // default 
+clickedBio() 
 
 bioButton.addEventListener("click", (e) => {
     e.preventDefault()
@@ -35,7 +47,7 @@ editBtn.addEventListener("click", (e) => {
 })
 
 function getUserInfo() {
-  fetch(`/api/v1/person/getUser?name=${userName}`)
+  fetch(`/api/v1/person/getUser?email=${email}`)
   .then(res => res.json())
   .then(data => {
     console.log(data)
@@ -90,10 +102,14 @@ function clickedBio() {
     let favGenres = clone.querySelector("#f_genres") // a div 
     
     fetch(`/api/v1/person/getRelations?name=${userName}&rel=FAVORITES&outgoingNode=Artist`)
-    .then(res => res.json())
+    .then(res => {
+      console.log("line 106")
+      return res.json() // returns a promise 
+    })
     .then(data => {
+      console.log(data)
 
-      data.forEach(artist => {
+      data.records.forEach(artist => {
         artist._fields.forEach(artistField => {
           console.log(artistField.properties.name)
           let artistDisplay = document.createElement("span")
@@ -107,8 +123,7 @@ function clickedBio() {
     fetch(`/api/v1/person/getRelations?name=${userName}&rel=FAVORITES&outgoingNode=Genre`)
     .then(res => res.json())
     .then(data => {
-
-      data.forEach(genre => {
+      data.records.forEach(genre => {
         genre._fields.forEach(genreField => {
           console.log(genreField.properties.name)
           let genreDisplay = document.createElement("span")
@@ -148,7 +163,7 @@ function clickedBio() {
     fetch(`/api/v1/person/getRelations?name=${userName}&rel=HAS_ATTENDED&outgoingNode=Concert`)
     .then(res => res.json())
     .then(data => {
-      data.forEach(concert => {
+      data.records.forEach(concert => {
         concert._fields.forEach(concertField => {
           console.log(concertField.properties)
 
@@ -181,7 +196,7 @@ function clickedBio() {
     fetch(`/api/v1/person/getRelations?name=${userName}&rel=WILL_ATTEND&outgoingNode=Concert`)
     .then(res => res.json())
     .then(data => {
-      data.forEach(concert => {
+      data.records.forEach(concert => {
         concert._fields.forEach(concertField => {
           console.log(concertField.properties)
 
@@ -214,7 +229,7 @@ function clickedBio() {
     fetch(`/api/v1/person/getRelations?name=${userName}&rel=IS_FRIENDS&outgoingNode=Person`)
     .then(res => res.json())
     .then(data => {
-      data.forEach(person => {
+      data.records.forEach(person => {
         person._fields.forEach(personField => {
           console.log(personField.properties)
 

@@ -1,4 +1,4 @@
-let user = "John Doe" 
+let user = loggedInUserName
 let concertName = document.currentScript.getAttribute('name');
 let submitButton = document.querySelector('#submit') // apply filters button 
 //let deleteButton = document.querySelector('#deleteBtn')
@@ -20,8 +20,6 @@ function displayAttendButton() {
     let template = document.querySelector("#attendance")
     let child = template.content.cloneNode(true)
     let button = child.querySelector("button")
-
-    // how do i not make this local host 
 
     fetch(`/api/v1/concert/willAttendExists?name=${user}&concert=${concertName}`)
     .then(res => res.json())

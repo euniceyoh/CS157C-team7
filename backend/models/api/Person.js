@@ -1,7 +1,5 @@
-
-// Person End Point
 const bcrypt = require("bcrypt");
-
+const { verify } = require("jsonwebtoken");
 
 function createPerson(person, session) { 
     const query = `CREATE (person: Person{
@@ -23,110 +21,75 @@ function createPerson(person, session) {
     })
 }
 
-
-function existingUser(person, session) { 
-   
-    let email = person.email
-    
+const login = (person, session) => {
     const query = `
-    OPTIONAL MATCH (p:Person {email: '${email}'})
+    OPTIONAL MATCH (p:Person {email: '${person.email}'})
     RETURN p IS NOT NULL AS emailExists`
+
+    console.log(query)
     
-    console.log(query)
-   
-    return session.readTransaction((tx) => {
-        console.log(".then test reached")
-        return tx.run(query)
-    })
-    .then(response => {
-        console.log("before reponse test")
-        console.log(response)
-        console.log("------------------")
-        console.log("before reponse.records test")
-        console.log(response.records)
-
-        return response.records
-    }, error => {
-        return error
-    })
-}
-
-async function loginUser(person, session) {
-    const emailMatchResult = await existingUser(person, session)
-    .then(result=>{
-        console.log("Reached test0")
-        console.log(result)
-        console.log("Reached test1")
-        console.log(result[0]._fields[0]) 
-        console.log("Reached test1.5")
-        return result[0]._fields[0]   
-    })
-    .catch(err=>{
-            throw err;
-    })
-    console.log("Reached test8")
-    console.log(emailMatchResult)
-
-    if (emailMatchResult) {
-       
-        console.log("reached test9")
-            
-        let email = person.email
-        let password = person.password
-        let  usersHashedPassword
-
+    return session.readTransaction((tx) => { return tx.run(query)})
+    .then((result => { // do something with result 
+        console.log(typeof result)
+        console.log(result.records[0]._fields[0])
+        if(result.records[0]._fields[0] == false) {
+            throw new Error("Email does not exist"); 
+        }
+        
+        // otherwise, check for password 
         const queryHashedPassword = `
-        MATCH (p:Person {email: '${email}'}) 
-        RETURN p.password AS hashedPassword`
+        MATCH (p:Person {email: '${person.email}'}) 
+        RETURN p.password AS hashedPassword`;
 
-        await session.readTransaction((tx) => {
-        return tx.run(queryHashedPassword)
-        })
-        .then(result => {
-            console.log("before hashed passwrod reponse test")
-            console.log("-----------------------------------")
-            console.log(result.records[0])
-            console.log(result.records[0]._fields[0])
-            usersHashedPassword = result.records[0]._fields[0]
-            return usersHashedPassword
-        })
-        .catch(err=>{
-            throw err;
-        })
-        console.log("log it!")
-        console.log(usersHashedPassword)
+        console.log(queryHashedPassword);
 
-        await bcrypt.compare(password, usersHashedPassword, function(err, result) {
-            if (err){
-                throw err;
-            }
-            if (result){
-                console.log("Correct password!")
-            }else {
-                console.log("wrong password!")
-            }
-        });
-    } else {
-        console.log("email not found!")
-    }
+        return session.readTransaction((tx) => {return tx.run(queryHashedPassword)})
+    }))
+    .then((result => {
+        usersHashedPassword = result.records[0]._fields[0];
+        console.log(usersHashedPassword); 
+        
+        return bcrypt.compare(person.password, usersHashedPassword)
+    }))
+    .then((result => {
+        console.log("last")
+        console.log(result);
+        console.log(typeof result)
+
+        if(result == false) {
+            throw new Error("Password is incorrect"); 
+        }
+        
+        // finally get the user (TODO: duplicate?)
+        return getUser(person.email, session)
+    }))
+    .then((result => {
+        console.log(result.records[0]['_fields'][0]['properties'])
+        return result; 
+    }))
+    .catch((error => {
+        if(error.message.includes("Email")) {
+            console.error("email doesn't exist")
+            throw new Error("Email does not exist"); // rethrow the error 
+        } 
+        if(error.message.includes("Password")) {
+            console.error("password is incorrect")
+            throw new Error("Password is incorrect");
+        }
+        return error;
+    }))
 }
 
-
-function getUser(data, session) {
-    console.log(data)
-
+function getUser(email, session) {
     const query = `
-    match (p:Person {name:"${data.name}"})
-    return p
-    `
+    MATCH (p:Person {email: '${email}'}) 
+    RETURN p
+    `   
     console.log(query)
 
-    return session.readTransaction((tx) => {
-        return tx.run(query)
-    })
+    return session.readTransaction((tx) => {return tx.run(query)})
     .then(response => {
-        console.log(response)
-        return response.records
+        return response 
     }, error => {
         return error
     })
@@ -139,18 +102,16 @@ function getUserRelations(data, session) {
     let outgoingNode = data.outgoingNode
 
     const query = `
-    match (p:Person {name:"${data.name}"})-[:${rel}]->(o:${outgoingNode})
+    optional match (p:Person {name:"${name}"})-[:${rel}]->(o:${outgoingNode})
     return o
     `
-
     console.log(query)
 
     return session.readTransaction((tx) => {
         return tx.run(query)
     })
     .then(response => {
-        console.log(response)
-        return response.records
+        return response
     }, error => {
         return error
     })
@@ -158,8 +119,7 @@ function getUserRelations(data, session) {
 
 module.exports = {
     "createPerson": createPerson,
-    "existingUser": existingUser,
-    "loginUser": loginUser,
+    "login": login,
     "getUser": getUser, 
     "getUserRelations": getUserRelations
 }

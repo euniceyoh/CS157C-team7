@@ -12,16 +12,10 @@ const jwt = require('jsonwebtoken');
 
 const cookieParser = require("cookie-parser");
 
-router.use(session({secret: 'mySecret', resave: false, saveUninitialized: false}));
 router.use(cookieParser());
 router.use(express.json())
 
-router.get('/signup', function(req, res) {
-    res.render("../views/templates/signup", {isLoggedIn:false}) 
-})
-
-router.post('/signup', function (req, res) { // when or how is this called? 
-    //Fields input check 
+router.post('/signup', function (req, res) {
    try {
      // Get user input
      const { name, email, gender, dob , imgurl, password } = req.body;
@@ -44,32 +38,32 @@ router.post('/signup', function (req, res) { // when or how is this called?
         `${req.body.dob}`,
         `${req.body.imgurl}`,
         `${passwordHash}`,
-        //`${token}`
     )
 
+    // TODO: existingUser API call is ?
     PersonAPI.existingUser(samplePerson,dbUtils.getSession(req))
     .then(result=>{
-        console.log("Reached test0")
+        // validate input: make more concise here 
         console.log(result)
-        console.log("Reached test1")
         console.log(result[0]._fields[0]) 
-        console.log("Reached test1.5")
         if(result[0]._fields[0]){
-            console.log("Reached test2")
             console.log("Email already exists")
-            req.session.context = req.body ;
-            return res.redirect(302, '/signup_failed');
-        }else{
+            req.session.context = req.body;
+            return res.redirect(302, '/signup_failed'); // signup failed so redirect 
+        }else{ 
+            // TODO: nested API calls are not good 
             PersonAPI.createPerson(samplePerson, dbUtils.getSession(req))
             .then(result=>{
                 console.log(result)
-                console.log("Reached test4")
-                if(res.statusCode === 200){
-                    console.log("Reached test5")
-                    res.render('../views/templates/signup_success', {accountData: req.body});
-                    console.log("Reached test6")
+                if(res.statusCode === 200){ // successful account creation 
+                    
+                    /** store session information here */
+                    //req.session.username = req.body.name;
+                    req.session.profile = samplePerson; 
+                    console.log(req.session.profile); 
+                    
+                    res.redirect('/'); // go back to homepage 
                 }else{
-                    console.log("Reached test7")
                     res.status(res.statusCode);
                     res.send(res.message);
                 }
@@ -77,9 +71,6 @@ router.post('/signup', function (req, res) { // when or how is this called?
             .catch(err=>{
                 throw err;
             });
-            console.log("Reached test8")
-            //res.status(res.statusCode);
-            //res.send(res.message);
         }
     })
     .catch(err=>{
@@ -87,48 +78,45 @@ router.post('/signup', function (req, res) { // when or how is this called?
     });
 })
 
-router.get('/signup_failed', function(req, res) {
-    var context = req.session.context;
-    console.log(context)
-    res.render("templates/signup_failed", {formData: context});
-})
-
-const maxAge = 3 * 24 * 60 * 60;
-const createToken = (id) => {
-  return jwt.sign({ id }, 'secret', {
-    expiresIn: maxAge
-  });
-};
+// router.get('/signup_failed', function(req, res) {
+//     var context = req.session.context;
+//     console.log(context)
+//     res.render("../views/templates/userauth/signup_failed", {formData: context});
+// })
 
 
-router.get('/login', function(req, res) {
-    res.render("templates/login");
-})
-
-router.post('/login', async function (req, res) {
-
-    try{
-        const {email, password } = req.body;
-
+// TODO: need to fix this 
+router.post('/login', function (req, res) {
+    const {email, password } = req.body;
     if (!(email && password)) {
-      res.status(400).send("All input is required");
-    }
-    }
-    catch(err) {
-        throw err
-    }
+        res.status(400).send("All input is required");
+    } 
 
-    PersonAPI.loginUser(req.body,dbUtils.getSession(req))
-
+    PersonAPI.login(req.body, dbUtils.getSession(req))
+    .then((result => {
+        console.log(result.records[0]['_fields'][0]['properties'])
+        req.session.profile = result.records[0]['_fields'][0]['properties']; 
+        res.redirect('/'); 
+    }))
+    .catch(error => { // error should be caught here 
+        if(error.message.includes("Email")) {
+            res.status(400).send("Email does not exist");
+        } else if(error.message.includes("Password")) {
+            res.status(400).send("Password is incorrect");
+        } else {
+            res.status(400).send("Error");
+        }
+    })
 })
 
+// just make one route called login that checks: 
+// 1. if user exists, and if so, login the user 
 router.get("/getUser", (req, res) => {
     console.log(req.query)
-
-    PersonAPI.getUser(req.query, dbUtils.getSession(req))
+    PersonAPI.getUser(req.query.email, dbUtils.getSession(req))
     .then(result => {
         console.log(result)
-        res.send(result[0]['_fields'][0]['properties']) // TypeError: Cannot read properties of undefines 
+        res.send(result.records[0]['_fields'][0]['properties']) 
     })
     .catch(error => {
         throw error // error thrown: Neo4jError: Could not perform discovery. No routing servers available. Known routing table: RoutingTable[database=default database, expirationTime=0, currentTime=1691142239152, routers=[], readers=[], writers=[]]
@@ -140,6 +128,7 @@ router.get("/getRelations", (req, res) => {
 
     PersonAPI.getUserRelations(req.query, dbUtils.getSession(req))
     .then(result => {
+        console.log("/getRelations")
         console.log(result)
         res.send(result)
     })

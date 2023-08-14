@@ -9,13 +9,12 @@
   <link rel="stylesheet" type="text/css" href="/static/css/profile.css">
   <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
   
-  <title>Concert Details</title>
+  <title>Profile</title>
 </head>
 
+<!-- only show if the user is logged in & the user to retrieve is the same as logged in-->
 <body>
   <%- include('partials/nav.ejs') %> 
-  <!-- add main tag here -->
-  
   <main class="m-16">
     <div class='top_row'>
       <img id="userPP" alt="profile">
@@ -69,8 +68,15 @@
   <template id="friends">
     <%- include('partials/card.ejs') %>
   </template>
-  
-  <script src="/static/js/attendeeScript.js"></script>
+  <script>
+    var loggedInEmail = ''
+    if(`<%= user %>` != undefined) {
+      loggedInUserName = `<%= name %>`
+      loggedInEmail = `<%= user.email %>`
+      console.log("attendee script: " + loggedInUserName)
+    }
+  </script>
+  <script src="../static/js/attendeeScript.js" defer></script>
 </body>
 </html>
 

@@ -8,6 +8,21 @@
   <link rel="stylesheet" type="text/css" href="/static/css/concert.css">
   <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
   <title>Concert Details</title>
+  <script>
+    var loggedInEmail = ''
+    var loggedInUserName = ''
+  </script>
+  <%if (user != undefined) { %>
+    <script>
+      var len = `<%= user %>`.length
+      console.log(len)
+      if(len > 0) {
+        loggedInEmail = `<%= user.email %>`
+        loggedInUserName = `<%= user.name %>`
+        console.log(loggedInEmail)
+      }
+    </script>
+  <% } %>
 </head>
 <body>  
   <%- include('../partials/nav.ejs') %> 
