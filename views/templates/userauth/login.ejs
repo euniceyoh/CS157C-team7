@@ -9,20 +9,19 @@
         <title>Login</title>
     </head>
     <body>
+        <%- include('../partials/nav.ejs') %> 
         <main class="text-gray-400  bg-white  body-font relative ">
           <div class="container px-5 pt-16 mx-auto  ">
               <div class="flex flex-col text-center w-full py-12">
-                  <h1 class="sm:text-5xl text-2xl font-medium title-font mb-4 text-gray-900">Log In to Concert Mate </h1>
+                  <h1 class="sm:text-5xl text-2xl font-medium title-font mb-4 text-gray-900">Sign In</h1>
               </div>
               <div class="lg:w-3/4 md:w-3/4 mx-auto">
-                <form id="login-form" action="/login" method="post">               
-                    <div class="flex flex-col -m-2">
+                <form id="login-form" action="/api/v1/person/login" method="post"> <!-- api called here -->              
+                    <div class="flex flex-col -m-2"> 
                     <div class="p-1 w-1/3 mx-1 mx-auto">
                       <div class="relative">
-                        <p class="sm:text-2xl text-1xl font-medium title-font mb-2 text-gray-900">Enter your credintials below</p>
-                        <br>
                         <p class="sm:text-1xl text-1xl font-medium title-font mb-1 text-gray-900">Email</p>
-                          <input placeholder="Email"
+                          <input value="5qabYThavD@gmail.com"
                               type="email"
                               name="email"
                               class=" w-full bg-gray-100 rounded-xl border border-gray-600 
@@ -35,7 +34,7 @@
                     <div class="p-1 w-1/3  mx-auto">
                         <div class="relative">
                             <p class="sm:text-1xl text-1xl font-medium title-font mb-1 text-gray-900">Password</p>
-                            <input placeholder="Password"
+                            <input value="5qabYThavD"
                                 type="password"
                                 name="password"
                                 class=" w-full bg-gray-100 rounded-xl border border-gray-600 
@@ -54,8 +53,5 @@
               </div>
           </div>
         </div>
-        <hr>
-        <p>Don't have an account? <a href="./signup">Sign Up</a></p>
-        <!--<p>Or go <a href="/">home</a>.</p>-->
     </body>
 </html>

@@ -1,12 +1,21 @@
 <nav class="text-gray-700 bg-gray-400 body-font m">
-    
     <ul class="container mx-auto flex flex-row-reverse p-10 md:flex-row-reverse ">    
-
-        <!-- <li class="mx-2"><a href="../signup">Sign Up</a></li> -->
-            <%if (isLoggedIn) { 
-                %>
+            <%if (user != undefined) { %>
                 <li class="mx-4 hover:text-white"><a href="/log-out">Log Out</a></li>
-                <li class="mx-4 hover:text-white"><a href="../attendee/Eunice">Profile</a></li>
+                <li class="mx-4 hover:text-white"><a id="profileLink" href="#">Profile</a></li> 
+                <script>
+                    var loggedInEmail = ''
+                    if(`<%= user %>` != undefined) {
+                        loggedInUserName = `<%= user.name %>`
+                        loggedInEmail = `<%= user.email %>`
+                        console.log(loggedInEmail)
+
+                        // update a href 
+                        var profileLinkElement = document.getElementById('profileLink')
+                        profileLinkElement.href =  `/attendee/${loggedInUserName}`
+                        console.log(profileLinkElement)
+                    }
+                </script>
                 <ul class="concert-dropdown">
                     <li class="mx-4 hover:text-white"><a href="/concert-search">Search for Concert</a></li> 
                     <li class="mx-4 hover:text-white"><a href="/create-concert">Add Concert</a></li>
@@ -16,12 +25,10 @@
                     <li class="mx-4 hover:text-white"><a href="/artist-search">Search for Artist</a></li>
                     <li class="mx-4 hover:text-white"><a href="/create-artist">Add Artist</a></li>
                     <li class="mx-4 hover:text-white"><a href="/artist-update">Update Artist</a></li>
-                </ul>
-                <li class="mx-4 hover:text-white"><a href="/signup">Sign Up</a></li>
-                <% 
-            } else{%>
-                <li class="mx-4 hover:text-white"><a href="/signup">Sign Up</a></li>
-                <li class="mx-4 hover:text-white"><a href="/sign-in">Sign In</a></li> 
+                </ul> 
+            <% } else { %>
+                <li class="mx-4 hover:text-white"><a href="/log-in">Log In</a></li>
+                <li class="mx-4 hover:text-white"><a href="/signup">Sign Up</a></li> 
             <% } %>
             <li class="mx-4 hover:text-white"><a href="/">Home</a></li>
     </ul>
